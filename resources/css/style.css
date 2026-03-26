@@ -19,11 +19,11 @@
 }
 
 .divmain {
-  max-width: 1500px !important;  
-  width: 1500px !important;  
+  max-width: 1500px !important;
+  width: 1500px !important;
   padding-left: 200px;
   padding-right: 200px;
-} 
+}
 
 .swiper {
   width: 100%;
@@ -65,9 +65,9 @@
  .uldiv{
       max-width: 110px;
    }
-   
+
    .imgrate {
-      width: 18px;  
+      width: 18px;
    }
 
    .imgrate:hover {
@@ -92,9 +92,106 @@
       text-decoration: none; /* Removes underlines from links */
     /* Add other styling like color, background, etc. */
    }
-/* fim componente Rate */   
+/* fim componente Rate */
+
+/* section price */
+.imgcheck{
+  width: 8%;
+}
+
+.clcard{
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+}
+
+.clcard:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(219, 124, 124, 0.8);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+}
+
+.clcardpromo:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(221, 93, 230, 0.7);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+}
+
+.clcardpromo{
+    /* top:-65px; */
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+    background-color: rgb(46, 36, 36);
+}
+
+.btclass{
+    background: #FEF5FA;
+    border: none;
+    color: rgba(244, 150, 209, 1);
+}
+
+.btclass:hover{
+    cursor:pointer;
+    opacity: 0.5;
+
+}
+
+.btpromo{
+    color: #FEF5FA;
+    border: none;
+    background: rgba(244, 150, 209, 1);
+}
+
+.btpromo:hover{
+    cursor:pointer;
+    opacity: 0.6;
+
+ }
+
+.textpromo{
+    color: #FEF5FA;
+ }
+
+.textcard{
+    color: #0a0207;
+}
+
+.cardtexto{
+   display:flex;
+   vertical-align: baseline;
+}
+
+.clbadge{
+    position: relative;
+    top:25px;
+    left:170px;
+    width: 110px;
+    padding:7px;
+    font-size: 10px;
+    background-color: #675ac5 !important;
+}
+
+@media screen and (max-width: 500px) {
+    .clcardpromo{
+        top:0px;
+        border-radius:20px;
+        box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+        background-color: rgb(46, 36, 36);
+    }
+}
+/* card */
+
+/* section price */
+
 /*about section css*/
-#section-about{ 
+#section-about {
 
   & h4 {
         font-family: 'Poppins';
@@ -124,15 +221,128 @@
    }
 
   & .div-rate {
-     position:relative; 
-     top:-25px; 
+     position:relative;
+     top:-25px;
      left:55px;
    }
-  
+
   & .div-score {
-    position:relative; 
-    top: -45px; 
+    position:relative;
+    top: -45px;
     left: 55px;
     font-size:13px;
 }
 /*end about section css*/
+/*offers section css*/
+#section-price{
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+
+  & .circle {
+     border-radius:50px;
+     box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+     width:250px;
+     height:100px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+  }
+  /* card */
+  & .clcard{
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  & .clcard:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(219, 124, 124, 0.8);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+
+  & .clcardpromo:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(221, 93, 230, 0.7);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+
+  & .clcardpromo{
+    /* top:-65px; */
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+    background-color: rgb(46, 36, 36);
+  }
+
+  & .imgcheck{
+    width: 8%;
+  }
+
+  & .btclass{
+    background: #FEF5FA;
+    border: none;
+    color: rgba(244, 150, 209, 1);
+  }
+
+  & .btclass:hover{
+    cursor:pointer;
+    opacity: 0.5;
+
+  }
+
+  & .btpromo{
+    color: #FEF5FA;
+    border: none;
+    background: rgba(244, 150, 209, 1);
+  }
+
+  & .btpromo:hover{
+    cursor:pointer;
+    opacity: 0.6;
+
+  }
+
+  & .textpromo{
+    color: #FEF5FA;
+  }
+
+  & .textcard{
+    color: #0a0207;
+  }
+
+  & .clbadge{
+    position: relative;
+    top:25px;
+    left:170px;
+    width: 110px;
+    padding:7px;
+    font-size: 10px;
+    background-color: #675ac5 !important;
+  }
+
+  @media screen and (max-width: 500px) {
+    .clcardpromo{
+        top:0px;
+        border-radius:20px;
+        box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+        background-color: rgb(46, 36, 36);
+    }
+  }
+  /* card */
+
+}
+/*end offers section css*/
