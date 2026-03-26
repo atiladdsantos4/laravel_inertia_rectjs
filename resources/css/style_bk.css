@@ -1,0 +1,604 @@
+/* root {
+  font-family: ;
+} */
+
+#modal-combo .modal-dialog{
+  z-index:1000;  
+}
+
+#modal-qrcode .modal-dialog{
+  z-index:1001;  
+}
+
+/* testemonial background */
+.clcontainer {
+   background: linear-gradient(90.26deg, #DCADF2 0.2%, #DF72AF 99.76%);
+   border-radius: 15px 15px 0px 0px;
+}
+
+/* footer background */
+.clfooter {
+     background: linear-gradient(90deg, #200D35 14.33%, #E95E86 214.54%);
+     border-radius: 15px 15px 0px 0px;
+}
+
+.clcontact {
+     background: linear-gradient(226.49deg, #FF97D5 7.53%, #FFCD9E 96.28%);
+     border-radius: 0px 0px 0px 0px;
+}
+
+.btclass{
+   background: #d5d0d3 !important;
+   border: none !important;
+   color: rgb(203, 97, 164) !important;
+}
+
+/*modal*/
+.cmodal_header{
+   background-color: rgba(244, 150, 209, 1);
+   color:white
+}
+
+.modalmax{
+   max-height:370;
+}
+
+.cmodal_button_save{
+   background-color: rgba(244, 150, 209, 1);
+   color:white;
+   border: gray;
+}
+
+.cmodal_button_save:hover{
+   background-color: rgba(244, 150, 209, 1); 
+   border: 1px solid rgb(82, 76, 76);
+}
+
+.inputwidth{
+  width:80px; 
+  background-color: rgb(160, 50, 120);
+  color:white;
+}
+
+.input-text[disabled]{
+  background-color: rgb(222, 168, 202);
+}
+
+.modalbadge{
+  background-color:rgb(160, 50, 120) !important;
+  border-radius: 0px 4px 4px 0px!important;
+}
+
+.datas{
+  background-color:rgb(222, 168, 202);
+  border:1px solid gray;
+  color:rgb(58, 50, 50);
+  border-radius: 0px 0px 0px 0px;  
+}
+.horas{
+  background-color:rgb(160, 50, 120);
+  border:1px solid gray;
+  color:white;
+  border-radius: 0px 0px 0px 0px;  
+}
+
+
+.inputwidthModal{
+  background-color: rgb(222, 168, 202);
+  border-radius:0px 0px 5px 5px;
+  width: 100%; 
+  /* display: inline-block; */
+}
+
+.nowrap{
+  white-space: nowrap;  
+}
+
+.input-text{
+  background-color: rgb(222, 168, 202);
+}
+
+ @media screen and (max-width: 500px) {
+   .modal-dialog {
+      max-width:340px !important;
+      font-size:12px;
+   }
+ }
+
+/*about section css*/
+#section-about{ 
+  & h4 {
+        font-family: 'Poppins';
+        font-weight: 700;
+        font-style: SemiBold;
+  }
+
+  & .circle {
+     border-radius:50px;
+     box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+     width:250px;
+     height:100px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+  }
+
+  & .circle:hover{
+    cursor:pointer;
+    box-shadow: 5px 5px 17px rgba(0, 0, 0, 0.3);
+  }
+}
+/*end about section css*/
+
+/*offers section css*/
+#section-price{
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+
+  & .circle {
+     border-radius:50px;
+     box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+     width:250px;
+     height:100px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+  } 
+  /* card */
+  & .clcard{
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  & .clcard:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(219, 124, 124, 0.8);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+
+  & .clcardpromo:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(221, 93, 230, 0.7);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+
+  & .clcardpromo{
+    /* top:-65px; */
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+    background-color: rgb(46, 36, 36);
+  }
+
+  & .imgcheck{
+    width: 8%;
+  }
+
+  & .btclass{
+    background: #FEF5FA;
+    border: none;
+    color: rgba(244, 150, 209, 1);
+  }
+
+  & .btclass:hover{
+    cursor:pointer;
+    opacity: 0.5;
+    
+  }
+
+  & .btpromo{
+    color: #FEF5FA;
+    border: none;
+    background: rgba(244, 150, 209, 1);
+  }
+  
+  & .btpromo:hover{
+    cursor:pointer;
+    opacity: 0.6;
+    
+  }
+
+  & .textpromo{
+    color: #FEF5FA;
+  }
+
+  & .textcard{
+    color: #0a0207;
+  }
+
+  & .clbadge{
+    position: relative;
+    top:25px;
+    left:170px;
+    width: 110px;
+    padding:7px;
+    font-size: 10px;
+    background-color: #675ac5 !important;
+  }
+
+  @media screen and (max-width: 500px) {
+    .clcardpromo{
+        top:0px;
+        border-radius:20px;
+        box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+        background-color: rgb(46, 36, 36);
+    }
+  }
+  /* card */
+
+}
+/*end offers section css*/
+
+/*services section css*/
+#section-services{
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+  
+  & .btclass{
+    width: 180px;
+    font-family: 'Poppins';
+  }
+
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+
+  & h2,h3 {
+    font-family: 'Poppins';
+    font-weight: 700 !important;
+    font-style: SemiBold;
+  }
+
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+
+  & h6{
+    font-family: 'Poppins';
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgb(125, 119, 119);
+  }
+
+  & .clcard{
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+  }
+  
+  & .clcard:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(219, 124, 124, 0.8);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+  
+  & .btclass{
+    background: #FEF5FA;
+    border: none;
+    color: rgba(244, 150, 209, 1);
+  }
+
+  & .btpromo{
+    color: #FEF5FA;
+    border: none;
+    background: rgba(244, 150, 209, 1);
+  }
+  
+  & .textpromo{
+    color: #FEF5FA;
+  }
+
+  & .textcard{
+    color: #0a0207;
+  }
+
+  & .clbadge{
+    position: relative;
+    top:25px;
+    left:170px;
+    width: 110px;
+    padding:7px;
+    font-size: 10px;
+    background-color: #675ac5 !important;
+  }
+
+  & .img{
+    width:50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+}
+/*end offers section css*/
+
+/*staff section css*/
+#section-staff {
+  
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+  
+  & .btclass{
+    width: 150px;
+    font-family: 'Poppins';
+  }
+
+  @media screen and (max-width: 500px) {
+    .barra{
+        display: none;
+    }
+  }
+
+  & h3 {
+    font-family: 'Poppins';
+    font-weight: 700 !important;
+    font-style: SemiBold;
+  }
+
+  & h6{
+    font-family: 'Poppins';
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: 400 !important;
+    color: rgb(125, 119, 119);
+  }
+
+  & .clcard{
+    border-radius:20px;
+    box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  & .clcard:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(219, 124, 124, 0.8);
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+
+  & .img{
+    width:90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+
+}
+/*end staff section css*/
+
+/*testemonial section css*/
+#section-testemonial {
+  
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+  
+  & .btclass{
+    width: 150px;
+    font-family: 'Poppins';
+  }
+
+  & p {
+   font-family: 'Poppins';
+  }
+
+  & .imgavatar:hover {
+    border:2px solid gray; 
+  }
+
+  & .pauthor {
+    font-family: 'Poppins';
+    font-weight: 500 !important;
+    font-size: 20px !important;
+    text-align: right;
+  }
+
+  & .clcontainer {
+     background: linear-gradient(90.26deg, #DCADF2 0.2%, #DF72AF 99.76%);
+     border-radius: 15px 15px 0px 0px;
+  }
+
+  @media screen and (max-width: 500px) {
+   .barra{
+        display: none;
+    }
+    h4 {
+      font-family: 'Poppins';
+      font-weight: 400;
+      font-style: SemiBold;  
+      font-size:22px;
+    }
+  }
+
+}
+/*end testemonial section css*/
+/*about section css*/
+#section-contact{
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+  
+  & .btclass{
+    width: 150px;
+    font-family: 'Poppins';
+  }
+
+  & .imgavatar:hover {
+    border:2px solid gray; 
+  }
+
+  & .pauthor {
+    font-family: 'Poppins';
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    text-align: right;
+  }
+
+  & .ptitletext {
+    font-family: 'Poppins';
+    font-weight: 700 !important;
+    font-size: 36px !important;
+    text-align: center;
+    color: #1E255E;
+
+  }
+
+  @media screen and (max-width: 500px) {
+    .barra{
+        display: none;
+    }
+    .ptitletext {
+        font-family: 'Poppins';
+        font-weight: 700 !important;
+        font-size: 22px !important;
+        text-align: center;
+    }
+  }
+
+   
+} 
+
+/* footer */
+#footer-id {
+   
+   color:white;
+   font-size: 12px; 
+   
+  & h1 {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+  
+  & h4 {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+  
+  & p {
+   font-family: 'Poppins';
+  }
+
+  & .imgavatar:hover {
+    border:2px solid gray; 
+  }
+
+  & .pauthor {
+    font-family: 'Poppins';
+    font-weight: 500 !important;
+    font-size: 20px !important;
+    text-align: right;
+  }
+  
+  .clmobile{
+    display:none;
+  }
+
+  @media screen and (max-width: 500px) {
+
+    .exibe{
+        display: none;
+    }
+
+    .midia{
+       width: 15%;    
+    }
+
+    .clspan{
+       position:relative;top:38px;
+    }
+    
+    .divfooter{
+       position:relative;top:-70px;left:80px;
+    }
+
+    .clmobile{
+      display:inline-block;
+    }
+
+    .plogo{
+       font-size:9px;
+       text-align: left !important;
+    }
+
+  }
+
+  & .clfooter {
+     background: linear-gradient(90deg, #200D35 14.33%, #E95E86 214.54%);
+     border-radius: 15px 15px 0px 0px;
+  }
+  
+  & .plogo{
+    text-align:center;
+  }
+
+  & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  & .midia:hover{
+    cursor:pointer;
+    border: 2px solid white;
+  }
+ 
+}
+/* end footer */
+

@@ -1,0 +1,48 @@
+:root {
+  --swiper-pagination-color: var(--swiper-theme-color);
+  --swiper-pagination-left: auto;
+  --swiper-pagination-right: 8px;
+  --swiper-pagination-bottom: 8px;
+  --swiper-pagination-top: auto;
+  --swiper-pagination-fraction-color: inherit;
+  --swiper-pagination-progressbar-bg-color: rgba(0,0,0,0.25);
+  --swiper-pagination-progressbar-size: 4px;
+  --swiper-pagination-bullet-size: 8px;
+  --swiper-pagination-bullet-width: 8px;
+  --swiper-pagination-bullet-height: 8px;
+  --swiper-pagination-bullet-border-radius: 50%;
+  --swiper-pagination-bullet-inactive-color: #000;
+  --swiper-pagination-bullet-inactive-opacity: 0.2;
+  --swiper-pagination-bullet-opacity: 1;
+  --swiper-pagination-bullet-horizontal-gap: 4px;
+  --swiper-pagination-bullet-vertical-gap: 6px;
+}
+
+.divmain {
+  max-width: 1500px !important;  
+  width: 1500px !important;  
+  padding-left: 200px;
+  padding-right: 200px;
+} 
+
+.swiper-slide {
+   width: 1200px !important;  
+   max-width: 1200px !important;  
+   text-align: center !important;  
+   font-size: 18px;
+   background: #444;
+}
+
+.swiper-button-prev {
+  background-color: #007aff;
+  border-radius: 100%;
+  padding: 10px;
+  /* Adjust position, e.g., move it outside the swiper container */
+  left: -90px; 
+}
+
+ @media screen and (max-width: 500px) {
+   .swiper-slide {
+      max-width:340px !important;
+   }
+ }
