@@ -16,6 +16,7 @@ export const ButtonComp = (props) =>{
      icon:{ type: String, default: '' },
      customClass: { type: String, default: '' }
   */
+  const { click } = props //state var controlada pelo parent
   const [label,setLabel] = useState(props.label ?? null)
   const [type,setType] = useState(props.type ?? null)
   const [color,setColor] = useState(props.color ?? 'primary')
@@ -24,12 +25,18 @@ export const ButtonComp = (props) =>{
   const [icon,setIcon] = useState(props.icon)
   const [classe,setClasse] = useState(props.classe ?? null)
 
+  const handleClick = (event) =>{
+    console.log('clcikk do child')
+    click()
+  }
+
   useEffect(() => {
      console.log('props.icon:'+props.icon)
      setLabel(props.label)
      setColor(props.color)
      setClasse(props.classe)
      setDisabled(props.disabled)
+     setIcon(props.icon)
   },[props]);
 
   return(
@@ -38,6 +45,7 @@ export const ButtonComp = (props) =>{
         color={color}
         disabled={disabled}
         className={classe}
+        onClick={(e)=>handleClick(e)}
         >
         {label}&nbsp;
         {

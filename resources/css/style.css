@@ -186,12 +186,25 @@
         background-color: rgb(46, 36, 36);
     }
 }
+
+#section-price h4, h1 {
+      font-family: 'Poppins';
+      font-weight: 700;
+      font-style: SemiBold;
+}
+
+#section-price h5 {
+      font-family: 'Poppins';
+      font-weight: 700;
+      font-style: SemiBold;
+}
+
 /* card */
 
 /* section price */
 
 /*about section css*/
-#section-about {
+#section-about{
 
   & h4 {
         font-family: 'Poppins';
@@ -231,6 +244,7 @@
     top: -45px;
     left: 55px;
     font-size:13px;
+  }
 }
 /*end about section css*/
 /*offers section css*/
@@ -345,4 +359,135 @@
   /* card */
 
 }
+
+
+.section-services{
+
+  h1{
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-style: SemiBold;
+  }
+
+  h4{
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: SemiBold;
+  }
+
+  .btclass{
+     width: 180px !important;
+     font-family: 'Poppins';
+  }
+
+  .clcard-service{
+     border-radius:20px !important;
+     box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3) !important;
+   }
+
+  .clcard-service:hover{
+    cursor:pointer;
+    border-radius:20px;
+    box-shadow: 5px 5px 17px rgba(219, 124, 124, 0.8) !important;
+    transition: transform 0.1s ease-out; /* Adds a smooth transition */
+    --x-translate: 0px;
+    --y-translate: -10px;
+    transform: translate(var(--x-translate), var(--y-translate));
+  }
+
+  h2,h3 {
+    font-family: 'Poppins';
+    font-weight: 700 !important;
+    font-style: SemiBold;
+  }
+
+  h6{
+    font-family: 'Poppins';
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgb(125, 119, 119);
+  }
+
+  .img{
+    width:50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+}
+
+/*modal*/
+.cmodal_header{
+   background-color: rgba(244, 150, 209, 1);
+   color:white
+}
+
+.modalmax{
+   max-height:370;
+}
+
+.cmodal_button_save{
+   background-color: rgba(244, 150, 209, 1);
+   color:white;
+   border: gray;
+}
+
+.cmodal_button_save:hover{
+   background-color: rgba(244, 150, 209, 1);
+   border: 1px solid rgb(82, 76, 76);
+}
+
+.inputwidth{
+  width:80px;
+  background-color: rgb(160, 50, 120);
+  color:white;
+}
+
+.input-text[disabled]{
+  background-color: rgb(222, 168, 202);
+}
+
+.modalbadge{
+  background-color:rgb(160, 50, 120) !important;
+  border-radius: 0px 4px 4px 0px!important;
+}
+
+.datas{
+  background-color:rgb(222, 168, 202);
+  border:1px solid gray;
+  color:rgb(58, 50, 50);
+  border-radius: 0px 0px 0px 0px;
+}
+.horas{
+  background-color:rgb(160, 50, 120);
+  border:1px solid gray;
+  color:white;
+  border-radius: 0px 0px 0px 0px;
+}
+
+
+.inputwidthModal{
+  background-color: rgb(222, 168, 202);
+  border-radius:0px 0px 5px 5px;
+  width: 100%;
+  /* display: inline-block; */
+}
+
+.nowrap{
+  white-space: nowrap;
+}
+
+.input-text{
+  background-color: rgb(222, 168, 202);
+}
+
+
+ @media screen and (max-width: 500px) {
+   .modal-dialog {
+      max-width:340px !important;
+      font-size:12px;
+   }
+ }
+
+
 /*end offers section css*/

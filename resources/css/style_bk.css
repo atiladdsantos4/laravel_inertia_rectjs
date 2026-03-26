@@ -3,11 +3,11 @@
 } */
 
 #modal-combo .modal-dialog{
-  z-index:1000;  
+  z-index:1000;
 }
 
 #modal-qrcode .modal-dialog{
-  z-index:1001;  
+  z-index:1001;
 }
 
 /* testemonial background */
@@ -50,12 +50,12 @@
 }
 
 .cmodal_button_save:hover{
-   background-color: rgba(244, 150, 209, 1); 
+   background-color: rgba(244, 150, 209, 1);
    border: 1px solid rgb(82, 76, 76);
 }
 
 .inputwidth{
-  width:80px; 
+  width:80px;
   background-color: rgb(160, 50, 120);
   color:white;
 }
@@ -73,30 +73,31 @@
   background-color:rgb(222, 168, 202);
   border:1px solid gray;
   color:rgb(58, 50, 50);
-  border-radius: 0px 0px 0px 0px;  
+  border-radius: 0px 0px 0px 0px;
 }
 .horas{
   background-color:rgb(160, 50, 120);
   border:1px solid gray;
   color:white;
-  border-radius: 0px 0px 0px 0px;  
+  border-radius: 0px 0px 0px 0px;
 }
 
 
 .inputwidthModal{
   background-color: rgb(222, 168, 202);
   border-radius:0px 0px 5px 5px;
-  width: 100%; 
+  width: 100%;
   /* display: inline-block; */
 }
 
 .nowrap{
-  white-space: nowrap;  
+  white-space: nowrap;
 }
 
 .input-text{
   background-color: rgb(222, 168, 202);
 }
+
 
  @media screen and (max-width: 500px) {
    .modal-dialog {
@@ -106,7 +107,7 @@
  }
 
 /*about section css*/
-#section-about{ 
+#section-about{
   & h4 {
         font-family: 'Poppins';
         font-weight: 700;
@@ -151,7 +152,7 @@
      display: flex;
      justify-content: center;
      align-items: center;
-  } 
+  }
   /* card */
   & .clcard{
     border-radius:20px;
@@ -198,7 +199,7 @@
   & .btclass:hover{
     cursor:pointer;
     opacity: 0.5;
-    
+
   }
 
   & .btpromo{
@@ -206,11 +207,11 @@
     border: none;
     background: rgba(244, 150, 209, 1);
   }
-  
+
   & .btpromo:hover{
     cursor:pointer;
     opacity: 0.6;
-    
+
   }
 
   & .textpromo{
@@ -245,6 +246,18 @@
 /*end offers section css*/
 
 /*services section css*/
+#section-services h1{
+  font-family: 'Poppins';
+  font-weight: 600;
+  font-style: SemiBold;
+}
+
+#section-services h4{
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-style: SemiBold;
+}
+
 #section-services{
   & h1 {
     font-family: 'Poppins';
@@ -256,7 +269,7 @@
     font-weight: 400;
     font-style: SemiBold;
   }
-  
+
   & .btclass{
     width: 180px;
     font-family: 'Poppins';
@@ -291,7 +304,7 @@
     border-radius:20px;
     box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.3);
   }
-  
+
   & .clcard:hover{
     cursor:pointer;
     border-radius:20px;
@@ -301,7 +314,7 @@
     --y-translate: -10px;
     transform: translate(var(--x-translate), var(--y-translate));
   }
-  
+
   & .btclass{
     background: #FEF5FA;
     border: none;
@@ -313,7 +326,7 @@
     border: none;
     background: rgba(244, 150, 209, 1);
   }
-  
+
   & .textpromo{
     color: #FEF5FA;
   }
@@ -343,7 +356,7 @@
 
 /*staff section css*/
 #section-staff {
-  
+
   & h1 {
     font-family: 'Poppins';
     font-weight: 600;
@@ -354,7 +367,7 @@
     font-weight: 400;
     font-style: SemiBold;
   }
-  
+
   & .btclass{
     width: 150px;
     font-family: 'Poppins';
@@ -400,14 +413,14 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
+
 
 }
 /*end staff section css*/
 
 /*testemonial section css*/
 #section-testemonial {
-  
+
   & h1 {
     font-family: 'Poppins';
     font-weight: 600;
@@ -419,7 +432,7 @@
     font-weight: 400;
     font-style: SemiBold;
   }
-  
+
   & .btclass{
     width: 150px;
     font-family: 'Poppins';
@@ -430,7 +443,7 @@
   }
 
   & .imgavatar:hover {
-    border:2px solid gray; 
+    border:2px solid gray;
   }
 
   & .pauthor {
@@ -452,7 +465,7 @@
     h4 {
       font-family: 'Poppins';
       font-weight: 400;
-      font-style: SemiBold;  
+      font-style: SemiBold;
       font-size:22px;
     }
   }
@@ -472,14 +485,14 @@
     font-weight: 400;
     font-style: SemiBold;
   }
-  
+
   & .btclass{
     width: 150px;
     font-family: 'Poppins';
   }
 
   & .imgavatar:hover {
-    border:2px solid gray; 
+    border:2px solid gray;
   }
 
   & .pauthor {
@@ -510,33 +523,33 @@
     }
   }
 
-   
-} 
+
+}
 
 /* footer */
 #footer-id {
-   
+
    color:white;
-   font-size: 12px; 
-   
+   font-size: 12px;
+
   & h1 {
     font-family: 'Poppins';
     font-weight: 600;
     font-style: SemiBold;
   }
-  
+
   & h4 {
     font-family: 'Poppins';
     font-weight: 400;
     font-style: SemiBold;
   }
-  
+
   & p {
    font-family: 'Poppins';
   }
 
   & .imgavatar:hover {
-    border:2px solid gray; 
+    border:2px solid gray;
   }
 
   & .pauthor {
@@ -545,7 +558,7 @@
     font-size: 20px !important;
     text-align: right;
   }
-  
+
   .clmobile{
     display:none;
   }
@@ -557,13 +570,13 @@
     }
 
     .midia{
-       width: 15%;    
+       width: 15%;
     }
 
     .clspan{
        position:relative;top:38px;
     }
-    
+
     .divfooter{
        position:relative;top:-70px;left:80px;
     }
@@ -583,7 +596,7 @@
      background: linear-gradient(90deg, #200D35 14.33%, #E95E86 214.54%);
      border-radius: 15px 15px 0px 0px;
   }
-  
+
   & .plogo{
     text-align:center;
   }
@@ -598,7 +611,7 @@
     cursor:pointer;
     border: 2px solid white;
   }
- 
+
 }
 /* end footer */
 

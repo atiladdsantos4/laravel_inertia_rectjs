@@ -16,6 +16,7 @@ export const ButtonPillsComp = (props) =>{
      icon:{ type: String, default: '' },
      customClass: { type: String, default: '' }
   */
+  const {click} = props
   const [label,setLabel] = useState(props.label ?? null)
   const [type,setType] = useState(props.type ?? null)
   const [color,setColor] = useState(props.color ?? 'primary')
@@ -32,12 +33,17 @@ export const ButtonPillsComp = (props) =>{
      setDisabled(props.disabled)
   },[props]);
 
+  const handleClick = () =>{
+     click()
+  }
+
   return(
         <CButton
         type={type}
         color={color}
         disabled={disabled}
         className={classe}
+        onClick={handleClick}
         >
         {label}&nbsp;
         {
