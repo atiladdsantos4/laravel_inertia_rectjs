@@ -11,10 +11,11 @@ export const BadgeComp = (props) => {
 
    const [color,setColor] = useState(props.color ?? 'primary')
    const [label,setLabel] = useState(props.color ?? 'Badge')
-   const [customclass,setCustomclass] = useState(props.color ?? 'clbadge')
+   const [customclass,setCustomclass] = useState(props.classe)
 
    useEffect(()=>{
       setLabel(props.label)
+      setCustomclass(props.classe)
    },[props])
 
  return(

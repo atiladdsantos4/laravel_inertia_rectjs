@@ -17,6 +17,7 @@ export const ButtonPillsComp = (props) =>{
      customClass: { type: String, default: '' }
   */
   const {click} = props
+  const [id,setId] = useState(null)
   const [label,setLabel] = useState(props.label ?? null)
   const [type,setType] = useState(props.type ?? null)
   const [color,setColor] = useState(props.color ?? 'primary')
@@ -27,28 +28,31 @@ export const ButtonPillsComp = (props) =>{
 
   useEffect(() => {
      console.log('props.icon:'+props.icon)
+     let id = props.id && null
+     setId(id)
      setLabel(props.label)
      setColor(props.color)
      setClasse(props.classe)
      setDisabled(props.disabled)
   },[props]);
 
-  const handleClick = () =>{
-     click()
+  const handleClick = (e) =>{
+     click(e)
   }
 
   return(
         <CButton
-        type={type}
-        color={color}
-        disabled={disabled}
-        className={classe}
-        onClick={handleClick}
-        >
-        {label}&nbsp;
-        {
-           props.icon !== undefined ? <FontAwesomeIcon icon={icon} /> : null
-        }
+            id={id}
+            type={type}
+            color={color}
+            disabled={disabled}
+            className={classe}
+            onClick={(e)=>handleClick(e)}
+            >
+            {label}&nbsp;
+            {
+            props.icon !== undefined ? <FontAwesomeIcon icon={icon} /> : null
+            }
         </CButton>
   )
 

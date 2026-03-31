@@ -3,16 +3,21 @@ import { NavbarComp } from '../layouts/NavbarComp';
 import { SidebarComp } from '../layouts/SidebarComp';
 import { SpinnerComp } from '../components/SpinnerComp';
 import SwiperComp from '../components/SwiperComp';
-import SwiperComp1 from '../components/SwiperComp1';
+// import SwiperComp1 from '../components/SwiperComp1';
 import { SectionAbout } from '../sections/SectionAbout';
 import { SectionOffers } from '../sections/SectionOffers';
 import { SectionServices } from '../sections/SectionServices';
+import { SectionStaff } from '../sections/SectionStaff';
+import { SectionTestimonial } from '../sections/SectionTestimonial';
+import { SectionContact } from '../sections/SectionContact';
+import { Footer } from '../layouts/Footer';
+import { FloatButton } from '../components/FloatButton';
 import { Carrosel } from '../components/Carrosel';
 import { ButtonComp } from '../components/ButtonComp';
 import { ButtonOutlineComp } from '../components/ButtonOutlineComp';
 import { ButtonPillsComp } from '../components/ButtonPillsComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeartbeat } from '@fortawesome/free-solid-svg-icons'
+import { faHeartbeat,faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { CardComp } from '../components/CardComp';
 import { Modal } from '../components/Modal';
 import Aos from 'aos';
@@ -23,7 +28,7 @@ const Home = ({ appName }) => {
   const theme_dark = import.meta.env.VITE_APP_THEME_DARK
   const theme_light = import.meta.env.VITE_APP_THEME_LIGHT
   const [loadpage,setloadPage] = useState(false);
-  const [open,setOpen] = useState(true);
+  const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [dadosModal,setdadosModal] = useState({
      nome: "atila",
@@ -35,11 +40,12 @@ const Home = ({ appName }) => {
   let arrayNavbar =[{
         titulo:'My Salon',
         textoButon:'Agendamento',
+        icon: faCalendar,
         itens:[
-            {name:'Home',href:'#'},
-            {name:'Serviço',href:'#'},
-            {name:'Contact',href:'#'},
-            {name:'Home',href:'#'},
+            {name:'Home',href:'#section-about'},
+            {name:'Serviço',href:'#section-services'},
+            {name:'Portifolio',href:'#section-staff'},
+            {name:'Contato',href:'#section-contact'},
         ]
 }]
 
@@ -62,12 +68,13 @@ const Home = ({ appName }) => {
      setOpen(false)
   }
 
-  const setModalTexto= (nome, valor, texto, detalhe) =>{
+  const setModalTexto= (nome, valor, texto, detalhe, tela) =>{
      let dados = {
         nome:nome,
         price:valor,
         texto:texto,
-        detalhe:detalhe
+        detalhe:detalhe,
+        screen:tela
      }
      setdadosModal(dados)
   }
@@ -79,12 +86,14 @@ const Home = ({ appName }) => {
           close={closeModal}
           dados={dadosModal}
         />
-        <NavbarComp dados={listaNavbar}/>
-        <SwiperComp/>
+
         {/* <ButtonComp label="primary" color="primary" icon={faHeartbeat}/>
         <ButtonOutlineComp label="primary" color="success" icon={faHeartbeat}/>
         <ButtonPillsComp label="primary" color="success" classe="rounded-pill" icon={faHeartbeat}/> */}
+
         <div className="container">
+            <NavbarComp dados={listaNavbar}/>
+            <SwiperComp/>
             <SectionAbout title="Kings Hair" subtitle = "Sobre Nós"/>
             <SectionOffers
               title="King Hair"
@@ -96,17 +105,36 @@ const Home = ({ appName }) => {
             <SectionServices
               title="King Hair"
               subtitle="Services"
-              classe="mt-5  section-services"/>
-            <div className="aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
-                <div className="p-10" style={{maxWidth: '1200px !important'}}>
-                    <h1 className="text-2xl font-bold">Welcome to {appName}</h1>
-                    <p className="mt-4">This is your main page built with Laravel, Inertia, and React.</p>
-                    <a href="/dashboard" className="text-blue-500 hover:underline mt-2 inline-block">Go to Dashboard</a>
-                </div>
-            </div>
-            <div className="aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
-               <span>teste</span>
-            </div>
+              classe="mt-5  section-services"
+              openModal={openModal}
+              setModal={setModalTexto}
+            />
+            <SectionStaff
+              title="Huis Salon"
+              subtitle="Meet With Our Professional Staff"
+              classe="mt-5 section-staff"
+              openModal={openModal}
+              setModal={setModalTexto}
+            />
+            <SectionTestimonial
+              title="Testemonial"
+              subtitle="Take a look about our customers feedback"
+              classe="clcontainer section-testemonial"
+              paragraph="It is a long established fact that a reader will be tracked distracted by the readable content of a page is when looking at its layout. The point of using Lorem of distribution it look like readable English"
+              author="Samantha Wilian"
+            />
+            <SectionContact
+               title="Contact"
+               subtitle="Contact US"
+               titletext="Subscribe to the Haus Newsletter"
+               paragraph="Join our newsletter and get the insider scoop on events, products, and special offers"
+               author="Samantha Wilian"
+               classe="section-contact clcontact"
+            />
+            <Footer
+              classe="footer-id clfooter"
+            />
+            <FloatButton/>
         </div>
       </Suspense>
 

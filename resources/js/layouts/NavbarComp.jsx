@@ -9,6 +9,9 @@ import {
   CNavItem,
   CNavLink,
 } from '@coreui/react'
+import { ButtonLinkComp } from '../components/ButtonLinkComp'
+
+
 
 export const NavbarComp = (props) => {
   const { dados }  = props
@@ -17,8 +20,8 @@ export const NavbarComp = (props) => {
 
   useEffect(() => {
     if( dados.lenght !== 0 ) {
-        setLoad(false) 
-        console.log(dados) 
+        setLoad(false)
+        console.log(dados)
     }
   },[props])
 
@@ -42,10 +45,14 @@ export const NavbarComp = (props) => {
                        <CNavLink href={item.href} active>
                        {item.name}
                        </CNavLink>
-                    </CNavItem>      
-                  )  
+                    </CNavItem>
+                  )
                 })
-               } 
+               }
+            <CNavItem>
+               <ButtonLinkComp label="Agendamento" href="#section-services" color="dark" type="button" icon={dados[0].icon}/>
+            </CNavItem>
+
               {/* <CNavItem>
                 <CNavLink href="#" active>
                   Home
