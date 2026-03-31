@@ -11,8 +11,8 @@ export const SectionOffers = (props) => {
    const [subtitle,setSubTitle] = useState(props.subtitle)
    const [classe,setClasse] = useState(props.classe)
 
-   const changeCard = (event,nome,valor,texto,detalhe) =>{
-      setModal(nome, valor, texto, detalhe)
+   const changeCard = (event,nome,valor,texto,detalhe,tela) =>{
+      setModal(nome, valor, texto, detalhe, tela)
    }
 
 
@@ -40,7 +40,7 @@ export const SectionOffers = (props) => {
                         subtitle="Includes the following services:"
                         buttonlabel="Book Basic"
                         openModal={openModal}
-                        setModal={ (e) => changeCard(e,'Hauis Basic','$30','Includes the following services','Book Basic')}
+                        setModal={ (e) => changeCard(e,'Hauis Basic','$30','Includes the following services','Book Basic','offers')}
                     />
                 </CCol>
                 <CCol md={3} xs={12} className="pb-4">
@@ -50,7 +50,7 @@ export const SectionOffers = (props) => {
                         subtitle="Includes all the services for the previous tier +"
                         buttonlabel="Book Insider"
                         openModal={openModal}
-                        setModal={ (e) => changeCard(e,'Hauis Insider','$40','Includes all the services for the previous tier +','Book Insider')}
+                        setModal={ (e) => changeCard(e,'Hauis Insider','$40','Includes all the services for the previous tier +','Book Insider','offers')}
                         />
                 </CCol>
                 <CCol md={3} xs={12} className="pb-4">
@@ -61,7 +61,7 @@ export const SectionOffers = (props) => {
                         buttonlabel="Book Influencer"
                         promocard={true}
                         openModal={openModal}
-                        setModal={ (e) => changeCard(e,'Hauis Influencer','$70','Includes all the services for the 2 previous tiers +','Book Influencer')}
+                        setModal={ (e) => changeCard(e,'Hauis Influencer','$70','Includes all the services for the 2 previous tiers +','Book Influencer','offers')}
                         />
                 </CCol>
                 <CCol md={3} xs={12} className="pb-4">
@@ -71,7 +71,7 @@ export const SectionOffers = (props) => {
                         subtitle="Includes all the services for the 3 previous tiers +"
                         buttonlabel="Book VIP"
                         openModal={openModal}
-                        setModal={ (e) => changeCard(e,'Hauis VIP','$100','Includes all the services for the 3 previous tiers +','Book VIP')}
+                        setModal={ (e) => changeCard(e,'Hauis VIP','$100','Includes all the services for the 3 previous tiers +','Book VIP','offers')}
                         />
                 </CCol>
             </CRow>

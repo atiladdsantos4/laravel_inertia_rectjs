@@ -47,7 +47,7 @@ return(
     <div data-aos="fade-right">
         <CCard className={cardStyle}>
             {
-                (props.promocard === true ? <BadgeComp customclass="clbadge" label="MOST POPULAR"/> : null)
+                (props.promocard === true ? <BadgeComp classe="clbadge" label="MOST POPULAR"/> : null)
             }
         <CCardBody>
             <CCardTitle><h1 className={textcardStyle}>{price}</h1></CCardTitle>

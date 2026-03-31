@@ -60,22 +60,6 @@
   z-index: 1000;
 } */
 
- .swiper-button-next {
-   position: absolute;
-   cursor: pointer;
-   top: 50%;
-   transform: translateY(-50%);
-   z-index: 1000;
- }
-
- .swiper-button-prev {
-   position: absolute;
-   cursor: pointer;
-   top: 40%;
-   transform: translateY(-50%);
-   z-index: 1000;
- }
-
  @media screen and (max-width: 500px) {
    .swiper-slide {
       max-width:340px !important;
@@ -830,47 +814,6 @@
 
 }
 
-/* float button */
-.floating-button {
-    /* Position the button fixed relative to the viewport */
-    position: fixed;
-    /* Place it at the bottom of the screen */
-    bottom: 20px;
-    /* Place it on the right side of the screen */
-    right: 20px;
-
-    /* Styling for the button (adjust as needed) */
-    width: 60px;
-    height: 60px;
-    background-color: rgba(244, 150, 209, 1); /* Blue background color */
-    color: white;
-    border-radius: 50%; /* Makes it a circle */
-    text-align: center;
-    line-height: 60px; /* Centers the '+' vertically */
-    font-size: 30px;
-    text-decoration: none; /* Removes underline from the anchor tag */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
-    z-index: 1000; /* Ensures the button is above other content */
-}
-
-.floating-button:hover {
-    background-color: rgb(235, 90, 192); /* Darker blue on hover */
-}
-
-@media screen and (max-width: 500px) {
-   .floating-button {
-     /* Place it on the right side of the screen */
-     right: 80px;
-   }
-}
-
-.circle-container {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-}
-
-/* end flot button */
 
 /* end footer */
 
