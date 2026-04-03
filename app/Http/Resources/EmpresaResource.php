@@ -14,7 +14,7 @@ class EmpresaResource extends JsonResource
      * @return array<string =>$this->emp_id_emp, mixed>
      */
     public function toArray(Request $request): array
-    {   
+    {
         if( $request->has('listagem') ){
             $data =[
                 "emp_id_emp" =>$this->emp_id_emp,
@@ -28,11 +28,19 @@ class EmpresaResource extends JsonResource
                 "emp_logo" =>$this->emp_logo,
                 "emp_hash" =>$this->emp_hash != null ? $this->emp_hash : md5($this->emp_hash.$this->emp_id_emp),
                 "emp_created_at" =>Carbon::parse($this->emp_created_at)->format('d/m/Y H:i:s'),
-                "emp_updated_at" =>$this->emp_updated_at != null ? Carbon::parse($this->emp_updated_at)->format('d/m/Y H:i:s') : null, 
+                "emp_updated_at" =>$this->emp_updated_at != null ? Carbon::parse($this->emp_updated_at)->format('d/m/Y H:i:s') : null,
                 "emp_deleted_at" =>$this->emp_deleted_at != null ? Carbon::parse($this->emp_deleted_at)->format('d/m/Y H:i:s') : null,
                 "emp_acao" => null
             ];
-        } else {
+      }  else if($request->has('init_man')){
+          $data =  [
+            "emp_id_emp" =>$this->emp_id_emp,
+            "emp_nome" =>$this->emp_nome,
+            "emp_sections"=>$this->sections,
+            "emp_tipos"=>$this->tipos,
+            "emp_tags"=>$this->tags,
+          ];
+      } else {
            $data =[
                 "emp_id_emp" =>$this->emp_id_emp,
                 "emp_nome" =>$this->emp_nome,
@@ -45,7 +53,7 @@ class EmpresaResource extends JsonResource
                 "emp_logo" =>$this->emp_logo,
                 "emp_hash" =>$this->emp_hash,
                 "emp_created_at" =>Carbon::parse($this->emp_created_at)->format('d/m/Y H:i:s'),
-                "emp_updated_at" =>$this->emp_updated_at != null ? Carbon::parse($this->emp_updated_at)->format('d/m/Y H:i:s') : null, 
+                "emp_updated_at" =>$this->emp_updated_at != null ? Carbon::parse($this->emp_updated_at)->format('d/m/Y H:i:s') : null,
                 "emp_deleted_at" =>$this->emp_deleted_at != null ? Carbon::parse($this->emp_deleted_at)->format('d/m/Y H:i:s') : null,
             ];
         }

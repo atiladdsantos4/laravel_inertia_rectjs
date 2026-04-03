@@ -11,9 +11,9 @@ Route::get('/', function () {
 });
 
 /*routes forn end*/
-Route::get('/main', function () {
+Route::get('/admin', function () {
    //return view('welcome');
-   return Inertia::render('Main');
+   return Inertia::render('Admin');
 });
 
 Route::get('/salao', function () {

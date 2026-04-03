@@ -19,16 +19,21 @@ class SectionItemResource extends JsonResource
            'sei_id_sei' =>$this->sei_id_sei,
            'sei_nome' =>$this->sei_nome,
            'sei_valor' =>$this->sei_valor,
+           'sei_json' =>$this->sei_json,
+           'sei_placeholder' =>$this->sei_placeholder,
            'sei_display' =>$this->sei_display,
            'sei_link' =>$this->sei_link,
-           'sei_tipo' =>$this->sei_tipo,
+           'sei_id_tip' =>$this->sei_id_tip,
+           'sei_tipo' =>$this->tipo->tip_nome,
+           'sei_id_tag' =>$this->sei_id_tag,
+           'sei_tag' =>$this->tag->tag_nome,
            'sei_id_sec' =>$this->sei_id_sec,
            'sei_id_emp' =>$this->sei_id_emp,
            'sei_created_at'=>Carbon::parse($this->sei_created_at)->format('d/m/Y H:i:s'),
            'sei_updated_at'=>$this->sei_updated_at != null ? Carbon::parse($this->sei_updated_at)->format('d/m/Y H:i:s') : null,
            'sei_deleted_at'=>$this->sei_deleted_at,
         ];
-        
+
         return $data;
         //return parent::toArray($request);
     }

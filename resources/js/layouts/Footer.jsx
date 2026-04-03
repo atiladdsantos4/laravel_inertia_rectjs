@@ -1,4 +1,4 @@
-   import { React,useEffect, useState } from 'react';
+   import { React,useEffect, useState, memo } from 'react';
    import { CContainer, CRow, CCol, CImage} from '@coreui/react';
    import "@fontsource/poppins";
    import Logo from '../images/Logo.png'
@@ -9,7 +9,7 @@
    import LinkedIn from '../images/LinkedIn.png'
 
 
-export const Footer = (props) => {
+export const Footer = memo((props) => {
 
   const id = "footer-id"
   const [classe,setClasse] = useState(null)
@@ -88,4 +88,4 @@ export const Footer = (props) => {
         </CContainer>
     </div>
   )
-}
+})
