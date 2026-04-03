@@ -29,15 +29,16 @@ export default defineConfig({
     ],
     server: {
         cors: true, // This is equivalent to origin: '*'
+        host: '0.0.0.0', //allow all network interfaces
         //https: true,
         //host: 'untrumpeted-charmingly-freddy.ngrok-free.dev',
         allowedHosts: ['untrumpeted-charmingly-freddy.ngrok-free.dev','jemosistemas-domain.com'],
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
-        // hmr: {
-        //     host: 'untrumpeted-charmingly-freddy.ngrok-free.dev',
-        // },
+        hmr: {
+             host: ['jemosistemas-domain.com'], //allow listem by this domains
+        },
     },
     resolve: {
         alias: {
