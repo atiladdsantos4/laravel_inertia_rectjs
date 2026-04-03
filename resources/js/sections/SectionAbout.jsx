@@ -38,12 +38,18 @@ export const SectionAbout = (props) => {
                         </div>
                     </div>
                 </CCol>
-                <CCol md="6" xs="12">
-                    <div data-aos="fade-left">
+                <CCol md="6" xs="12" className='div_about'>
+                    <div className="aos-animate" data-aos="fade-up" data-aos-delay="200" className="image_about01"></div>
+                    <div className="aos-animate" data-aos="fade-down" data-aos-delay="200" className="image_about02"></div>
+                    <div data-aos="fade-up" data-aos-delay="200" className="image_about03"></div>
+                    {/* <div data-aos="fade-left">
                        <CImage style={{top:'-20px'}} fluid src={imgAbout} />
-                    </div>
+                    </div> */}
                 </CCol>
             </CRow>
+            {/* <div className="aos-animate" data-aos="fade-up" data-aos-delay="200" className="image_about01"></div>
+            <div className="aos-animate" data-aos="fade-down" data-aos-delay="200" className="image_about02"></div>
+            <div data-aos="fade-right" className="image_about03"></div> */}
             </CContainer>
         </section>
     </div>

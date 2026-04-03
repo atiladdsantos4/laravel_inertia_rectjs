@@ -3,6 +3,6 @@ import { CSpinner } from '@coreui/react'
 
 export const SpinnerComp = (props) => {
   return (
-     <CSpinner color="primary" />
-  )    
+     <CSpinner size = {props.size} color = {props.color} />
+  )
 }
