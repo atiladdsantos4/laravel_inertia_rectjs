@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        'inertia_public' => [
+            'driver' => 'local',
+            'root' => resource_path('js/images'),
+            //'url' => env('APP_URL').'/images',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

@@ -32,7 +32,8 @@
 
 .swiper {
   width: 100%;
-  height: 100%;
+  height: 700px;
+  border-radius: 8px 8px 8px 8px;
 }
 
 .swiper-slide {
@@ -80,6 +81,11 @@
    .swiper-slide {
       max-width:340px !important;
    }
+   .swiper {
+     width: 100%;
+     height: 30%;
+  }
+
  }
 
  .clbadge{
@@ -887,7 +893,7 @@
 	height:340px;
     z-index: 10000;
 	border-radius:100px 100px 100px 100px;
-	background-image: url('../js/images/Imagem01.jpg');
+	/* background-image: url('../js/images/Imagem01.jpg'); */
 }
 
 .image_about02 {
@@ -901,7 +907,7 @@
 	height:340px;
     z-index: 10000;
 	border-radius:100px 100px 100px 100px;
-	background-image: url('../js/images/Imagem02.jpg');
+	/* background-image: url('../js/images/Imagem02.jpg'); */
 }
 
 .image_about03 {
@@ -916,10 +922,17 @@
 	border-radius:100px 100px 100px 100px;
     z-index: 10000;
     /* border:2px solid white; */
-	background-image: url('../js/images/Imagem03.jpg');
+	/* background-image: url('../js/images/Imagem03.jpg'); */
 }
 
 @media screen and (max-width: 500px) {
+    .div_carrosel{
+       text-align: center;
+       margin-left: 20px;
+       width:360px;
+       left:20px;
+    }
+
    .floating-button {
      /* Place it on the right side of the screen */
      right: 80px;
@@ -1010,5 +1023,26 @@
    background:linear-gradient(to right, #200D35, #E95E86)
 }
 
+/*trash image upload css circle*/
+.circleimg {
+  width: 30px;         /* Height and width must be equal */
+  height: 30px;
+  background-color: white; /* Visibility */
+  opacity: 1.0;
+  border-radius: 50%;
+  text-align: center;
+  border: 1.5px solid red;    /* The key property to make it round */
+}
+/*end trash image upload css circle*/
+/*
+const DynamicBackground = ({ imageUrl }) => {
+  const divStyle = {
+    backgroundImage: `url(${imageUrl})`,
+    backgroundSize: 'cover',
+    height: '400px'
+  };
+
+  return <div style={divStyle}>Content here</div>;
+};*/
 
 

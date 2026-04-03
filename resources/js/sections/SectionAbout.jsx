@@ -1,5 +1,9 @@
 import { React,useEffect, useState, Suspense } from 'react';
 import imgAbout from '../images/about.png';
+//import imgAbout1 from '../images/about/Imagem01.jpg';
+import imgAbout1 from '../images/about/Imagem01.jpg'
+import imgAbout2 from '../images/Imagem02.jpg';
+import imgAbout3 from '../images/Imagem03.jpg';
 import { RateComp } from '../components/RateComp';
 import {
   CContainer,
@@ -10,7 +14,7 @@ import {
 
 
 export const SectionAbout = (props) => {
-
+   //const userIcon = 'http://jemosistemas-domain.com:5173/resources/js/images/about/Imagem01.jpg'
    const id = "section-about"
    const [title, setTitle] = useState(props.title)
    const [subtitle,subTitle] = useState(props.subtitle)
@@ -39,9 +43,9 @@ export const SectionAbout = (props) => {
                     </div>
                 </CCol>
                 <CCol md="6" xs="12" className='div_about'>
-                    <div className="aos-animate" data-aos="fade-up" data-aos-delay="200" className="image_about01"></div>
-                    <div className="aos-animate" data-aos="fade-down" data-aos-delay="200" className="image_about02"></div>
-                    <div data-aos="fade-up" data-aos-delay="200" className="image_about03"></div>
+                    <div className="aos-animate" style={{backgroundImage:`url(${imgAbout1})`}} data-aos="fade-up" data-aos-delay="200" className="image_about01"></div>
+                    <div className="aos-animate" style={{backgroundImage:`url(${imgAbout2})`}} data-aos="fade-down" data-aos-delay="200" className="image_about02"></div>
+                    <div data-aos="fade-up" style={{backgroundImage:`url(${imgAbout3})`}} data-aos-delay="200" className="image_about03"></div>
                     {/* <div data-aos="fade-left">
                        <CImage style={{top:'-20px'}} fluid src={imgAbout} />
                     </div> */}

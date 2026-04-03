@@ -2,6 +2,7 @@ import { React,useEffect, useState, Suspense, useRef } from 'react';
 import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { SpinnerComp } from '../../components/SpinnerComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CButton,
@@ -57,9 +58,12 @@ const ManAbout = (props) =>{
   const sei_display = 1
   const empresa = props.dados_section.sec_id_emp
   const endpoint = props.end
+  const endpoint_img = import.meta.env.VITE_APP_ENDPOINT_IMG
   const sei_id_sec = props.dados_section.sec_id_sec
   const toaster = useRef(null)
   const style = {width:'130px'}
+  const stylebtsave = {width:'92px'}
+  const styleimg = {width:'20%',marginRight:'auto'}
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
   console.log(props)
@@ -69,6 +73,7 @@ const ManAbout = (props) =>{
      console.log(listacampos)
      handleSave(id,listacampos,nome)
   }
+
 
   const atualizaItem = (id, param, newValue) => {
     switch(param){
@@ -114,17 +119,17 @@ const ManAbout = (props) =>{
         break
 
       case 'imagem':
-         setLista(prevItems =>
+         setListacampos(prevItems =>
             prevItems.map(item =>
               item.id === id ? { ...item, valor: newValue } : item
             )
           )
-          let path_img = empresa+'/about/'+newValue
-          setLista(prevItems =>
-            prevItems.map(item =>
-              item.id === id ? { ...item, link: path_img } : item
-            )
-          )
+        //   let path_img = empresa+'/about/'+newValue
+        //   setLista(prevItems =>
+        //     prevItems.map(item =>
+        //       item.id === id ? { ...item, link: path_img } : item
+        //     )
+        //   )
          break
       case 'link':
          setLista(prevItems =>
@@ -147,12 +152,46 @@ const ManAbout = (props) =>{
     //  console.log(listacampos[index])
   }
 
+  const onImageChange = (event,id) => {
+    let obj = null
+    if (event.target.files && event.target.files[0]) {
+      let imagem = event.target.files[0]
+      atualizaItem(id,'imagem',event.target.files[0].name)
+      let index = getIndex(listacampos,id)
+      listacampos[index].imgfile.length = 0;
+      listacampos[index].imgfile.push(event.target.files[0])
+      console.log(obj)
+    }
+  }
+
+  const onRemoveAnexo = (event,id) => {
+     atualizaItem(id,'imagem',null)
+     let index = getIndex(listacampos,id)
+     listacampos[index].imgfile.length = 0
+  }
+
   const getIndex = (lista,id) => {
     for(let i=0; i < lista.length; i++){
         if( lista[i].id === id){
           return i
         }
     }
+  }
+
+  const validaTipo = (id) =>{
+    let index = getIndex(listacampos,id)
+    if( listacampos[index].tipo == null ){
+       return true
+    }
+    return false
+  }
+
+  const validaImagem = (id) =>{
+    let index = getIndex(listacampos,id)
+    if( listacampos[index].imgfile.length == 0 ){
+       return true
+    }
+    return false
   }
 
   const getTipoTag = (valor) =>{
@@ -183,6 +222,18 @@ const ManAbout = (props) =>{
      {
        nome:'textorate',
        label:"Texto Rate"
+     },
+     {
+       nome:'imgabout1',
+       label:"Imagem 01"
+     },
+     {
+       nome:'imgabout2',
+       label:"Imagem 02"
+     },
+     {
+       nome:'imgabout3',
+       label:"Imagem 03"
      }
   ]
 
@@ -199,8 +250,6 @@ const ManAbout = (props) =>{
       valor:'',
       tipo:null,
       tipo_id:'',
-      //muda: setValor,
-      //click: (e)=>handleClick('titulo','spinner',true)
     },
     {
       idfield:0,
@@ -215,8 +264,6 @@ const ManAbout = (props) =>{
       valor:'',
       tipo:null,
       tipo_id:'',
-      //muda: (e)=>setValor('subtitulo','valor',e.target.value),
-      //click: (e)=>handleClick('subtitulo','spinner',true)
     },
     {
       idfield:0,
@@ -231,8 +278,6 @@ const ManAbout = (props) =>{
       valor:'',
       tipo:null,
       tipo_id:'',
-      //muda: (e)=>setValor('subtitulo','valor',e.target.value),
-      //click: (e)=>handleClick('subtitulo','spinner',true)
     },
     {
       idfield:0,
@@ -247,8 +292,6 @@ const ManAbout = (props) =>{
       valor:'',
       tipo:null,
       tipo_id:'',
-      //muda: (e)=>setValor('subtitulo','valor',e.target.value),
-      //click: (e)=>handleClick('subtitulo','spinner',true)
     },
     {
       idfield:0,
@@ -263,11 +306,62 @@ const ManAbout = (props) =>{
       valor:'',
       tipo:null,
       tipo_id:'',
-      //muda: (e)=>setValor('subtitulo','valor',e.target.value),
-      //click: (e)=>handleClick('subtitulo','spinner',true)
+    },
+    {
+      idfield:0,
+      id:'imgabout1',
+      nome:'imgabout1',
+      titulo:"Imagem 01",
+      placeholder:"Informe Texto do Rate",
+      load:false,
+      estilo:style,
+      linhas:0,
+      type:'image',
+      valor:'',
+      tipo:null,
+      tipo_id:'',
+      imgfile:[],
+      imgsaved:false,
+      link:'about/',
+      visible:false
+    },
+    {
+      idfield:0,
+      id:'imgabout2',
+      nome:'imgabout2',
+      titulo:"Imagem 02",
+      placeholder:"Informe Texto do Rate",
+      load:false,
+      estilo:style,
+      linhas:0,
+      type:'image',
+      valor:'',
+      tipo:null,
+      tipo_id:'',
+      imgfile:[],
+      imgsaved:false,
+      link:'about/',
+      visible:false
+    },
+    {
+      idfield:0,
+      id:'imgabout3',
+      nome:'imgabout3',
+      titulo:"Imagem 03",
+      placeholder:"Informe Texto do Rate",
+      load:false,
+      estilo:style,
+      linhas:0,
+      type:'image',
+      valor:null,
+      tipo:null,
+      tipo_id:'',
+      imgfile:[],
+      imgsaved:false,
+      link:'about/',
+      visible:false
     }
-
-  ]
+]
 
   useEffect(()=>{
     setIcon(props.icon)
@@ -287,6 +381,7 @@ const ManAbout = (props) =>{
             let lista_inicial = []
             let label_campos = null
             let nlinhas = null
+            let link = null
             result.data.data.sections.map((item,index)=>{
                label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
                nlinhas = null
@@ -294,6 +389,12 @@ const ManAbout = (props) =>{
                   let string = JSON.parse(item.sei_json)
                   nlinhas = string.meta[0].linhas
                }
+
+               if( item.sei_tag == 'image' ){
+                  let string = JSON.parse(item.sei_json)
+                  link = string.meta[0].path + item.sei_valor
+               }
+
                objlista = {
                  idfield:item.sei_id_sei,
                  id:item.sei_nome,
@@ -307,6 +408,10 @@ const ManAbout = (props) =>{
                  valor:item.sei_valor,
                  tipo:item.sei_tipo,
                  tipo_id:item.sei_id_tip,
+               }
+               if( item.sei_tag == 'image' ){
+                  objlista.link = link
+                  objlista.imgsaved = true
                }
                lista_inicial.push(objlista)
                console.log(item)
@@ -413,6 +518,107 @@ const ManAbout = (props) =>{
     }
   }
 
+  const  handleSaveImg = (event,id,lista,valor) =>{
+
+    if( validaTipo(id) ){
+       addToast(CompToast('O Tipo de dados deve ser informado !!!', 'danger')) //--> usa toast
+       setTimeout(() => {
+            document.getElementById('idtoast').classList.remove('show')
+            document.getElementById('idtoast').remove()
+       }, 2000)
+       return
+    }
+
+    if( validaImagem(id) ){
+       addToast(CompToast('Nenhuma imagem foi informada!!!', 'danger')) //--> usa toast
+       setTimeout(() => {
+            document.getElementById('idtoast').classList.remove('show')
+            document.getElementById('idtoast').remove()
+       }, 2000)
+       return
+    }
+
+     let index = getIndex(lista,id)
+     let tag = getTipoTag(lista[index].type)
+     let json = null
+     if( lista[index].idfield == 0){
+        atualizaItem(id, 'spinner', true)
+        json = CriaJsonImageSimple(index)
+
+        const formData = new FormData()
+        formData.append('file', lista[index].imgfile[0])
+        formData.append('sei_display', sei_display)
+        formData.append('sei_nome', lista[index].nome)
+        formData.append('sei_valor', lista[index].valor)
+        formData.append('sei_placeholder', lista[index].placeholder)
+        formData.append('sei_json', json)
+        formData.append('sei_id_emp', empresa)
+        formData.append('sei_id_sec', sei_id_sec)
+        formData.append('sei_id_tip', lista[index].tipo_id)
+        formData.append('sei_id_tag', tag)
+        formData.append('sei_link', lista[index].link)
+        formData.append('has_image', true)
+
+        axios
+        .post(`${endpoint}/sectionitem`, formData, {
+            headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Bearer ' + token,//dentro do env//
+            },
+        })
+        .then((result) => {
+            setSaved(!saved)
+            atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
+            atualizaItem(id, 'spinner', false)
+            addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
+            setTimeout(() => {
+                document.getElementById('idtoast').classList.remove('show')
+                document.getElementById('idtoast').remove()
+            }, 2000)
+        })
+    } else {
+        if( lista[index].type == 'textarea' ){
+           json = CriaJsonTextArea(index)
+        } else {
+           json = null
+        }
+        atualizaItem(id, 'spinner', true)
+        const formData = new FormData()
+        //formData.append('file', lista[index].imgfile[0])
+        formData.append('sei_display', sei_display)
+        formData.append('sei_nome', lista[index].nome)
+        formData.append('sei_valor', lista[index].valor)
+        formData.append('sei_json', json)
+        formData.append('sei_placeholder', lista[index].placeholder)
+        formData.append('sei_id_emp', empresa)
+        formData.append('sei_id_sec', sei_id_sec)
+        formData.append('sei_id_tip', lista[index].tipo_id)
+        formData.append('sei_id_tag', tag)
+        //formData.append('sei_link', lista[index].link)
+        //formData.append('has_image', true)
+        formData.append('_method', 'put')
+        let ident = lista[index].idfield
+        axios
+         .post(`${endpoint}/sectionitem/${ident}`, formData, {
+            headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Bearer ' + token,//dentro do env//
+            },
+        })
+        .then((result) => {
+            setSaved(!saved)
+            atualizaItem(id, 'spinner', false)
+            addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
+            setTimeout(() => {
+                document.getElementById('idtoast').classList.remove('show')
+                document.getElementById('idtoast').remove()
+            }, 2000)
+        })
+    }
+  }
+
   const InputTexto = (props) =>{
     let texto_botao = props.idfield === 0 ? 'Salvar' : 'Atualizar'
     return(
@@ -427,7 +633,7 @@ const ManAbout = (props) =>{
                onChange={(e)=>setValor(props.id,'valor',e.target.value)}
             />
             <Dropdown id={props.id} tipo={props.tipo}/>
-            <CButton type="button" color="success" variant="outline" id="button-addon1" onClick={(e)=>handleClick(e,props.id,'spinner',true)}>
+            <CButton type="button" style={stylebtsave} color="success" variant="outline" id="button-addon1" onClick={(e)=>handleClick(e,props.id,'spinner',true)}>
                 {texto_botao}&nbsp;{props.load ? <SpinnerComp size="sm" color="primaty"/> : <></>}
             </CButton>
         </CInputGroup>
@@ -449,10 +655,38 @@ const ManAbout = (props) =>{
                onChange={(e)=>setValor(props.id,'valor',e.target.value)}
             />
             <Dropdown id={props.id} tipo={props.tipo}/>
-            <CButton type="button" color="success" variant="outline" id="button-addon1" onClick={(e)=>handleClick(e,props.id,'spinner',true)}>
+            <CButton type="button" style={stylebtsave} color="success" variant="outline" id="button-addon1" onClick={(e)=>handleClick(e,props.id,'spinner',true)}>
                 {texto_botao}&nbsp;{props.load ? <SpinnerComp size="sm" color="primaty"/> : <></>}
             </CButton>
         </CInputGroup>
+    )
+  }
+
+  const ImageSimple = (props) => {
+    let texto_botao = props.idfield === 0 ? 'Salvar' : 'Atualizar'
+    return(
+        <>
+        { props.imgsaved ? (<div style={{width:'80%'}}><CCardImage style={styleimg} src={endpoint_img + props.link}/></div>) :(<></>)}
+        <CInputGroup className="mb-3">
+            <CInputGroupText style={props.estilo} className="clinputtext">{props.titulo}</CInputGroupText>
+            <CFormInput
+               type="file"
+               id="inputGroupFile03"
+               aria-describedby="inputGroupFileAddon03"
+               aria-label="Upload"
+               //defaultValue={props.imagem}
+               onChange={(e)=>onImageChange(e,props.id)}
+            />
+            <Dropdown id={props.id} tipo={props.tipo}/>
+            <CButton type="button" style={stylebtsave} color="success" variant="outline" id="button-addon1" onClick={(e)=>handleSaveImg(e,props.id,listacampos,props.valor)}>
+                {texto_botao}&nbsp;{props.load ? <SpinnerComp size="sm" color="primaty"/> : <></>}
+            </CButton>
+        </CInputGroup>
+        <div className="text-start" style={{display:'flex',gap:'5px',paddingBottom:'5px'}}>
+            <div className="circleimg"><FontAwesomeIcon onClick={(e)=>onRemoveAnexo(e,props.id)} style={{cursor:'pointer',color:'red'}} icon={faTrash} /></div>
+            { props.valor == null ? (<></>) : (<BadgeImg color="primary" fonte="11px" valor={props.valor}/>) }
+        </div>
+        </>
     )
   }
 
@@ -483,6 +717,14 @@ const ManAbout = (props) =>{
       )
   }
 
+  const BadgeImg = (props) =>{
+      const fonte = props.fonte ? props.fonte : '10px'
+      const largura = props.fonte ? '110px' : ''
+      return(
+         <CBadge style={{minWidth:largura,borderRadius:'5px',fontSize:fonte,display:'inline-flex',alignItems:'center'}} color={props.color}>{props.valor}</CBadge>
+      )
+  }
+
 
   const handleDrop = (event,id,param,valor) =>{
       console.log(listatipos)
@@ -493,6 +735,8 @@ const ManAbout = (props) =>{
       return
 
   }
+
+
 
 
   const Dropdown = (props) =>{
@@ -527,6 +771,23 @@ const ManAbout = (props) =>{
     return JSON.stringify(objfinal)
   }
 
+const CriaJsonImageSimple = (index) =>{
+
+    //let index = getIndex(listacampos,id)
+    //let linhas = listacampos[index].linhas
+    let obj =  {
+      "imagem" : listacampos[index].imagem,
+      "path" : listacampos[index].link,
+      "saved": listacampos[index].imgsaved,
+      "display":listacampos[index].visible,
+    }
+    let arrayitens = []
+    arrayitens.push(obj)
+    let objfinal = {
+       "meta":arrayitens
+    }
+    return JSON.stringify(objfinal)
+  }
 
 
 
@@ -558,6 +819,15 @@ const ManAbout = (props) =>{
                 </CCol>
                 <CCol md={12} xs={12} >
                     {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTexto {...listacampos[4]}/>)}
+                </CCol>
+                <CCol md={12} xs={12} >
+                    {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <ImageSimple {...listacampos[5]}/>)}
+                </CCol>
+                <CCol md={12} xs={12} >
+                    {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <ImageSimple {...listacampos[6]}/>)}
+                </CCol>
+                <CCol md={12} xs={12} >
+                    {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <ImageSimple {...listacampos[7]}/>)}
                 </CCol>
             </CRow>
         </CCardBody>

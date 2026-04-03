@@ -157,9 +157,9 @@ class SectionItemController extends Controller
               //$file = $request->file('file');
               $file = $request->file('file');
               $fileName  = $file->getClientOriginalName();
-              $path = 'images/'.$input["sei_link"];
+              $path = 'about/'.$fileName;
               //Adiciona a nova imagem e atualiza o conteudo
-              Storage::disk('public')->put($path, file_get_contents($file));
+              Storage::disk('inertia_public')->put($path, file_get_contents($file));
            }
         }
 
@@ -215,6 +215,10 @@ class SectionItemController extends Controller
     {
         $input = $request->all();
         $sectionitem = SectionItem::find($id);
+
+        //nova rotina//
+        //simple imagens//
+        
 
         /*
          teste --> remocao pra multifiles
