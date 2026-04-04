@@ -23,14 +23,15 @@ class SectionResource extends JsonResource
                 'sec_empresa' => $this->empresa->emp_nome,
                 'sec_created_at' => Carbon::parse($this->sec_created_at)->format('d/m/Y H:i:s'),
                 'sec_updated_at' => $this->sec_updated_at != null ? Carbon::parse($this->updated_at)->format('d/m/Y H:i:s') : null,
+                'sec_itens'=> $this->itens
             ];
       }  else if($request->has('init')){
-          $data =  [ 
+          $data =  [
             'sec_id_sec' => $this->sec_id_sec,
             'sec_nome' => $this->sec_nome,
           ];
       }  else if($request->has('init_section')){
-          $data =  [ 
+          $data =  [
             'sec_id_sec' => $this->sec_id_sec,
             'sec_nome' => $this->sec_nome,
             'sec_itens' => $this->itens,
@@ -45,7 +46,7 @@ class SectionResource extends JsonResource
                 'sec_updated_at' => $this->sec_updated_at != null ? Carbon::parse($this->updated_at)->format('d/m/Y H:i:s') : null,
                 'sec_itens' => $this->itens,
                 'sec_gallery' => $this->gallery_api_all,
-            ];    
+            ];
         } else if($request->has('section_man')){
             $data =  [
                 'sec_id_sec' => $this->sec_id_sec,
@@ -55,7 +56,7 @@ class SectionResource extends JsonResource
                 'sec_created_at' => Carbon::parse($this->sec_created_at)->format('d/m/Y H:i:s'),
                 'sec_updated_at' => $this->sec_updated_at != null ? Carbon::parse($this->updated_at)->format('d/m/Y H:i:s') : null,
                 'sec_itens' => $this->itens,
-            ];    
+            ];
         } else {
              $data =  [
                 'sec_id_sec' => $this->sec_id_sec,
@@ -82,7 +83,7 @@ class SectionResource extends JsonResource
                 //'action' => null //--> para o datatbes não quebrar <--//
                 //'deleted_at' => $this->updated_at->format('d/m/Y H:i:s')
             ];*/
-        }    
+        }
         return $data;
         //return parent::toArray($request);
     }

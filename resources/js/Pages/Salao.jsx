@@ -21,13 +21,17 @@ import { faHeartbeat,faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { CardComp } from '../components/CardComp';
 import { Modal } from '../components/Modal';
 import Aos from 'aos';
+import axios from 'axios';
 
 
 // The Home component receives props passed from the Laravel controller
 const Home = ({ appName }) => {
   const theme_dark = import.meta.env.VITE_APP_THEME_DARK
   const theme_light = import.meta.env.VITE_APP_THEME_LIGHT
-  const [loadpage,setloadPage] = useState(false);
+  const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
+  const _token = import.meta.env.VITE_APP_TOKEN
+  const [loadpage,setLoadpage] = useState(false);
+  const [dadosabout,setDadosabout] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [dadosModal,setdadosModal] = useState({
@@ -50,9 +54,33 @@ const Home = ({ appName }) => {
 }]
 
   useEffect(() => {
+     axios
+      .get(`${endpoint}/section?listagem=S`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Bearer ' + _token,//dentro do env//
+        },
+      })
+      .then((result) => {
+        setLoadpage(false)
+        //setidSection(result.data.data.sec_id_sec)
+         result.data.data.map((item, index) => {
+             if( item.sec_nome === 'SectionAbout'){
+                setDadosabout(item.sec_itens)
+             }
+             console.log('useEffect')
+             console.log(item)
+        //    setListasections(item.emp_sections)
+        //    setListatipos(item.emp_tipos)
+        //    setListatags(item.emp_tags)
+        //    console.log('useEffect')
+        //    console.log('item:' + item)
+         })
+    })
      document.documentElement.setAttribute('data-coreui-theme', theme_light);
      setlistaNavbar(arrayNavbar)
-     setloadPage(true)
+     //setloadPage(true)
      Aos.init({
       // Optional configuration options
       duration: 800, // Animation duration (e.g., 1000ms)
@@ -94,7 +122,7 @@ const Home = ({ appName }) => {
         <div className="container">
             <NavbarComp dados={listaNavbar}/>
             <SwiperComp/>
-            <SectionAbout title="Kings Hair" subtitle = "Sobre Nós"/>
+            <SectionAbout title="Kings Hair" subtitle = "Sobre Nós" dados={dadosabout}/>
             <SectionOffers
               title="King Hair"
               subtitle="Summer Hair Haus Offers"
