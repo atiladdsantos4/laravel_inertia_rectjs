@@ -11,7 +11,7 @@ class Sections extends Model
 {
     //protected $connection = 'pgsqlmedical';
     use HasFactory,SoftDeletes;//preenche deletet_at e nao delete registro //;
-  
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,7 +28,7 @@ class Sections extends Model
         'sec_nome','sec_emp','sec_id_emp','sec_created_at','sec_updated_at','sec_deleted_at'
     ];
     protected $dates = ['sec_deleted_at'];//campo obrigatório pra o SoftDeletes
-    
+
     //protected $dateFormat = 'U';
 
     protected $casts = [
@@ -36,15 +36,15 @@ class Sections extends Model
         'sec_updated_at' => 'datetime:Y-m-d H:i:s',
         'sec_deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
-    
+
     public function empresa(){
         return $this->hasOne(Empresa::class, 'emp_id_emp', 'sec_id_emp');
     }
 
-    
+
     public function itens(){
        return $this->hasMany(SectionItem::class, 'sei_id_sec', 'sec_id_sec')
-       ->select('sei_id_sei','sei_nome','sei_valor','sei_display','sei_link','tip_nome as sei_tipo','sei_id_tip','sei_id_sec','sei_id_emp','sei_id_tag','tag_nome as sei_tag')
+       ->select('sei_id_sei','sei_nome','sei_valor','sei_json','sei_display','sei_link','tip_nome as sei_tipo','sei_id_tip','sei_id_sec','sei_id_emp','sei_id_tag','tag_nome as sei_tag')
        ->join('tipo_parametro','sei_id_tip','tip_id_tip')
        ->join('tag_campo','sei_id_tag','tag_id_tag')
        ->orderBy('sei_id_sei');

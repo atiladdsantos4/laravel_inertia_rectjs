@@ -215,10 +215,55 @@ class SectionItemController extends Controller
     {
         $input = $request->all();
         $sectionitem = SectionItem::find($id);
-
         //nova rotina//
         //simple imagens//
-        
+        if( $request->has('has_image') ){
+
+           //delete old image//
+           $postjson = json_decode($input["sei_json"], true);
+           $path_delete = $postjson["meta"][0]["path"].$sectionitem->sei_valor;
+           Storage::disk('inertia_public')->delete($path_delete);
+
+           //add new image//
+            $file = $request->file('file');
+            $fileName  = $file->getClientOriginalName();
+            $path = $postjson["meta"][0]["path"].$input["sei_valor"];
+            Storage::disk('inertia_public')->put($path, file_get_contents($file));
+        }
+
+        $validator = Validator::make($input, [
+           'sei_nome' => 'required',
+           'sei_valor' => 'required',
+           'sei_display' => 'required',
+           'sei_id_tip' => 'required',
+           'sei_id_tag' => 'required',
+        ]);
+
+        if($validator->fails()){
+            $teste = $validator->errors();
+            if ($validator->fails())  {
+                return response()->json(['error'=>$validator->errors()], 401);
+            }
+        }
+
+        $sectionitem->sei_nome = $input["sei_nome"];
+        $sectionitem->sei_valor = $input["sei_valor"];
+        $sectionitem->sei_json = $input["sei_json"];
+        $sectionitem->sei_placeholder = $input["sei_placeholder"];
+        $sectionitem->sei_display = $input["sei_display"];
+        $sectionitem->sei_id_tip = $input["sei_id_tip"];
+        $sectionitem->sei_id_tag = $input["sei_id_tag"];
+        $sectionitem->update();
+        $secitem = new SectionItemResource(SectionItem::findOrFail($sectionitem->sei_id_sei));
+
+        $arr_result = [
+            "status" => true,
+            "mensagem" => "Section Item Alterado com sucesso!!!",
+            "data" => $secitem
+        ];
+
+        return json_encode($arr_result,JSON_PRETTY_PRINT);
+        //fim nova rotina//
 
         /*
          teste --> remocao pra multifiles
@@ -314,6 +359,9 @@ class SectionItemController extends Controller
                 return response()->json(['error'=>$validator->errors()], 401);
             }
         }
+
+
+
 
 
         if( isset($input["sei_link"]) ){

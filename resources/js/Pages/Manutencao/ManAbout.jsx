@@ -392,7 +392,7 @@ const ManAbout = (props) =>{
 
                if( item.sei_tag == 'image' ){
                   let string = JSON.parse(item.sei_json)
-                  link = string.meta[0].path + item.sei_valor
+                  link = string.meta[0].path
                }
 
                objlista = {
@@ -412,6 +412,8 @@ const ManAbout = (props) =>{
                if( item.sei_tag == 'image' ){
                   objlista.link = link
                   objlista.imgsaved = true
+                  objlista.imgfile = []
+                  objlista.display = true
                }
                lista_inicial.push(objlista)
                console.log(item)
@@ -578,14 +580,11 @@ const ManAbout = (props) =>{
             }, 2000)
         })
     } else {
-        if( lista[index].type == 'textarea' ){
-           json = CriaJsonTextArea(index)
-        } else {
-           json = null
-        }
+
+        json = CriaJsonImageSimple(index)
         atualizaItem(id, 'spinner', true)
         const formData = new FormData()
-        //formData.append('file', lista[index].imgfile[0])
+        formData.append('file', lista[index].imgfile[0])
         formData.append('sei_display', sei_display)
         formData.append('sei_nome', lista[index].nome)
         formData.append('sei_valor', lista[index].valor)
@@ -595,8 +594,8 @@ const ManAbout = (props) =>{
         formData.append('sei_id_sec', sei_id_sec)
         formData.append('sei_id_tip', lista[index].tipo_id)
         formData.append('sei_id_tag', tag)
-        //formData.append('sei_link', lista[index].link)
-        //formData.append('has_image', true)
+        formData.append('sei_link', lista[index].link)
+        formData.append('has_image', true)
         formData.append('_method', 'put')
         let ident = lista[index].idfield
         axios
@@ -609,6 +608,7 @@ const ManAbout = (props) =>{
         })
         .then((result) => {
             setSaved(!saved)
+            //atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
@@ -666,7 +666,7 @@ const ManAbout = (props) =>{
     let texto_botao = props.idfield === 0 ? 'Salvar' : 'Atualizar'
     return(
         <>
-        { props.imgsaved ? (<div style={{width:'80%'}}><CCardImage style={styleimg} src={endpoint_img + props.link}/></div>) :(<></>)}
+        { props.imgsaved ? (<div style={{width:'80%'}}><CCardImage style={styleimg} src={endpoint_img + props.link + props.valor}/></div>) :(<></>)}
         <CInputGroup className="mb-3">
             <CInputGroupText style={props.estilo} className="clinputtext">{props.titulo}</CInputGroupText>
             <CFormInput
