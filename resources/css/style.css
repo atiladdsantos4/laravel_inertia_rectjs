@@ -144,6 +144,7 @@
 /* section price */
 .imgcheck{
   width: 8%;
+  height: 8%;
 }
 
 .clcard{
@@ -1034,6 +1035,10 @@
   border: 1.5px solid red;    /* The key property to make it round */
 }
 /*end trash image upload css circle*/
+.form-check-input:checked {
+  background-color: #200D35;
+  border-color: #200D35;
+}
 /*
 const DynamicBackground = ({ imageUrl }) => {
   const divStyle = {

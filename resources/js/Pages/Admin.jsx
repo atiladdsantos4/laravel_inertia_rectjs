@@ -10,6 +10,7 @@ import { SectionAbout } from '../sections/SectionAbout';
 import { SectionOffers } from '../sections/SectionOffers';
 import { SectionServices } from '../sections/SectionServices';
 import ManAbout from './Manutencao/ManAbout';
+import ManOffers from './Manutencao/ManOffers';
 import axios from 'axios'
 import Aos from 'aos';
 
@@ -36,7 +37,7 @@ const Admin = (props) => {
                {name:'Carrosel',href:'#'},
                {name:'About',href:'#'},
                {name:'ManAbout',href:'#'},
-               {name:'Prices',href:'#section-staff'},
+               {name:'ManOffers',href:'#'},
                {name:'Services',href:'#section-contact'},
                {name:'Staffs',href:'#section-contact'},
            ]
@@ -91,6 +92,12 @@ const Admin = (props) => {
         //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
         array = listasections.filter((item)=> item.sec_nome === 'SectionAbout')
         return(<ManAbout end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "ManOffers":
+        //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
+        array = listasections.filter((item)=> item.sec_nome === 'SectionOffer')
+        return(<ManOffers end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
     }
 
