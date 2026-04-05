@@ -3,9 +3,12 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
+        "build:local": "env-cmd -f .env.dev vite build",
+        "build:prod": "env-cmd -f .env.prod vite build",
         "dev": "env-cmd -f .env.dev vite",
-        "postbuild": "copy .\\public\\.htaccess_dev.txt .\\public\\build\\.htaccess"
+        "postbuild:dev": "copy .\\public\\.htaccess_dev.txt .\\public\\build\\.htaccess && xcopy /E /I .\\resources\\js\\images .\\public\\build\\assets\\images",
+        "postbuild:prod": "copy .\\public\\.htaccess_dev.txt .\\public\\build\\.htaccess && xcopy /E /I .\\resources\\js\\images .\\public\\build\\assets\\images"
+
     },
     "devDependencies": {
         "@coreui/chartjs": "^4.1.0",

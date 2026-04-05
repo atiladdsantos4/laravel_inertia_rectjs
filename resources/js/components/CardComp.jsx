@@ -54,11 +54,11 @@ return(
             <CCardTitle><h3 className={textcardStyle}>{title}</h3></CCardTitle>
             <CCardSubtitle class="mb-2 text-body-secondary"><h6 className={textcardStyle}>{subtitle}</h6></CCardSubtitle>
             <CCardText></CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/> Lorem Ipsum</CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/> Lorem Ipsum</CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/> Lorem Ipsum</CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/> Lorem Ipsum</CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/> Lorem Ipsum</CCardText>
+            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
+            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
+            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
+            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
+            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
             <CCardText></CCardText>
             <CCardText style={{textAlign:'center'}}>
                 <ButtonPillsComp label={buttonlabel} color="secondary" classe={buttonclass} icon={faShoppingCart} click={open}/>

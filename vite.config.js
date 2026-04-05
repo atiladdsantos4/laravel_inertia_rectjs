@@ -36,9 +36,14 @@ export default defineConfig({
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
-        hmr: {
-             host: ['jemosistemas-domain.com'], //allow listem by this domains
-        },
+        hmr:{
+           //port:80,
+           //clientPort:80,
+           host: ['jemosistemas-domain.com'], //allow listen by this domains
+        }
+        // hmr: {
+        //      host: ['jemosistemas-domain.com'], //allow listem by this domains
+        // },
     },
     resolve: {
         alias: {
