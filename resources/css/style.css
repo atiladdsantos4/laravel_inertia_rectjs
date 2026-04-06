@@ -218,7 +218,7 @@
 
 .clbadge{
     position: relative;
-    top:25px;
+    top:15px;
     left:170px;
     width: 110px;
     padding:7px;
@@ -389,7 +389,7 @@
 
   & .clbadge{
     position: relative;
-    top:25px;
+    top:15px;
     left:170px;
     width: 110px;
     padding:7px;
@@ -1031,14 +1031,54 @@
   background-color: white; /* Visibility */
   opacity: 1.0;
   border-radius: 50%;
+  justify-content: center;
   text-align: center;
   border: 1.5px solid red;    /* The key property to make it round */
 }
+
+.containerimg {
+  display: flex;
+  justify-content: center; /* Horizontal centering */
+  align-items: center;     /* Vertical centering */
+  height: 20vh;           /* Required for vertical centering */
+  padding-bottom: 10px;
+}
+
+/*trash image upload css circle*/
+.circleimgspan {
+  width: 23px;         /* Height and width must be equal */
+  height: 23px;
+  background-color: white; /* Visibility */
+  opacity: 1.0;
+  border-radius: 50%;
+  text-align: center;
+  border: 1.5px solid red;    /* The key property to make it round */
+}
+
 /*end trash image upload css circle*/
 .form-check-input:checked {
   background-color: #200D35;
   border-color: #200D35;
 }
+
+.form-check-input[type="checkbox"] {
+  border-color: #200D35;
+}
+
+.btexpandir {
+     background: linear-gradient(90deg, #200D35 14.33%, #E95E86 214.54%);
+     color:white;
+}
+
+.btexpandir:hover {
+     opacity: 0.7;
+     color:white;
+}
+
+/* .collapse {
+  transition: height 2.5s ease !important;
+} */
+
 /*
 const DynamicBackground = ({ imageUrl }) => {
   const divStyle = {

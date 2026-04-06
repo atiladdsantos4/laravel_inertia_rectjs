@@ -31,7 +31,9 @@ const Home = ({ appName }) => {
   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
   const _token = import.meta.env.VITE_APP_TOKEN
   const [loadpage,setLoadpage] = useState(false);
-  const [dadosabout,setDadosabout] = useState([]);
+  const [dadosabout,setDadosAbout] = useState([]);
+  const [dadosoffer,setDadosOffer] = useState([]);
+  const [dadosservice,setDadosService] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [dadosModal,setdadosModal] = useState({
@@ -67,8 +69,17 @@ const Home = ({ appName }) => {
         //setidSection(result.data.data.sec_id_sec)
          result.data.data.map((item, index) => {
              if( item.sec_nome === 'SectionAbout'){
-                setDadosabout(item.sec_itens)
+                setDadosAbout(item.sec_itens)
              }
+
+             if( item.sec_nome === 'SectionOffer'){
+                setDadosOffer(item.sec_itens)
+             }
+
+             if( item.sec_nome === 'SectionServices'){
+                setDadosService(item.sec_itens)
+             }
+             //
              console.log('useEffect')
              console.log(item)
         //    setListasections(item.emp_sections)
@@ -129,6 +140,7 @@ const Home = ({ appName }) => {
               classe="mt-5"
               openModal={openModal}
               setModal={setModalTexto}
+              dados={dadosoffer}
               />
             <SectionServices
               title="King Hair"
@@ -136,6 +148,7 @@ const Home = ({ appName }) => {
               classe="mt-5  section-services"
               openModal={openModal}
               setModal={setModalTexto}
+              dados={dadosservice}
             />
             <SectionStaff
               title="Huis Salon"

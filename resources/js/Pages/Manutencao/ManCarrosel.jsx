@@ -42,11 +42,12 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CDropdownItem,
+  CImage,
   CCollapse
 } from '@coreui/react'
 
 
-const ManOffers = (props) =>{
+const ManCarrosel = (props) =>{
 
   const [loadpage,setLoadpage] = useState(true)
   const [icone,setIcon] = useState(null)
@@ -56,7 +57,6 @@ const ManOffers = (props) =>{
   const [listacard,setListacard] = useState([])
   const [estcard,setEstcard] = useState(false)
   const [saved,setSaved] = useState(false)
-  const [view,setView] = useState(false)
   const [toast, addToast] = useState()//toast
   const token = props.token
   const sei_display = 1
@@ -68,10 +68,10 @@ const ManOffers = (props) =>{
   const style = {width:'130px'}
   const stylebtsave = {width:'92px'}
   const styleinputcard = {width:'92px'}
+  const styleinputcardimg = {width:'40px'}
   const styleimg = {width:'20%',marginRight:'auto'}
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
-
   //console.log(props)
 
   const handleClick = (event,id,nome,valor) => {
@@ -149,35 +149,31 @@ const ManOffers = (props) =>{
           )
          break
     }
+    console.log(listacampos)
   };
 
   const setValor = (id,nome,valor) => {
-     //console.log(id)
-     //console.log(nome)
-     //console.log(valor)
-     //console.log(listacampos)
-     //atualizaItem(id,nome,valor)
      let index = getIndex(listacampos,id)
      listacampos[index].valor = valor
-    //  //console.log(listacampos[index])
   }
 
   const onImageChange = (event,id) => {
     let obj = null
     if (event.target.files && event.target.files[0]) {
       let imagem = event.target.files[0]
-      atualizaItem(id,'imagem',event.target.files[0].name)
-      let index = getIndex(listacampos,id)
-      listacampos[index].imgfile.length = 0;
-      listacampos[index].imgfile.push(event.target.files[0])
-      //console.log(obj)
+      atualizaListaCard(id,'imagem',event.target.files[0].name)
+      let index = getIndex(listacard,id)
+      listacard[index].imgfile.length = 0;
+      listacard[index].imgfile.push(event.target.files[0])
+      console.log(listacard)
     }
   }
 
   const onRemoveAnexo = (event,id) => {
-     atualizaItem(id,'imagem',null)
-     let index = getIndex(listacampos,id)
-     listacampos[index].imgfile.length = 0
+    console.log('aqui')
+     atualizaListaCard(id,'imagem',null)
+     let index = getIndex(listacard,id)
+     listacard[index].imgfile.length = 0
   }
 
   const getIndex = (lista,id) => {
@@ -197,17 +193,14 @@ const ManOffers = (props) =>{
   }
 
   const validaImagem = (id) =>{
-    let index = getIndex(listacampos,id)
-    if( listacampos[index].imgfile.length == 0 ){
+    let index = getIndex(listacard,id)
+    if( listacard[index].imgfile.length == 0 ){
        return true
     }
     return false
   }
 
   const getTipoTag = (valor) =>{
-    //console.log('tipos')
-    //console.log(listatipos)
-    //console.log(listatags)
     let array = listatags.filter((item)=> item.tag_nome === valor)
     return array[0].tag_id_tag
   }
@@ -222,31 +215,7 @@ const ManOffers = (props) =>{
        label:'Sub-Título'
      },
      {
-       nome:'textosection',
-       label:'Texto Seção'
-     },
-     {
-       nome:'pontuacao',
-       label:"Pontuação Rate"
-     },
-     {
-       nome:'textorate',
-       label:"Texto Rate"
-     },
-     {
-       nome:'imgabout1',
-       label:"Imagem 01"
-     },
-     {
-       nome:'imgabout2',
-       label:"Imagem 02"
-     },
-     {
-       nome:'imgabout3',
-       label:"Imagem 03"
-     },
-     {
-       nome:'cardsection',
+       nome:'listaimgsection',
        label:"Novo Card"
      }
   ]
@@ -254,60 +223,16 @@ const ManOffers = (props) =>{
   const lista =[
     {
       idfield:0,
-      id:'titulo',
-      nome:'titulo',
-      titulo:"Título",
-      placeholder:"Informe o Título",
-      load:false,
-      estilo:style,
-      type:'input',
-      valor:'',
-      tipo:null,
-      tipo_id:'',
-      collapse:false
-    },
-    {
-      idfield:0,
-      id:'subtitulo',
-      nome:'sub-titulo',
-      titulo:"Sub-Título",
-      placeholder:"Informe o Sub-Título",
-      load:false,
-      estilo:style,
-      linhas:0,
-      type:'input',
-      valor:'',
-      tipo:null,
-      tipo_id:'',
-      collapse:false
-    },
-    {
-      idfield:0,
-      id:'textosection',
-      nome:'textosection',
-      titulo:"Texto Seção",
-      placeholder:"Informe o Texto da Seção",
-      load:false,
-      estilo:style,
-      linhas:3,
-      type:'textarea',
-      valor:'',
-      tipo:null,
-      tipo_id:'',
-      collapse:false
-    },
-    {
-      idfield:0,
-      id:'cardsection',
-      nome:'cardsection',
-      titulo:"Card's da Seção",
-      placeholder:"Adicione os Card's de Ofertas",
+      id:'listaimgsection',
+      nome:'listaimgsection',
+      titulo:"Imagens do Carrosel",
+      placeholder:"Adicione as Imagens ao Carrosel",
       load:false,
       estilo:style,
       linhas:0,
       type:'lista',
       listacard:[],
-      valor:"Card's da Seção",
+      valor:"Imagens do Carrosel",
       tipo:null,
       tipo_id:'',
       collapse:false
@@ -316,7 +241,6 @@ const ManOffers = (props) =>{
 
  useEffect(()=>{
     setIcon(props.icon)
-    //setListacampos(lista)
     setListatipos(props.tipos)
     setListatags(props.tags)
     axios
@@ -337,18 +261,12 @@ const ManOffers = (props) =>{
             result.data.data.sec_itens.map((item,index)=>{
                label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
                nlinhas = null
-               if( item.sei_tag == 'textarea' ){
-                  string = JSON.parse(item.sei_json)
-                  nlinhas = string.meta[0].linhas
-               }
-
-               if( item.sei_tag == 'image' ){
-                  string = JSON.parse(item.sei_json)
-                  link = string.meta[0].path
-               }
 
                if( item.sei_tag == 'lista' ){
                   string = JSON.parse(item.sei_json)
+                  string.meta.map((it,index)=>{
+                    it.imgsaved = true
+                  })
                   setListacard(string.meta)
                   //console.log(string)
 
@@ -370,39 +288,33 @@ const ManOffers = (props) =>{
                  collapse:false
                }
 
-               if( item.sei_tag == 'image' ){
-                  objlista.link = link
-                  objlista.imgsaved = true
-                  objlista.imgfile = []
-                  objlista.display = true
-               }
 
                if( item.sei_tag == 'lista' ){
-                  //objlista.lista = string.meta[0]
                   null
-                //   objlista.imgsaved = true
-                //   objlista.imgfile = []
-                //   objlista.display = true
                }
                lista_inicial.push(objlista)
-               //console.log(item)
             })
             let existe = null
             lista.map((item,index)=>{
               existe = lista_inicial.filter((it)=> it.nome === item.nome)
               if( existe.length == 0){
-                //console.log('existe')
-                //console.log(existe)
                 lista_inicial.push(item)
               }
             })
             setListacampos(lista_inicial)
-            //setListacard()
             setLoadpage(false)
         })
 },[props,saved])
 
 const  handleSave = (id,lista,valor) =>{
+    if( validaTipo(id) ){
+       addToast(CompToast('O Tipo de dados deve ser informado !!!', 'danger')) //--> usa toast
+       setTimeout(() => {
+            document.getElementById('idtoast').classList.remove('show')
+            document.getElementById('idtoast').remove()
+       }, 2000)
+       return
+    }
 
      let index = getIndex(lista,id)
      let tag = getTipoTag(lista[index].type)
@@ -410,15 +322,25 @@ const  handleSave = (id,lista,valor) =>{
      if( lista[index].idfield == 0){
         atualizaItem(id, 'spinner', true)
 
-        if( lista[index].type == 'textarea' ){
-           json = CriaJsonTextArea(index)
-        } else if( lista[index].type == 'lista' ){
+        const formData = new FormData()
+
+       if( lista[index].type == 'lista' ){
+
            json  = CriaJsonCard(id)
+           let listaimg = listacard.filter((item)=>item.imgfile.length > 0)
+           listaimg.map((item,index)=>{
+             formData.append('files[]', item.imgfile[0])
+           })
+           formData.append('has_image', true)
+           formData.append('has_multiple', true)
+
         } else {
+
            json = null
+
         }
 
-        const formData = new FormData()
+
         formData.append('sei_display', sei_display)
         formData.append('sei_nome', lista[index].nome)
         formData.append('sei_valor', lista[index].valor)
@@ -448,15 +370,25 @@ const  handleSave = (id,lista,valor) =>{
             }, 2000)
         })
     } else {
-        if( lista[index].type == 'textarea' ){
-           json = CriaJsonTextArea(index)
-        } else if( lista[index].type == 'lista' ){
+        const formData = new FormData()
+
+        if( lista[index].type == 'lista' ){
+
            json  = CriaJsonCard(id)
+           let listaimg = listacard.filter((item)=>item.imgfile.length > 0)
+           listaimg.map((item,index)=>{
+             formData.append('files[]', item.imgfile[0])
+           })
+           formData.append('has_image', true)
+           formData.append('has_multiple', true)
+
         } else {
+
            json = null
+
         }
         atualizaItem(id, 'spinner', true)
-        const formData = new FormData()
+
         formData.append('sei_display', sei_display)
         formData.append('sei_nome', lista[index].nome)
         formData.append('sei_valor', lista[index].valor)
@@ -662,14 +594,13 @@ const  handleSave = (id,lista,valor) =>{
     let idx = listacard.length
     let obj ={
        id:idx+1,
-       preco:'',
-       servico:'',
-       destaque:'',
+       imagem:null,
+       imgfile:[],
+       path:'/carrosel',
+       imgsaved:false,
        textobotao:'',
-       promocao:false,
        naoexibir:false,
        estado:false,
-       listaopcao:[],
        display: true
     }
     listacard.push(obj)
@@ -679,27 +610,14 @@ const  handleSave = (id,lista,valor) =>{
 
   const atualizaListaCard = (id, param, newValue) => {
     let idx = getIndex(listacard,id)
-    //console.log(listacard)
     switch(param){
-       case 'preco':
-          listacard[idx].preco = newValue
-        break
-       case 'servico':
-          listacard[idx].servico = newValue
-        break
-       case 'destaque':
-          listacard[idx].destaque = newValue
-        break
-       case 'textobotao':
-          listacard[idx].textobotao = newValue
+       case 'imagem':
+          listacard[idx].imagem = newValue
+          setEstcard(!estcard)
         break
        case 'estado':
           listacard[idx].estado = newValue
           //setEstcard(!estcard)
-        break
-       case 'promocao':
-          listacard[idx].promocao = newValue
-          setEstcard(!estcard)
         break
        case 'naoexibir':
           listacard[idx].naoexibir = newValue
@@ -739,83 +657,26 @@ const  handleSave = (id,lista,valor) =>{
        </CInputGroup>
       </div>
       <div>
-        <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/></div>
+         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/></div>
+         <CCollapse visible={props.collapse}>
+            <CRow>
+                <ListaCardService estado={estcard}/>
+            </CRow>
+            <div id="target-id"></div>
+         </CCollapse>
       </div>
-        <CCollapse visible={props.collapse}>
-           <CRow>
-              <ListaCardOffer estado={estcard}/>
-           </CRow>
-           <div id="target-id"></div>
-        </CCollapse>
-
       </>
     )
   }
 
- const scrollToId = (id) => {
+  const scrollToId = (id) => {
     const element = document.getElementById(id);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
- };
+     if (element) {
+         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+     }
+  };
 
-  //adiciona nova opcao na lista do body do card
-  const AddListaOpcao = (idlistapai,lista) =>{
-    //pega "idxpai" index da lista principal
-    let idxpai = getIndex(listacard,idlistapai)
-    let valor = listacard[idxpai].estado
-    let idx = lista.length
-    let obj ={
-       id:idx,
-       texto:'',
-       display: true
-    }
-    lista.push(obj)
-    listacard[idxpai].estado = !valor //altera o estado da
-    setEstcard(!estcard) //força re-render da lista pai//
-  }
-
-  //atualiza input text do index lista de opções atual
-  const atualizaListaOpcao = (id, lista, param, newValue) => {
-    let idx = getIndex(lista,id)
-    switch(param){
-       case 'texto':
-          lista[idx].texto = newValue
-       break
-
-       case 'display':
-          lista[idx].display = newValue
-          setEstcard(!estcard)
-       break
-
-    }
-
-    //console.log(listacard)
-  }
-
-  //componente de exibição da lista de opcoes do card
-  const ListaCardOpcao = (props) => {
-    //console.log(props)
-    let listagem = props.lista.filter((item)=>item.display === true)
-    return(
-        listagem.map((item,index)=>{
-          return(
-            <CRow>
-                <CCol xs={10} className='mt-2'>
-                   <CFormInput size="sm"  style={{border:'1px solid #6b38a2'}} onChange={(e)=>atualizaListaOpcao(item.id,listagem,'texto',e.target.value)} defaultValue={item.texto}/>
-                </CCol>
-                <CCol xs={2} className='mt-2'>
-                   <div className="circleimg"><FontAwesomeIcon style={{cursor:'pointer',color:'#6b38a2'}} icon={faTrash} onClick={(e)=>atualizaListaOpcao(item.id,props.lista,'display',false)}/></div>
-                </CCol>
-             </CRow>
-          )
-        })
-    )
-    //let lista = listacard.filter((item)=>item.display === true)
-  }
-
-  const ListaCardOffer = () => {
-     //console.log(listacard)
+  const ListaCardService = () => {
      let lista = listacard.filter((item)=>item.display === true)
      return(
         lista.map((item,index)=>{
@@ -825,41 +686,26 @@ const  handleSave = (id,lista,valor) =>{
                     <CCardHeader>
                         <>
                           { item.naoexibir
-                             ? (<CFormCheck style={{accentColor:'red'}} id="defaultCheck1" label="Não Exibir Card" checked onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} />)
-                             : (<CFormCheck style={{accentColor:'red'}} id="defaultCheck1" label="Não Exibir Card" onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} />)
+                             ? (<div className='mb-2'><CFormCheck id="defaultCheck1" label="Não Esta Imagem" checked onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} /></div>)
+                             : (<div className='mb-2'><CFormCheck id="defaultCheck1" label="Não Esta Imagem" onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} /></div>)
                           }
                         </>
-                        <CInputGroup size="sm" className="mb-2">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Preço</CInputGroupText>
-                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'preco',e.target.value)} defaultValue={item.preco}/>
+                        {
+                          item.imgsaved ?
+                          (<div className="containerimg"><img style={{width:'70%'}} src={endpoint_img + item.path +'/'+ item.imagem}/></div>)
+                          :(<></>)
+                        }
+                        <CInputGroup size="sm" className="mb-0">
+                            <CInputGroupText style={styleinputcard} className="clinputtext">Imagem</CInputGroupText>
+                            <CFormInput type="file" onChange={(e)=>onImageChange(e,item.id)} />
+                            <div>
+                               <div style={{position:'relative',display:'flex',justifyContent:'center',left:'3px',top:'4px'}} className='circleimgspan'>
+                                 <FontAwesomeIcon onClick={(e)=>onRemoveAnexo(e,item.id)} style={{cursor:'pointer',position:'relative',top:'3px',color:'#6b38a2'}} size="sm" icon={faTrash}/>
+                                </div>
+                            </div>
                         </CInputGroup>
-                        <CInputGroup size="sm" className="mb-2">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Serviço</CInputGroupText>
-                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'servico',e.target.value)} defaultValue={item.servico}/>
-                        </CInputGroup>
-                        <CInputGroup size="sm" className="mb-2">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Destaque</CInputGroupText>
-                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'destaque',e.target.value)} defaultValue={item.destaque}/>
-                        </CInputGroup>
-                        <CInputGroup size="sm" className="mb-2">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Texto Button</CInputGroupText>
-                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'textobotao',e.target.value)} defaultValue={item.textobotao}/>
-                        </CInputGroup>
-                        <>
-                          { item.promocao
-                             ? (<CFormCheck style={{accentColor:'red'}} id="defaultCheck1" label="Promoção Destaque" checked onChange={(e)=>atualizaListaCard(item.id,'promocao',e.target.checked)} />)
-                             : (<CFormCheck style={{accentColor:'red'}} id="defaultCheck1" label="Promoção Destaque" onChange={(e)=>atualizaListaCard(item.id,'promocao',e.target.checked)} />)
-                          }
-                        </>
+                        { item.imagem == null ? (<></>) : (<BadgeImg color="primary" fonte="11px" valor={item.imagem}/>) }
                     </CCardHeader>
-                    <CCardBody>
-                        <div className='mb-1'>
-                          <CButton color="primary" size="sm" onClick={(e)=>AddListaOpcao(item.id,item.listaopcao)}>Nova Opção
-                              &nbsp;<FontAwesomeIcon style={{cursor:'pointer',color:'white'}} icon={faCircleArrowDown}/>
-                          </CButton>
-                        </div>
-                        <ListaCardOpcao lista={item.listaopcao} est={item.estado}/>
-                    </CCardBody>
                     <CCardFooter>
                         <div className="text-start" style={{display:'flex',gap:'5px',paddingBottom:'5px'}}>
                            <div className="circleimg"><FontAwesomeIcon style={{cursor:'pointer',color:'red'}} icon={faTrash} onClick={(e)=>atualizaListaCard(item.id,'display',false)}/></div>
@@ -892,14 +738,15 @@ const  handleSave = (id,lista,valor) =>{
   }
 
   const BtExpandir = (props) =>{
-       const fonte = props.fonte ? props.fonte : '10px'
-       const largura = props.fonte ? '110px' : ''
-       return(
-         <CButton size="sm" className="btexpandir" style={{width:'100px'}} onClick={(e)=>atualizaItem('cardsection','collapse',null)}>
-           Expandir&nbsp;
-           { props.expande ? (<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faCircleArrowUp}/>) : (<FontAwesomeIcon size="sm" icon={faCircleArrowDown} style={{color:'white'}}/>) }
-         </CButton>
-       )
+      const fonte = props.fonte ? props.fonte : '10px'
+      const largura = props.fonte ? '110px' : ''
+      return(
+        //  <CBadge style={{minWidth:largura,borderRadius:'5px',fontSize:fonte}} color={props.color}>{props.tipo}</CBadge>
+        <CButton size="sm" className="btexpandir" style={{width:'100px'}} onClick={(e)=>atualizaItem('listaimgsection','collapse',null)}>
+            Expandir&nbsp;
+            { props.expande ? (<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faCircleArrowUp}/>) : (<FontAwesomeIcon size="sm" icon={faCircleArrowDown} style={{color:'white'}}/>) }
+        </CButton>
+      )
   }
 
   const Badge = (props) =>{
@@ -914,7 +761,7 @@ const  handleSave = (id,lista,valor) =>{
       const fonte = props.fonte ? props.fonte : '10px'
       const largura = props.fonte ? '110px' : ''
       return(
-         <CBadge style={{minWidth:largura,borderRadius:'5px',fontSize:fonte,display:'inline-flex',alignItems:'center'}} color={props.color}>{props.valor}</CBadge>
+         <CBadge style={{padding:'4px',minWidth:largura,borderRadius:'5px',fontSize:fonte,display:'inline-flex',alignItems:'center'}} color={props.color}>{props.valor}</CBadge>
       )
   }
 
@@ -946,40 +793,6 @@ const  handleSave = (id,lista,valor) =>{
      )
   }
 
-  const CriaJsonTextArea = (index) =>{
-
-    //let index = getIndex(listacampos,id)
-    let linhas = listacampos[index].linhas
-    let obj =  {
-      "linhas" : linhas,
-    }
-    let arrayitens = []
-    arrayitens.push(obj)
-    let objfinal = {
-       "meta":arrayitens
-    }
-    return JSON.stringify(objfinal)
-  }
-
-  const CriaJsonImageSimple = (index) =>{
-
-    //let index = getIndex(listacampos,id)
-    //let linhas = listacampos[index].linhas
-    let obj =  {
-      "imagem" : listacampos[index].imagem,
-      "path" : listacampos[index].link,
-      "saved": listacampos[index].imgsaved,
-      "display":listacampos[index].visible,
-    }
-    let arrayitens = []
-    arrayitens.push(obj)
-    let objfinal = {
-       "meta":arrayitens
-    }
-    return JSON.stringify(objfinal)
-  }
-
-
   const CriaJsonCard = (id) =>{
     let index = getIndex(listacampos,id)
     let vetor = listacard.filter((item)=>item.display === true)
@@ -991,7 +804,7 @@ const  handleSave = (id,lista,valor) =>{
        "meta":arrayitens
     }
     let texto  = JSON.stringify(objfinal)
-    //console.log(texto)
+    console.log(texto)
     return JSON.stringify(objfinal)
   }
 
@@ -1000,21 +813,12 @@ const  handleSave = (id,lista,valor) =>{
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
              <CCardHeader className="clfooter">
-               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Offers</span>
+               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Services</span>
              </CCardHeader>
              <CCardBody>
                  <CRow>
                      <CCol md={12} xs={12} >
-                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTexto {...listacampos[0]}/>)}
-                     </CCol>
-                     <CCol md={12} xs={12} >
-                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTexto {...listacampos[1]}/>)}
-                     </CCol>
-                     <CCol md={12} xs={12} >
-                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad65full' xs={12} size="lg"/></div>) : ( <InputTextArea {...listacampos[2]}/>)}
-                     </CCol>
-                     <CCol md={12} xs={12} >
-                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad65full' xs={12} size="lg"/></div>) : ( <AddCard {...listacampos[3]}/>)}
+                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad65full' xs={12} size="lg"/></div>) : ( <AddCard {...listacampos[0]}/>)}
                      </CCol>
                  </CRow>
              </CCardBody>
@@ -1024,4 +828,4 @@ const  handleSave = (id,lista,valor) =>{
 
 }
 
-export default ManOffers
+export default ManCarrosel

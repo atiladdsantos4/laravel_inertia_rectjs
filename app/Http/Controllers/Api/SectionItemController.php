@@ -52,6 +52,7 @@ class SectionItemController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
+
         if( ($input["sei_id_sec"] == 8 ) && ( $input["sei_nome"] == 'lista-post') ){
             $postjson = json_decode($input["sei_valor"], true);
             $arrayimg = [];
@@ -143,6 +144,50 @@ class SectionItemController extends Controller
             }
         }
 
+        if( $input["sei_id_sec"] == '3' && $input["sei_nome"] == 'cardsection' ){ // --> section services //
+           $postjson = json_decode($input["sei_json"], true);
+           for($i=0; $i < count($request->file('files')); $i++ ){
+              $file = $request->file('files')[$i];
+              $fileName  = $file->getClientOriginalName();
+              $path = 'services/'.$fileName;
+              //Adiciona a nova imagem e atualiza o conteudo
+               Storage::disk('inertia_public')->put($path, file_get_contents($file));
+           }
+
+           $sectionitem = SectionItem::create($input);
+           $secitem = new SectionItemResource(SectionItem::findOrFail($sectionitem->sei_id_sei));
+           $arr_result = [
+                "status" => true,
+                "mensagem" => "Section Item Inserido com sucesso!!!",
+                "data" => $secitem
+           ];
+
+            return json_encode($arr_result,JSON_PRETTY_PRINT);
+
+        }
+
+        if( $input["sei_id_sec"] == '4' && $input["sei_nome"] == 'listaimgsection' ){ // --> section services //
+           $postjson = json_decode($input["sei_json"], true);
+           for($i=0; $i < count($request->file('files')); $i++ ){
+              $file = $request->file('files')[$i];
+              $fileName  = $file->getClientOriginalName();
+              $path = 'carrosel/'.$fileName;
+              //Adiciona a nova imagem e atualiza o conteudo
+               Storage::disk('inertia_public')->put($path, file_get_contents($file));
+           }
+
+           $sectionitem = SectionItem::create($input);
+           $secitem = new SectionItemResource(SectionItem::findOrFail($sectionitem->sei_id_sei));
+           $arr_result = [
+                "status" => true,
+                "mensagem" => "Section Item Inserido com sucesso!!!",
+                "data" => $secitem
+           ];
+
+            return json_encode($arr_result,JSON_PRETTY_PRINT);
+
+        }
+
 
         if( $request->has('has_image') ) {
            if( $request->has('has_multiple') ){//multiples images
@@ -216,6 +261,53 @@ class SectionItemController extends Controller
         $input = $request->all();
         $sectionitem = SectionItem::find($id);
         //nova rotina//
+        //section service//
+        if( $input["sei_id_sec"] == '3' && $input["sei_nome"] == 'cardsection' ){ // --> section services //
+            if($request->has('has_image')){
+                $postjson = json_decode($input["sei_json"], true);
+                for($i=0; $i < count($request->file('files')); $i++ ){
+                    $file = $request->file('files')[$i];
+                    $fileName  = $file->getClientOriginalName();
+                    $path = 'services/'.$fileName;
+                    //Adiciona a nova imagem e atualiza o conteudo
+                    Storage::disk('inertia_public')->put($path, file_get_contents($file));
+                }
+            }
+
+            $validator = Validator::make($input, [
+                'sei_nome' => 'required',
+                'sei_valor' => 'required',
+                'sei_display' => 'required',
+                'sei_id_tip' => 'required',
+                'sei_id_tag' => 'required',
+            ]);
+
+            if($validator->fails()){
+                $teste = $validator->errors();
+                if ($validator->fails())  {
+                    return response()->json(['error'=>$validator->errors()], 401);
+                }
+            }
+
+            $sectionitem->sei_nome = $input["sei_nome"];
+            $sectionitem->sei_valor = $input["sei_valor"];
+            $sectionitem->sei_json = $input["sei_json"];
+            $sectionitem->sei_placeholder = $input["sei_placeholder"];
+            $sectionitem->sei_display = $input["sei_display"];
+            $sectionitem->sei_id_tip = $input["sei_id_tip"];
+            $sectionitem->sei_id_tag = $input["sei_id_tag"];
+            $sectionitem->update();
+            $secitem = new SectionItemResource(SectionItem::findOrFail($sectionitem->sei_id_sei));
+
+            $arr_result = [
+                "status" => true,
+                "mensagem" => "Section Item Alterado com sucesso!!!",
+                "data" => $secitem
+            ];
+
+            return json_encode($arr_result,JSON_PRETTY_PRINT);
+        }
+        //end sectino service//
         //simple imagens//
         if( $request->has('has_image') ){
 
@@ -225,10 +317,10 @@ class SectionItemController extends Controller
            Storage::disk('inertia_public')->delete($path_delete);
 
            //add new image//
-            $file = $request->file('file');
-            $fileName  = $file->getClientOriginalName();
-            $path = $postjson["meta"][0]["path"].$input["sei_valor"];
-            Storage::disk('inertia_public')->put($path, file_get_contents($file));
+           $file = $request->file('file');
+           $fileName  = $file->getClientOriginalName();
+           $path = $postjson["meta"][0]["path"].$input["sei_valor"];
+           Storage::disk('inertia_public')->put($path, file_get_contents($file));
         }
 
         $validator = Validator::make($input, [
