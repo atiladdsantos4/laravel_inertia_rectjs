@@ -10,6 +10,7 @@ import { SectionServices } from '../sections/SectionServices';
 import { SectionStaff } from '../sections/SectionStaff';
 import { SectionTestimonial } from '../sections/SectionTestimonial';
 import { SectionContact } from '../sections/SectionContact';
+import { SectionCarrosel } from '../components/SectionCarrosel';
 import { Footer } from '../layouts/Footer';
 import { FloatButton } from '../components/FloatButton';
 import { Carrosel } from '../components/Carrosel';
@@ -34,6 +35,7 @@ const Home = ({ appName }) => {
   const [dadosabout,setDadosAbout] = useState([]);
   const [dadosoffer,setDadosOffer] = useState([]);
   const [dadosservice,setDadosService] = useState([]);
+  const [dadoscarrosel,setDadosCarrosel] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [dadosModal,setdadosModal] = useState({
@@ -78,6 +80,10 @@ const Home = ({ appName }) => {
 
              if( item.sec_nome === 'SectionServices'){
                 setDadosService(item.sec_itens)
+             }
+
+             if( item.sec_nome === 'SectionCarrosel'){
+                setDadosCarrosel(item.sec_itens)
              }
              //
              console.log('useEffect')
@@ -132,7 +138,7 @@ const Home = ({ appName }) => {
 
         <div className="container">
             <NavbarComp dados={listaNavbar}/>
-            <SwiperComp/>
+            <SectionCarrosel dados={dadoscarrosel}/>
             <SectionAbout title="Kings Hair" subtitle = "Sobre Nós" dados={dadosabout}/>
             <SectionOffers
               title="King Hair"
