@@ -10,13 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export const CardComp = (props) => {
 
    const {openModal, setModal} = props
-   const [classe,setClasse]= useState(props.classe && null )
-   const [price,setPrice]= useState(props.price && null )
-   const [title,setTitle]= useState(props.title && null )
-   const [subtitle,setSubtitle]= useState(props.subtitle && null )
-   const [buttonlabel,setButtonlabel]= useState(props.buttonlabel && null )
-   const [buttonclass,setButtonclass]= useState(null)
-   const [promocard,setPromocard]= useState(false )
+   const [classe,setClasse] = useState(props.classe && null )
+   const [price,setPrice] = useState(props.price && null )
+   const [title,setTitle] = useState(props.title && null )
+   const [subtitle,setSubtitle] = useState(props.subtitle && null )
+   const [buttonlabel,setButtonlabel] = useState(props.buttonlabel && null )
+   const [buttonclass,setButtonclass] = useState(null)
+   const [promocard,setPromocard] = useState(false )
+   const [listaopcao,setListaopcao] = useState([])
    const [cardStyle,setcardStyle]= useState(null)
    const [textcardStyle,settextcardStyle] = useState(null)
 
@@ -27,12 +28,14 @@ export const CardComp = (props) => {
       setClasse(props.classe)
       setPrice(props.price)
       setButtonlabel(props.buttonlabel)
+      setListaopcao(props.listaopcao)
       let cardStyle =  props.promocard === true ? 'clcardpromo' : 'clcard'
       setcardStyle(cardStyle)
       let textcardStyle = props.promocard === true ? 'textpromo cardtexto' : 'textcard cardtexto' // Access using props.propName
       settextcardStyle(textcardStyle)
       let btclass = props.promocard === true ? 'btpromo rounded-pill' : 'btclass rounded-pill' // Access using props.propName
       setButtonclass(btclass)
+      console.log(props.listaopcao)
    },[props])
 
    // Define the event the child can emit
@@ -54,11 +57,18 @@ return(
             <CCardTitle><h3 className={textcardStyle}>{title}</h3></CCardTitle>
             <CCardSubtitle class="mb-2 text-body-secondary"><h6 className={textcardStyle}>{subtitle}</h6></CCardSubtitle>
             <CCardText></CCardText>
+            {
+              listaopcao.map((item,index)=>{
+                return(
+                  <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;{item.texto}</CCardText>
+                )
+              })
+            }
+            {/* <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
             <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
             <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
             <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
-            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText>
+            <CCardText className={textcardStyle}><img class="imgcheck" src={imgCheck}/>&nbsp;Lorem Ipsum</CCardText> */}
             <CCardText></CCardText>
             <CCardText style={{textAlign:'center'}}>
                 <ButtonPillsComp label={buttonlabel} color="secondary" classe={buttonclass} icon={faShoppingCart} click={open}/>

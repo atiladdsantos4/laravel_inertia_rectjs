@@ -1,15 +1,48 @@
-import { React,useEffect, useState, Suspense } from 'react';
-import { CContainer, CRow, CCol, CImage} from '@coreui/react';
+import { React, useEffect, useState, Suspense } from 'react';
+import { CContainer, CRow, CCol, CImage, CPlaceholder} from '@coreui/react';
 import "@fontsource/poppins";
 import { CardComp } from '../components/CardComp';
 
+
 export const SectionOffers = (props) => {
 
-   const {setModal, openModal} = props
+   const imgpath = import.meta.env.VITE_APP_ENDPOINT_IMG
+   const {setModal, openModal, dados} = props
    const id = "section-price"
+   const [load, setLoad] = useState(false)
    const [title, setTitle] = useState(props.title)
    const [subtitle,setSubTitle] = useState(props.subtitle)
+   const [listacard,setListacard] = useState([])
    const [classe,setClasse] = useState(props.classe)
+   const [titulo, setTitulo] = useState(null)
+   const [subtitulo, setSubtitulo] = useState(null)
+   const [textosection, setTextosection] = useState(null)
+
+   useEffect(()=>{
+      let string =  null
+      dados.map((item,index)=>{
+        switch(item.sei_nome){
+           case "titulo":
+              setTitulo(item.sei_valor)
+              break
+           case "sub-titulo":
+              setSubtitulo(item.sei_valor)
+              break
+           case "textosection":
+              setTextosection(item.sei_valor)
+              break
+           case "cardsection":
+              string =  JSON.parse(item.sei_json)
+              console.log(string)
+              setListacard(string.meta)
+              //let img1 = imgpath + string.meta[0].path + item.sei_valor
+              //setImgabout1(img1)
+              break
+        }
+      })
+
+   },[props])
+
 
    const changeCard = (event,nome,valor,texto,detalhe,tela) =>{
       setModal(nome, valor, texto, detalhe, tela)
@@ -21,19 +54,38 @@ export const SectionOffers = (props) => {
     <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
         <section id={id} className={classe}>
             <CContainer className="ms-4">
-                <h4>{title}</h4>
-                <h1>{subtitle}</h1>
+                <h4>{titulo}</h4>
+                <h1>{subtitulo}</h1>
             </CContainer>
             <CContainer className="ms-2">
             <CRow>
                 <CCol md={12} xs={12} className="pb-4">
-                    <p>We believe great hair should be accessible to everyone, no matter the budget.</p>
+                    <p>{textosection}</p>
                 </CCol>
             </CRow>
             </CContainer>
             <CContainer>
             <CRow>
-                <CCol md={3} xs={12} className="pb-4">
+                {
+                  listacard.map((item,index)=>{
+                     return(
+                       <CCol md={3} xs={12} className="pb-4">
+                            <CardComp
+                                price={item.preco}
+                                title={item.servico}
+                                subtitle={item.destaque}
+                                buttonlabel={item.textobotao}
+                                promocard={item.promocao}
+                                openModal={openModal}
+                                listaopcao={item.listaopcao}
+                                setModal={ (e) => changeCard(e,item.servico,item.preco,item.destaque,item.textobotao,'offers')}
+                            />
+                       </CCol>
+                     )
+                  })
+                }
+
+                {/* <CCol md={3} xs={12} className="pb-4">
                     <CardComp
                         price="$30"
                         title="Hauis Basic"
@@ -73,7 +125,7 @@ export const SectionOffers = (props) => {
                         openModal={openModal}
                         setModal={ (e) => changeCard(e,'Hauis VIP','$100','Includes all the services for the 3 previous tiers +','Book VIP','offers')}
                         />
-                </CCol>
+                </CCol> */}
             </CRow>
             </CContainer>
         </section>

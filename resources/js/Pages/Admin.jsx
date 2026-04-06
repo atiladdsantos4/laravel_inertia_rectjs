@@ -11,6 +11,8 @@ import { SectionOffers } from '../sections/SectionOffers';
 import { SectionServices } from '../sections/SectionServices';
 import ManAbout from './Manutencao/ManAbout';
 import ManOffers from './Manutencao/ManOffers';
+import ManServices from './Manutencao/ManServices';
+import ManCarrosel from './Manutencao/ManCarrosel';
 import axios from 'axios'
 import Aos from 'aos';
 
@@ -34,10 +36,10 @@ const Admin = (props) => {
            textoButon:'Agendamento',
            icon: faCalendar,
            itens:[
-               {name:'Carrosel',href:'#'},
-               {name:'About',href:'#'},
+               {name:'ManCarrosel',href:'#'},
                {name:'ManAbout',href:'#'},
                {name:'ManOffers',href:'#'},
+               {name:'ManServices',href:'#'},
                {name:'Services',href:'#section-contact'},
                {name:'Staffs',href:'#section-contact'},
            ]
@@ -98,6 +100,18 @@ const Admin = (props) => {
         //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
         array = listasections.filter((item)=> item.sec_nome === 'SectionOffer')
         return(<ManOffers end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "ManServices":
+        //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
+        array = listasections.filter((item)=> item.sec_nome === 'SectionServices')
+        return(<ManServices end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "ManCarrosel":
+        //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
+        array = listasections.filter((item)=> item.sec_nome === 'SectionCarrosel')
+        return(<ManCarrosel end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
     }
 

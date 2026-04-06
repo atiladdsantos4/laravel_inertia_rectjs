@@ -63,7 +63,7 @@ const ManAbout = (props) =>{
   const toaster = useRef(null)
   const style = {width:'130px'}
   const stylebtsave = {width:'92px'}
-  const styleimg = {width:'20%',marginRight:'auto'}
+  const styleimg = {width:'18%'}
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
   console.log(props)
@@ -666,7 +666,7 @@ const ManAbout = (props) =>{
     let texto_botao = props.idfield === 0 ? 'Salvar' : 'Atualizar'
     return(
         <>
-        { props.imgsaved ? (<div style={{width:'80%'}}><CCardImage style={styleimg} src={endpoint_img + props.link + props.valor}/></div>) :(<></>)}
+        { props.imgsaved ? (<div className='mb-1 d-flex justify-content-center align-items-center'><CCardImage style={styleimg} src={endpoint_img + props.link + props.valor}/></div>) :(<></>)}
         <CInputGroup className="mb-3">
             <CInputGroupText style={props.estilo} className="clinputtext">{props.titulo}</CInputGroupText>
             <CFormInput
