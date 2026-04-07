@@ -1,4 +1,9 @@
 import { React,useEffect, useState, Suspense } from 'react';
+
+
+// import { useSelector, useDispatch } from 'react-redux'
+// import { increment, decrement } from '../features/counter/counterSlice';
+
 import { NavbarComp } from '../layouts/NavbarComp';
 import { SidebarComp } from '../layouts/SidebarComp';
 import { SpinnerComp } from '../components/SpinnerComp';
@@ -10,7 +15,8 @@ import { SectionServices } from '../sections/SectionServices';
 import { SectionStaff } from '../sections/SectionStaff';
 import { SectionTestimonial } from '../sections/SectionTestimonial';
 import { SectionContact } from '../sections/SectionContact';
-import { SectionCarrosel } from '../components/SectionCarrosel';
+//import { SectionCarrosel } from '../components/SectionCarrosel';
+import { SectionCarrosel } from '../sections/SectionCarrosel';
 import { Footer } from '../layouts/Footer';
 import { FloatButton } from '../components/FloatButton';
 import { Carrosel } from '../components/Carrosel';
@@ -23,10 +29,27 @@ import { CardComp } from '../components/CardComp';
 import { Modal } from '../components/Modal';
 import Aos from 'aos';
 import axios from 'axios';
+import { useStore } from '../store/useStore';
 
 
 // The Home component receives props passed from the Laravel controller
 const Home = ({ appName }) => {
+
+  //global variable shared between
+  const {
+    carroselstore,
+    removeAllcarrosel,
+    aboutstore,
+    removeAllabout,
+    offerstore,
+    removeAlloffer,
+    servicesstore,
+    removeAllservices,
+    staffstore,
+    removeAllstaff
+  } = useStore();
+  const [estadogeral,setEstadogeral] = useState(true)
+
   const theme_dark = import.meta.env.VITE_APP_THEME_DARK
   const theme_light = import.meta.env.VITE_APP_THEME_LIGHT
   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
@@ -36,6 +59,7 @@ const Home = ({ appName }) => {
   const [dadosoffer,setDadosOffer] = useState([]);
   const [dadosservice,setDadosService] = useState([]);
   const [dadoscarrosel,setDadosCarrosel] = useState([]);
+  const [dadosstaff,setDadosStaff] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [dadosModal,setdadosModal] = useState({
@@ -85,25 +109,34 @@ const Home = ({ appName }) => {
              if( item.sec_nome === 'SectionCarrosel'){
                 setDadosCarrosel(item.sec_itens)
              }
+
+             if( item.sec_nome === 'SectionStaff'){
+                setDadosStaff(item.sec_itens)
+             }
+
              //
              console.log('useEffect')
              console.log(item)
-        //    setListasections(item.emp_sections)
-        //    setListatipos(item.emp_tipos)
-        //    setListatags(item.emp_tags)
-        //    console.log('useEffect')
-        //    console.log('item:' + item)
+             removeAllcarrosel()
+             removeAlloffer()
+             removeAllservices()
+             removeAllstaff()
+             removeAllabout()
          })
     })
      document.documentElement.setAttribute('data-coreui-theme', theme_light);
      setlistaNavbar(arrayNavbar)
-     //setloadPage(true)
      Aos.init({
       // Optional configuration options
       duration: 800, // Animation duration (e.g., 1000ms)
       once: false, // Whether animation should only happen once (true) or every time it enters the view (false)
     });
   },[])
+
+  const estadoGeral = () =>{
+     return estadogeral
+  }
+
 
   const openModal= () =>{
      setOpen(true)
@@ -126,63 +159,65 @@ const Home = ({ appName }) => {
 
   return (
       <Suspense fallback={<SpinnerComp />}>
-        <Modal
-          isOpen={open}
-          close={closeModal}
-          dados={dadosModal}
-        />
+            <Modal
+            isOpen={open}
+            close={closeModal}
+            dados={dadosModal}
+            />
 
-        {/* <ButtonComp label="primary" color="primary" icon={faHeartbeat}/>
-        <ButtonOutlineComp label="primary" color="success" icon={faHeartbeat}/>
-        <ButtonPillsComp label="primary" color="success" classe="rounded-pill" icon={faHeartbeat}/> */}
 
-        <div className="container">
-            <NavbarComp dados={listaNavbar}/>
-            <SectionCarrosel dados={dadoscarrosel}/>
-            <SectionAbout title="Kings Hair" subtitle = "Sobre Nós" dados={dadosabout}/>
-            <SectionOffers
-              title="King Hair"
-              subtitle="Summer Hair Haus Offers"
-              classe="mt-5"
-              openModal={openModal}
-              setModal={setModalTexto}
-              dados={dadosoffer}
-              />
-            <SectionServices
-              title="King Hair"
-              subtitle="Services"
-              classe="mt-5  section-services"
-              openModal={openModal}
-              setModal={setModalTexto}
-              dados={dadosservice}
-            />
-            <SectionStaff
-              title="Huis Salon"
-              subtitle="Meet With Our Professional Staff"
-              classe="mt-5 section-staff"
-              openModal={openModal}
-              setModal={setModalTexto}
-            />
-            <SectionTestimonial
-              title="Testemonial"
-              subtitle="Take a look about our customers feedback"
-              classe="clcontainer section-testemonial"
-              paragraph="It is a long established fact that a reader will be tracked distracted by the readable content of a page is when looking at its layout. The point of using Lorem of distribution it look like readable English"
-              author="Samantha Wilian"
-            />
-            <SectionContact
-               title="Contact"
-               subtitle="Contact US"
-               titletext="Subscribe to the Haus Newsletter"
-               paragraph="Join our newsletter and get the insider scoop on events, products, and special offers"
-               author="Samantha Wilian"
-               classe="section-contact clcontact"
-            />
-            <Footer
-              classe="footer-id clfooter"
-            />
-            <FloatButton/>
-        </div>
+            <div className="container">
+                <span>{'carosselstore: '+carroselstore}</span>
+                <NavbarComp dados={listaNavbar}/>
+                <SectionCarrosel dados={dadoscarrosel} token={_token}/>
+                <SectionAbout title="Kings Hair" subtitle = "Sobre Nós" dados={dadosabout} token={_token}/>
+                <SectionOffers
+                    title="King Hair"
+                    subtitle="Summer Hair Haus Offers"
+                    classe="mt-5"
+                    openModal={openModal}
+                    setModal={setModalTexto}
+                    dados={dadosoffer}
+                    token={_token}
+                />
+                <SectionServices
+                    title="King Hair"
+                    subtitle="Services"
+                    classe="mt-5  section-services"
+                    openModal={openModal}
+                    setModal={setModalTexto}
+                    dados={dadosservice}
+                    token={_token}
+                />
+                <SectionStaff
+                    title="Huis Salon"
+                    subtitle="Meet With Our Professional Staff"
+                    classe="mt-5 section-staff"
+                    openModal={openModal}
+                    setModal={setModalTexto}
+                    dados={dadosstaff}
+                    token={_token}
+                />
+                <SectionTestimonial
+                    title="Testemonial"
+                    subtitle="Take a look about our customers feedback"
+                    classe="clcontainer section-testemonial"
+                    paragraph="It is a long established fact that a reader will be tracked distracted by the readable content of a page is when looking at its layout. The point of using Lorem of distribution it look like readable English"
+                    author="Samantha Wilian"
+                />
+                <SectionContact
+                    title="Contact"
+                    subtitle="Contact US"
+                    titletext="Subscribe to the Haus Newsletter"
+                    paragraph="Join our newsletter and get the insider scoop on events, products, and special offers"
+                    author="Samantha Wilian"
+                    classe="section-contact clcontact"
+                />
+                <Footer
+                    classe="footer-id clfooter"
+                />
+                <FloatButton/>
+            </div>
       </Suspense>
 
   );

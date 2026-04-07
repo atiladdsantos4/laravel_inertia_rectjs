@@ -12,15 +12,20 @@ import {
   CCol,
   CImage
 } from '@coreui/react'
-
+import { useStore } from '../store/useStore';
 
 export const SectionAbout = (props) => {
+   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
    const imgpath = import.meta.env.VITE_APP_ENDPOINT_IMG
+
+   //global variable shared between
+   const { aboutstore } = useStore();
+
    const id = "section-about"
    const [load, setLoad] = useState(false)
    const [title, setTitle] = useState(props.title)
    const [subtitle,subTitle] = useState(props.subtitle)
-   const {dados} =  props
+   const {dados, token} =  props
    const [titulo, setTitulo] = useState(null)
    const [subtitulo, setSubtitulo] = useState(null)
    const [textosection, setTextosection] = useState(null)
@@ -32,44 +37,94 @@ export const SectionAbout = (props) => {
 
 
    useEffect(()=>{
-      let string =  null
-      dados.map((item,index)=>{
+      console.log('usereffect carrosel')
+      if( aboutstore == 0 ){
+        let string =  null
+        dados.map((item,index)=>{
 
-        switch(item.sei_nome){
-           case "titulo":
-              setTitulo(item.sei_valor)
-              break
-           case "sub-titulo":
-              setSubtitulo(item.sei_valor)
-              break
-           case "textosection":
-              setTextosection(item.sei_valor)
-              break
-           case "pontuacao":
-              setPontuacao(item.sei_valor)
-              break
-           case "textorate":
-              setTextorate(item.sei_valor)
-              break
-           case "imgabout1":
-              string =  JSON.parse(item.sei_json)
-              let img1 = imgpath + string.meta[0].path + item.sei_valor
-              setImgabout1(img1)
-              break
-           case "imgabout2":
-              string =  JSON.parse(item.sei_json)
-              let img2 = imgpath + string.meta[0].path + item.sei_valor
-              setImgabout2(img2)
-              break
-           case "imgabout3":
-              string =  JSON.parse(item.sei_json)
-              let img3 = imgpath + string.meta[0].path + item.sei_valor
-              setImgabout3(img3)
-              break
+            switch(item.sei_nome){
+                case "titulo":
+                    setTitulo(item.sei_valor)
+                    break
+                case "sub-titulo":
+                    setSubtitulo(item.sei_valor)
+                    break
+                case "textosection":
+                    setTextosection(item.sei_valor)
+                    break
+                case "pontuacao":
+                    setPontuacao(item.sei_valor)
+                    break
+                case "textorate":
+                    setTextorate(item.sei_valor)
+                    break
+                case "imgabout1":
+                    string =  JSON.parse(item.sei_json)
+                    let img1 = imgpath + string.meta[0].path + item.sei_valor
+                    setImgabout1(img1)
+                    break
+                case "imgabout2":
+                    string =  JSON.parse(item.sei_json)
+                    let img2 = imgpath + string.meta[0].path + item.sei_valor
+                    setImgabout2(img2)
+                    break
+                case "imgabout3":
+                    string =  JSON.parse(item.sei_json)
+                    let img3 = imgpath + string.meta[0].path + item.sei_valor
+                    setImgabout3(img3)
+                    break
+            }
+        })
+        setLoad(true)
+      } else {
+         axios
+            .get(`${endpoint}/section/1?section_man=S`, {
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                Authorization: 'Bearer ' + token,//dentro do env//
+                },
+            })
+            .then((result) => {
+                let string =  null
+                result.data.data.sec_itens.map((item, index) => {
+                    switch(item.sei_nome){
+                        case "titulo":
+                            setTitulo(item.sei_valor)
+                            break
+                        case "sub-titulo":
+                            setSubtitulo(item.sei_valor)
+                            break
+                        case "textosection":
+                            setTextosection(item.sei_valor)
+                            break
+                        case "pontuacao":
+                            setPontuacao(item.sei_valor)
+                            break
+                        case "textorate":
+                            setTextorate(item.sei_valor)
+                            break
+                        case "imgabout1":
+                            string =  JSON.parse(item.sei_json)
+                            let img1 = imgpath + string.meta[0].path + item.sei_valor
+                            setImgabout1(img1)
+                            break
+                        case "imgabout2":
+                            string =  JSON.parse(item.sei_json)
+                            let img2 = imgpath + string.meta[0].path + item.sei_valor
+                            setImgabout2(img2)
+                            break
+                        case "imgabout3":
+                            string =  JSON.parse(item.sei_json)
+                            let img3 = imgpath + string.meta[0].path + item.sei_valor
+                            setImgabout3(img3)
+                            break
+                    }
+                })
+            })
         }
-      })
-      setLoad(true)
-   },[props])
+
+   },[props,aboutstore])
 
    return(
     load ? (

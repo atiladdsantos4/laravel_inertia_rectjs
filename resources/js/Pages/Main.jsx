@@ -1,12 +1,13 @@
 import { React,useEffect } from 'react';
 import { NavbarComp } from '../layouts/NavbarComp';
-import { SidebarComp } from '../layouts/SidebarComp'; 
+import { SidebarComp } from '../layouts/SidebarComp';
+
 
 
 // The Home component receives props passed from the Laravel controller
 const Home = ({ appName }) => {
-  const theme_dark = import.meta.env.VITE_APP_THEME_DARK  
-  const theme_light = import.meta.env.VITE_APP_THEME_LIGHT  
+  const theme_dark = import.meta.env.VITE_APP_THEME_DARK
+  const theme_light = import.meta.env.VITE_APP_THEME_LIGHT
   useEffect(() => {
      document.documentElement.setAttribute('data-coreui-theme', theme_light);
   })

@@ -5,7 +5,7 @@ import slide2 from '../images/carrosel02.jpg';
 import slide3 from '../images/carrosel03.jpg';
 import slide4 from '../images/carrosel04.jpg';
 import slide5 from '../images/carrosel05.jpg';
-import { DivImagem } from './DivImagem';
+import { DivImagem } from '../components/DivImagem';
 import axios from 'axios';
 
 // Import Swiper styles

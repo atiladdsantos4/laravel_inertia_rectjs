@@ -42,11 +42,12 @@ import {
   CDropdownMenu,
   CDropdownItem
 } from '@coreui/react'
+import { useStore } from '../../store/useStore';
 
 
 const ManAbout = (props) =>{
 
-
+  const { changeabout } = useStore();
   const [loadpage,setLoadpage] = useState(true)
   const [icone,setIcon] = useState(null)
   const [listacampos,setListacampos] = useState([])
@@ -472,6 +473,7 @@ const ManAbout = (props) =>{
             setSaved(!saved)
             atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
+            changeabout()
             addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -511,6 +513,7 @@ const ManAbout = (props) =>{
         .then((result) => {
             setSaved(!saved)
             atualizaItem(id, 'spinner', false)
+            changeabout()
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -573,6 +576,7 @@ const ManAbout = (props) =>{
             setSaved(!saved)
             atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
+            changeabout()
             addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -610,6 +614,7 @@ const ManAbout = (props) =>{
             setSaved(!saved)
             //atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
+            changeabout()
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
