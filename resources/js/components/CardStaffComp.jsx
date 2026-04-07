@@ -45,11 +45,18 @@ export const CardStaffComp = (props) => {
       openModal()
    };
 
+   const CardImagemMan = (props) => {
+      return(
+        <div className="imgprof" style={{backgroundPosition:'center',backgroundSize:'cover',backgroundImage:`url(${props.image})`}}></div>
+      )
+    }
+
 return(
     <div data-aos="fade-up-left">
-        <CCard className={cardStyle} style={{width: '19rem'}}>
+        <CCard className={cardStyle} style={{width: '18rem'}}>
             <CCardBody>
-                <p class="text-center"><CCardImage class="img" orientation="top" src={imagem} /></p>
+                {/* <p class="text-center"><CCardImage class="img" orientation="top" src={imagem} /></p> */}
+                <div className="containerstaff"><CardImagemMan image={imagem}/></div>
                 <CCardTitle><h3>{title}</h3></CCardTitle>
                 <CCardText></CCardText>
                 <CCardText></CCardText>

@@ -1075,6 +1075,27 @@
      color:white;
 }
 
+.imgprof{
+  background-color: #1E255E;
+  width: 230px;
+  height: 300px;
+  border-radius: 115px 115px 0px 0px;
+}
+
+.imgprofman{
+  background-color: #1E255E;
+  width: 180px;
+  height: 230px;
+  border-radius: 115px 115px 0px 0px;
+}
+
+.containerstaff {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+  height: 300px;           /* Required for vertical centering */
+}
+
 /* .collapse {
   transition: height 2.5s ease !important;
 } */

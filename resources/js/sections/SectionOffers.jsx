@@ -2,12 +2,17 @@ import { React, useEffect, useState, Suspense } from 'react';
 import { CContainer, CRow, CCol, CImage, CPlaceholder} from '@coreui/react';
 import "@fontsource/poppins";
 import { CardComp } from '../components/CardComp';
+import { useStore } from '../store/useStore';
 
 
 export const SectionOffers = (props) => {
-
+   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
    const imgpath = import.meta.env.VITE_APP_ENDPOINT_IMG
-   const {setModal, openModal, dados} = props
+
+   //global variable shared between
+   const { offerstore } = useStore();
+
+   const {setModal, openModal, dados, token} = props
    const id = "section-price"
    const [load, setLoad] = useState(false)
    const [title, setTitle] = useState(props.title)
@@ -19,29 +24,61 @@ export const SectionOffers = (props) => {
    const [textosection, setTextosection] = useState(null)
 
    useEffect(()=>{
-      let string =  null
-      dados.map((item,index)=>{
-        switch(item.sei_nome){
-           case "titulo":
-              setTitulo(item.sei_valor)
-              break
-           case "sub-titulo":
-              setSubtitulo(item.sei_valor)
-              break
-           case "textosection":
-              setTextosection(item.sei_valor)
-              break
-           case "cardsection":
-              string =  JSON.parse(item.sei_json)
-              console.log(string)
-              setListacard(string.meta)
-              //let img1 = imgpath + string.meta[0].path + item.sei_valor
-              //setImgabout1(img1)
-              break
-        }
-      })
+     if( offerstore == 0 ){
+        let string =  null
+        dados.map((item,index)=>{
+            switch(item.sei_nome){
+                case "titulo":
+                    setTitulo(item.sei_valor)
+                    break
+                case "sub-titulo":
+                    setSubtitulo(item.sei_valor)
+                    break
+                case "textosection":
+                    setTextosection(item.sei_valor)
+                    break
+                case "cardsection":
+                    string =  JSON.parse(item.sei_json)
+                    console.log(string)
+                    setListacard(string.meta)
+                    //let img1 = imgpath + string.meta[0].path + item.sei_valor
+                    //setImgabout1(img1)
+                    break
+            }
+        })
+     } else {
+        axios
+            .get(`${endpoint}/section/2?section_man=S`, {
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                Authorization: 'Bearer ' + token,//dentro do env//
+                },
+            })
+            .then((result) => {
+                let string =  null
+                result.data.data.sec_itens.map((item, index) => {
+                    switch(item.sei_nome){
+                        case "titulo":
+                            setTitulo(item.sei_valor)
+                          break
+                        case "sub-titulo":
+                            setSubtitulo(item.sei_valor)
+                          break
+                        case "textosection":
+                            setTextosection(item.sei_valor)
+                          break
+                        case "cardsection":
+                            string =  JSON.parse(item.sei_json)
+                            console.log(string)
+                            setListacard(string.meta)
+                          break
+                    }
+                })
+            })
+     }
 
-   },[props])
+   },[props,offerstore])
 
 
    const changeCard = (event,nome,valor,texto,detalhe,tela) =>{

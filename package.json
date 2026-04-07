@@ -8,7 +8,6 @@
         "dev": "env-cmd -f .env.dev vite",
         "postbuild:dev": "copy .\\public\\.htaccess_dev.txt .\\public\\build\\.htaccess && xcopy /E /I .\\resources\\js\\images .\\public\\build\\assets\\images",
         "postbuild:prod": "copy .\\public\\.htaccess_dev.txt .\\public\\build\\.htaccess && xcopy /E /I .\\resources\\js\\images .\\public\\build\\assets\\images"
-
     },
     "devDependencies": {
         "@coreui/chartjs": "^4.1.0",
@@ -43,6 +42,7 @@
     },
     "dependencies": {
         "@inertiajs/react": "^2.3.18",
+        "@reduxjs/toolkit": "^2.11.2",
         "autoprefixer": "^10.4.20",
         "eslint": "^9.20.1",
         "eslint-config-prettier": "^10.0.1",
@@ -55,6 +55,8 @@
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-imask": "^7.6.1",
-        "sass": "^1.85.0"
+        "react-redux": "^9.2.0",
+        "sass": "^1.85.0",
+        "zustand": "^5.0.12"
     }
 }

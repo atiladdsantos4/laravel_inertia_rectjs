@@ -1,10 +1,15 @@
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
-import '@coreui/coreui/dist/css/coreui.min.css'; 
+//redux
+import { Provider } from 'react-redux';
+import { store } from './store/store';
+//export const AppContext = createContext();
+
+import '@coreui/coreui/dist/css/coreui.min.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css'; // Import the AOS CSS file
 import '../css/style.css';
-import "@fontsource/poppins"; 
+import "@fontsource/poppins";
 
 
 
@@ -14,6 +19,10 @@ createInertiaApp({
         return pages[`./Pages/${name}.jsx`];
     },
     setup({ el, App, props }) {
-        createRoot(el).render(<App {...props} />);
+        createRoot(el).render(
+        <Provider store={store}>
+            <App {...props} />
+        </Provider>
+    );
     },
 });

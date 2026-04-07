@@ -8,12 +8,19 @@ import { CardComp } from '../components/CardComp';
 import { CardServiceComp } from '../components/CardServiceComp';
 import { ButtonComp } from '../components/ButtonComp';
 import { faAnglesUp,faAnglesDown } from '@fortawesome/free-solid-svg-icons'
+import { useStore } from '../store/useStore';
+
 
 
 export const SectionServices = (props) => {
 
+   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
    const imgpath = import.meta.env.VITE_APP_ENDPOINT_IMG
-   const {setModal, openModal, dados} = props
+
+   //global variable shared between
+   const { servicesstore } = useStore();
+
+   const {setModal, openModal, dados, token} = props
    const id = "section-services"
    const [load, setLoad] = useState(false)
    const [titulo, setTitulo] = useState(null)
@@ -27,39 +34,80 @@ export const SectionServices = (props) => {
    const [viewAll,setviewAll] =  useState(false)
    const [icone,setIcone] =  useState(faAnglesDown)
 
-
    useEffect(()=>{
-      setClasse(props.classe)
-      let string =  null
-      dados.map((item,index)=>{
-        switch(item.sei_nome){
-           case "titulo":
-              setTitulo(item.sei_valor)
-              break
-           case "sub-titulo":
-              setSubtitulo(item.sei_valor)
-              break
-           case "cardsection":
-              string =  JSON.parse(item.sei_json)
-              console.log(string)
-              if(string.meta.length > 3){
-                 setVermais(true)
-                 let slice_array_card = string.meta.slice(0,3)
-                 let slice_array_mais = string.meta.slice(3,string.meta.length)
-                 setListacard(slice_array_card)
-                 setListacardmais(slice_array_mais)
-              } else {
-                let slice_array_card = string.meta.slice(0,3)
-                setListacard(slice_array_card)
-                //setListacard(string.meta)
-              }
-              //setListacard(string.meta)
-              //let img1 = imgpath + string.meta[0].path + item.sei_valor
-              //setImgabout1(img1)
-              break
+        if( servicesstore == 0 ){
+            setClasse(props.classe)
+            let string =  null
+            dados.map((item,index)=>{
+                switch(item.sei_nome){
+                    case "titulo":
+                        setTitulo(item.sei_valor)
+                        break
+                    case "sub-titulo":
+                        setSubtitulo(item.sei_valor)
+                        break
+                    case "cardsection":
+                        string =  JSON.parse(item.sei_json)
+                        console.log(string)
+                        if(string.meta.length > 3){
+                            setVermais(true)
+                            let slice_array_card = string.meta.slice(0,3)
+                            let slice_array_mais = string.meta.slice(3,string.meta.length)
+                            setListacard(slice_array_card)
+                            setListacardmais(slice_array_mais)
+                        } else {
+                            let slice_array_card = string.meta.slice(0,3)
+                            setListacard(slice_array_card)
+                            //setListacard(string.meta)
+                        }
+                        //setListacard(string.meta)
+                        //let img1 = imgpath + string.meta[0].path + item.sei_valor
+                        //setImgabout1(img1)
+                        break
+                }
+            })
+        } else {
+          axios
+            .get(`${endpoint}/section/3?section_man=S`, {
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                Authorization: 'Bearer ' + token,//dentro do env//
+                },
+            })
+            .then((result) => {
+                let string =  null
+                result.data.data.sec_itens.map((item, index) => {
+                    switch(item.sei_nome){
+                        case "titulo":
+                            setTitulo(item.sei_valor)
+                            break
+                        case "sub-titulo":
+                            setSubtitulo(item.sei_valor)
+                            break
+                        case "cardsection":
+                            string =  JSON.parse(item.sei_json)
+                            console.log(string)
+                            if(string.meta.length > 3){
+                                setVermais(true)
+                                let slice_array_card = string.meta.slice(0,3)
+                                let slice_array_mais = string.meta.slice(3,string.meta.length)
+                                setListacard(slice_array_card)
+                                setListacardmais(slice_array_mais)
+                            } else {
+                                let slice_array_card = string.meta.slice(0,3)
+                                setListacard(slice_array_card)
+                                //setListacard(string.meta)
+                            }
+                            //setListacard(string.meta)
+                            //let img1 = imgpath + string.meta[0].path + item.sei_valor
+                            //setImgabout1(img1)
+                            break
+                    }
+                })
+            })
         }
-      })
-   },[props])
+   },[props,servicesstore])
 
    const handleViewAll = () =>{
      setviewAll(!viewAll)
@@ -77,8 +125,8 @@ export const SectionServices = (props) => {
     <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
         <section id={id} className={classe}>
             <CContainer className="ms-4">
-                <h4>{title}</h4>
-                <h1>{subtitle}</h1>
+                <h4>{titulo}</h4>
+                <h1>{subtitulo}</h1>
             </CContainer>
             <CContainer class="d-flex justify-content-center align-items-center">
             <CRow>

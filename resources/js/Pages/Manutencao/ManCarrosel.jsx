@@ -45,9 +45,15 @@ import {
   CImage,
   CCollapse
 } from '@coreui/react'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment } from '../../features/counter/counterSlice';
+import { useStore } from '../../store/useStore';
 
 const ManCarrosel = (props) =>{
+
+  const { changecarrosel, carroselstore } = useStore();
+//   const setUser = useRamStore((state) => state.setUser);
+//   const user = useRamStore((state) => state.user);
 
   const [loadpage,setLoadpage] = useState(true)
   const [icone,setIcon] = useState(null)
@@ -73,6 +79,7 @@ const ManCarrosel = (props) =>{
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
   //console.log(props)
+
 
   const handleClick = (event,id,nome,valor) => {
      handleSave(id,listacampos,nome)
@@ -240,6 +247,7 @@ const ManCarrosel = (props) =>{
  ]
 
  useEffect(()=>{
+    //setUser({'nome':'atila'})
     setIcon(props.icon)
     setListatipos(props.tipos)
     setListatags(props.tags)
@@ -266,6 +274,7 @@ const ManCarrosel = (props) =>{
                   string = JSON.parse(item.sei_json)
                   string.meta.map((it,index)=>{
                     it.imgsaved = true
+                    it.imgfile = []
                   })
                   setListacard(string.meta)
                   //console.log(string)
@@ -285,7 +294,7 @@ const ManCarrosel = (props) =>{
                  valor:item.sei_valor,
                  tipo:item.sei_tipo,
                  tipo_id:item.sei_id_tip,
-                 collapse:false
+                 collapse:true
                }
 
 
@@ -376,11 +385,13 @@ const  handleSave = (id,lista,valor) =>{
 
            json  = CriaJsonCard(id)
            let listaimg = listacard.filter((item)=>item.imgfile.length > 0)
-           listaimg.map((item,index)=>{
-             formData.append('files[]', item.imgfile[0])
-           })
-           formData.append('has_image', true)
-           formData.append('has_multiple', true)
+           if( listaimg.length > 0 ){
+               listaimg.map((item,index)=>{
+                    formData.append('files[]', item.imgfile[0])
+               })
+               formData.append('has_image', true)
+               formData.append('has_multiple', true)
+            }
 
         } else {
 
@@ -411,6 +422,7 @@ const  handleSave = (id,lista,valor) =>{
         .then((result) => {
             setSaved(!saved)
             atualizaItem(id, 'spinner', false)
+            changecarrosel()//force section carrosel re-render to reflect changes
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -692,7 +704,7 @@ const  handleSave = (id,lista,valor) =>{
                         </>
                         {
                           item.imgsaved ?
-                          (<div className="containerimg"><img style={{width:'70%'}} src={endpoint_img + item.path +'/'+ item.imagem}/></div>)
+                          (<div className="containerimg"><img style={{maxWidth:'auto',height:'100%'}} src={endpoint_img + item.path +'/'+ item.imagem}/></div>)
                           :(<></>)
                         }
                         <CInputGroup size="sm" className="mb-0">
@@ -817,6 +829,11 @@ const  handleSave = (id,lista,valor) =>{
              </CCardHeader>
              <CCardBody>
                  <CRow>
+                    <CCol>
+                        {/* <span>{'Usuario: '+user.nome}</span> */}
+                        {/* <button onClick={inc}>CountRam: {countstore}</button>; */}
+                        <button onClick={changecarrosel}>Carrosel: {carroselstore}</button>;
+                    </CCol>
                      <CCol md={12} xs={12} >
                          {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad65full' xs={12} size="lg"/></div>) : ( <AddCard {...listacampos[0]}/>)}
                      </CCol>

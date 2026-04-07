@@ -44,10 +44,13 @@ import {
   CDropdownItem,
   CCollapse
 } from '@coreui/react'
+import { useStore } from '../../store/useStore';
+
 
 
 const ManOffers = (props) =>{
 
+  const { changeoffer } = useStore();
   const [loadpage,setLoadpage] = useState(true)
   const [icone,setIcon] = useState(null)
   const [listacampos,setListacampos] = useState([])
@@ -367,7 +370,7 @@ const ManOffers = (props) =>{
                  valor:item.sei_valor,
                  tipo:item.sei_tipo,
                  tipo_id:item.sei_id_tip,
-                 collapse:false
+                 collapse:true
                }
 
                if( item.sei_tag == 'image' ){
@@ -441,6 +444,7 @@ const  handleSave = (id,lista,valor) =>{
             setSaved(!saved)
             atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
+            changeoffer()
             addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -479,6 +483,7 @@ const  handleSave = (id,lista,valor) =>{
         .then((result) => {
             setSaved(!saved)
             atualizaItem(id, 'spinner', false)
+            changeoffer()
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -541,6 +546,7 @@ const  handleSave = (id,lista,valor) =>{
             setSaved(!saved)
             atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
+            changeoffer()
             addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -578,6 +584,7 @@ const  handleSave = (id,lista,valor) =>{
             setSaved(!saved)
             //atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
+            changeoffer()
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')

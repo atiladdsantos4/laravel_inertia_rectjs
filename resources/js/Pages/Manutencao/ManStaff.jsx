@@ -2,6 +2,8 @@ import { React,useEffect, useState, Suspense, useRef } from 'react';
 import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { SpinnerComp } from '../../components/SpinnerComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import img01 from '../../images/foto01.jpeg'
+import img02 from '../../images/foto02.png'
 import { faTrash, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
@@ -47,9 +49,9 @@ import {
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 
-const ManServices = (props) =>{
+const ManStaff = (props) =>{
 
-  const { changeservices } = useStore();
+  const { changestaff } = useStore();
   const [loadpage,setLoadpage] = useState(true)
   const [icone,setIcon] = useState(null)
   const [listacampos,setListacampos] = useState([])
@@ -186,8 +188,8 @@ const ManServices = (props) =>{
   }
 
   const validaTipo = (id) =>{
-    let index = getIndex(listacard,id)
-    if( listacard[index].tipo == null ){
+    let index = getIndex(listacampos,id)
+    if( listacampos[index].tipo == null ){
        return true
     }
     return false
@@ -216,7 +218,7 @@ const ManServices = (props) =>{
        label:'Sub-Título'
      },
      {
-       nome:'cardsection',
+       nome:'cardprofsection',
        label:"Novo Card"
      }
   ]
@@ -253,8 +255,8 @@ const ManServices = (props) =>{
     },
     {
       idfield:0,
-      id:'cardsection',
-      nome:'cardsection',
+      id:'cardprofsection',
+      nome:'cardprofsection',
       titulo:"Card's da Seção",
       placeholder:"Adicione os Card's de Ofertas",
       load:false,
@@ -364,6 +366,15 @@ const ManServices = (props) =>{
 
 const  handleSave = (id,lista,valor) =>{
 
+     if( validaTipo(id) ){
+       addToast(CompToast('O Tipo de dados deve ser informado !!!', 'danger')) //--> usa toast
+       setTimeout(() => {
+            document.getElementById('idtoast').classList.remove('show')
+            document.getElementById('idtoast').remove()
+       }, 2000)
+       return
+     }
+
      let index = getIndex(lista,id)
      let tag = getTipoTag(lista[index].type)
      let json = null
@@ -380,11 +391,13 @@ const  handleSave = (id,lista,valor) =>{
 
            json  = CriaJsonCard(id)
            let listaimg = listacard.filter((item)=>item.imgfile.length > 0)
-           listaimg.map((item,index)=>{
-             formData.append('files[]', item.imgfile[0])
-           })
-           formData.append('has_image', true)
-           formData.append('has_multiple', true)
+           if( listaimg.length > 0 ){
+               listaimg.map((item,index)=>{
+                   formData.append('files[]', item.imgfile[0])
+               })
+               formData.append('has_image', true)
+               formData.append('has_multiple', true)
+           }
 
         } else {
 
@@ -415,7 +428,7 @@ const  handleSave = (id,lista,valor) =>{
             setSaved(!saved)
             atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
-            changeservices()
+            changestaff()
             addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -467,7 +480,7 @@ const  handleSave = (id,lista,valor) =>{
         .then((result) => {
             setSaved(!saved)
             atualizaItem(id, 'spinner', false)
-            changeservices()
+            changestaff()
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -530,7 +543,7 @@ const  handleSave = (id,lista,valor) =>{
             setSaved(!saved)
             atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
-            changeservices()
+            changestaff()
             addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -568,7 +581,7 @@ const  handleSave = (id,lista,valor) =>{
             setSaved(!saved)
             //atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
             atualizaItem(id, 'spinner', false)
-            changeservices()
+            changestaff()
             addToast(CompToast('Dados Atualizados com sucesso !!!', 'success')) //--> usa toast
             setTimeout(() => {
                 document.getElementById('idtoast').classList.remove('show')
@@ -653,14 +666,11 @@ const  handleSave = (id,lista,valor) =>{
     let idx = listacard.length
     let obj ={
        id:idx+1,
-       preco:'',
-       titulo:'',
-       texto:'',
+       nome:'',
        imagem:null,
        imgfile:[],
-       path:'/services',
+       path:'/profissionais',
        imgsaved:false,
-       textobotao:'',
        naoexibir:false,
        estado:false,
        display: true
@@ -674,31 +684,20 @@ const  handleSave = (id,lista,valor) =>{
     let idx = getIndex(listacard,id)
     //console.log(listacard)
     switch(param){
-       case 'titulo':
-          listacard[idx].titulo = newValue
+       case 'nome':
+          listacard[idx].nome = newValue
         break
-       case 'texto':
-          listacard[idx].texto = newValue
+       case 'experiencia':
+          listacard[idx].experiencia = newValue
         break
        case 'imagem':
           listacard[idx].imagem = newValue
           setEstcard(!estcard)
         break
-       case 'textobotao':
-          listacard[idx].textobotao = newValue
-        break
        case 'estado':
           listacard[idx].estado = newValue
           //setEstcard(!estcard)
         break
-       case 'preco':
-          listacard[idx].preco = newValue
-          //setEstcard(!estcard)
-        break
-    //    case 'promocao':
-    //       listacard[idx].promocao = newValue
-    //       setEstcard(!estcard)
-    //     break
        case 'naoexibir':
           listacard[idx].naoexibir = newValue
           setEstcard(!estcard)
@@ -820,17 +819,21 @@ const  handleSave = (id,lista,valor) =>{
             <CCol xs={4} className='mb-2'>
                 <CCard style={{border:'2px solid #360f61'}}>
                     <CCardHeader>
+                        <CCardText className='mb-5'>
                         <>
                           { item.naoexibir
                              ? (<div className='mb-2'><CFormCheck id="defaultCheck1" label="Não Exibir Card" checked onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} /></div>)
                              : (<div className='mb-2'><CFormCheck id="defaultCheck1" label="Não Exibir Card" onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} /></div>)
                           }
                         </>
+                        </CCardText>
+                        <CCardText className='mb-4'>
                         {
                           item.imgsaved ?
-                          (<div className="containerimg"><img src={endpoint_img + item.path +'/'+ item.imagem}/></div>)
+                          (<div className="containerimg"><CardImagem image={endpoint_img + item.path +'/'+ item.imagem}/></div>)
                           :(<></>)
                         }
+                        </CCardText>
                         <CInputGroup size="sm" className="mb-0">
                             <CInputGroupText style={styleinputcard} className="clinputtext">Imagem</CInputGroupText>
                             <CFormInput type="file" onChange={(e)=>onImageChange(e,item.id)} />
@@ -841,21 +844,17 @@ const  handleSave = (id,lista,valor) =>{
                             </div>
                         </CInputGroup>
                         { item.imagem == null ? (<></>) : (<BadgeImg color="primary" fonte="11px" valor={item.imagem}/>) }
-                        <CInputGroup size="sm" className="mb-2 mt-1">
+                        {/* <CInputGroup size="sm" className="mb-2 mt-1">
                             <CInputGroupText style={styleinputcard} className="clinputtext">Preço</CInputGroupText>
                             <CFormInput onChange={(e)=>atualizaListaCard(item.id,'preco',e.target.value)} defaultValue={item.preco}/>
-                        </CInputGroup>
+                        </CInputGroup> */}
                         <CInputGroup size="sm" className="mb-2 mt-1">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Titulo</CInputGroupText>
-                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'titulo',e.target.value)} defaultValue={item.titulo}/>
+                            <CInputGroupText style={styleinputcard} className="clinputtext">Nome</CInputGroupText>
+                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'nome',e.target.value)} defaultValue={item.nome}/>
                         </CInputGroup>
                         <CInputGroup size="sm" className="mb-2">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Texto</CInputGroupText>
-                            <CFormTextarea style={{fontSize:'13px'}} rows={8} onChange={(e)=>atualizaListaCard(item.id,'texto',e.target.value)} defaultValue={item.texto}/>
-                        </CInputGroup>
-                        <CInputGroup size="sm" className="mb-2">
-                            <CInputGroupText style={styleinputcard} className="clinputtext">Texto Button</CInputGroupText>
-                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'textobotao',e.target.value)} defaultValue={item.textobotao}/>
+                            <CInputGroupText style={styleinputcard} className="clinputtext">Experiênca</CInputGroupText>
+                            <CFormTextarea style={{fontSize:'13px'}} rows={2} onChange={(e)=>atualizaListaCard(item.id,'experiencia',e.target.value)} defaultValue={item.experiencia}/>
                         </CInputGroup>
                     </CCardHeader>
                     <CCardFooter>
@@ -894,7 +893,7 @@ const  handleSave = (id,lista,valor) =>{
       const largura = props.fonte ? '110px' : ''
       return(
         //  <CBadge style={{minWidth:largura,borderRadius:'5px',fontSize:fonte}} color={props.color}>{props.tipo}</CBadge>
-        <CButton size="sm" className="btexpandir" style={{width:'100px'}} onClick={(e)=>atualizaItem('cardsection','collapse',null)}>
+        <CButton size="sm" className="btexpandir" style={{width:'100px'}} onClick={(e)=>atualizaItem('cardprofsection','collapse',null)}>
             Expandir&nbsp;
             { props.expande ? (<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faCircleArrowUp}/>) : (<FontAwesomeIcon size="sm" icon={faCircleArrowDown} style={{color:'white'}}/>) }
         </CButton>
@@ -994,12 +993,18 @@ const  handleSave = (id,lista,valor) =>{
     return JSON.stringify(objfinal)
   }
 
+  const CardImagem = (props) => {
+     return(
+       <div className="imgprofman" style={{backgroundPosition:'center',backgroundSize:'cover',backgroundImage:`url(${props.image})`}}></div>
+     )
+  }
+
   return(
          <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
              <CCardHeader className="clfooter">
-               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Services</span>
+               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Staffs</span>
              </CCardHeader>
              <CCardBody>
                  <CRow>
@@ -1012,6 +1017,9 @@ const  handleSave = (id,lista,valor) =>{
                      <CCol md={12} xs={12} >
                          {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad65full' xs={12} size="lg"/></div>) : ( <AddCard {...listacampos[2]}/>)}
                      </CCol>
+                    {/* <CCol md={6} xs={6} >
+                        <CardImagem image={img02}/>
+                    </CCol> */}
                  </CRow>
              </CCardBody>
            </CCard>
@@ -1020,4 +1028,4 @@ const  handleSave = (id,lista,valor) =>{
 
 }
 
-export default ManServices
+export default ManStaff
