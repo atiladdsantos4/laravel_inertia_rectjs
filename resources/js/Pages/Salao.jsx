@@ -27,6 +27,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeartbeat,faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { CardComp } from '../components/CardComp';
 import { Modal } from '../components/Modal';
+import { ModalAvaliacao } from '../components/ModalAvaliacao';
 import Aos from 'aos';
 import axios from 'axios';
 import { useStore } from '../store/useStore';
@@ -62,6 +63,11 @@ const Home = ({ appName }) => {
   const [dadosstaff,setDadosStaff] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
+  const [openAvaliacao,setOpenAvaliacao] = useState(false)
+  /*
+  isOpen={openAvaliacao}
+            close={closeModalAvaliacao}
+  */
   const [dadosModal,setdadosModal] = useState({
      nome: "atila",
      price: "10,00",
@@ -146,6 +152,15 @@ const Home = ({ appName }) => {
      setOpen(false)
   }
 
+  const closeModalAvaliacao = () =>{
+     setOpenAvaliacao(false)
+  }
+
+  const openModalAvaliacao = () =>{
+     setOpenAvaliacao(true)
+  }
+
+
   const setModalTexto= (nome, valor, texto, detalhe, tela) =>{
      let dados = {
         nome:nome,
@@ -165,12 +180,25 @@ const Home = ({ appName }) => {
             dados={dadosModal}
             />
 
+            <ModalAvaliacao
+               isOpen={openAvaliacao}
+               close={closeModalAvaliacao}
+               dados={dadosModal}
+               token={_token}
+            />
+
 
             <div className="container">
                 <span>{'carosselstore: '+carroselstore}</span>
                 <NavbarComp dados={listaNavbar}/>
                 <SectionCarrosel dados={dadoscarrosel} token={_token}/>
-                <SectionAbout title="Kings Hair" subtitle = "Sobre Nós" dados={dadosabout} token={_token}/>
+                <SectionAbout
+                    title="Kings Hair"
+                    subtitle = "Sobre Nós"
+                    dados={dadosabout}
+                    token={_token}
+                    open={openModalAvaliacao}
+                />
                 <SectionOffers
                     title="King Hair"
                     subtitle="Summer Hair Haus Offers"
