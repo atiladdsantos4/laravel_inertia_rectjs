@@ -10,7 +10,8 @@ import {
   CPlaceholder,
   CRow,
   CCol,
-  CImage
+  CImage,
+  CButton
 } from '@coreui/react'
 import { useStore } from '../store/useStore';
 
@@ -25,7 +26,7 @@ export const SectionAbout = (props) => {
    const [load, setLoad] = useState(false)
    const [title, setTitle] = useState(props.title)
    const [subtitle,subTitle] = useState(props.subtitle)
-   const {dados, token} =  props
+   const {dados, token, open } =  props
    const [titulo, setTitulo] = useState(null)
    const [subtitulo, setSubtitulo] = useState(null)
    const [textosection, setTextosection] = useState(null)
@@ -34,6 +35,10 @@ export const SectionAbout = (props) => {
    const [imgabout01, setImgabout1] = useState(null)
    const [imgabout02, setImgabout2] = useState(null)
    const [imgabout03, setImgabout3] = useState(null)
+
+   const openModal = (event) =>{
+      open()
+   }
 
 
    useEffect(()=>{
@@ -142,10 +147,20 @@ export const SectionAbout = (props) => {
                         <div class="circle">
                             <div className="div-circle">
                                 <h4>{pontuacao}
-                                <div className="div-rate"><RateComp/></div>
-                                <div className="div-score">
-                                   {textorate}</div>
+                                    <div className="div-rate"><RateComp/></div>
+                                    <div className="div-score">{textorate}</div>
                                 </h4>
+                            </div>
+                            <div style={{padding:'2px',position:'relative',top:'30px',left:'-50px'}}>
+                               <CButton
+                                   onClick={(e)=>openModal(e)}
+                                   variant="outline"
+                                   color="secondary"
+                                   className="rounded-pill"
+                                   style={{border:'none',paddingTop:'1px',paddingBottom:'1px',backgroundColor:'rgba(244, 150, 209, 1)'}}
+                                   size="sm">
+                                        Faça Avaliação
+                                </CButton>
                             </div>
                         </div>
                     </div>

@@ -277,8 +277,8 @@
 
   & .div-circle {
      position:relative;
-     top:35px;
-     left:-15px;
+     top:15px;
+     left:15px;
    }
 
   & .div-rate {
@@ -892,7 +892,7 @@
 	background-color:white;
 	width:168px;
 	height:340px;
-    z-index: 10000;
+    /* z-index: 10000; */
 	border-radius:100px 100px 100px 100px;
 	/* background-image: url('../js/images/Imagem01.jpg'); */
 }
@@ -906,7 +906,7 @@
 	background-color:white;
 	width:168px;
 	height:340px;
-    z-index: 10000;
+    /* z-index: 10000; */
 	border-radius:100px 100px 100px 100px;
 	/* background-image: url('../js/images/Imagem02.jpg'); */
 }
@@ -921,7 +921,7 @@
 	width:168px;
 	height:340px;
 	border-radius:100px 100px 100px 100px;
-    z-index: 10000;
+    /* z-index: 10000; */
     /* border:2px solid white; */
 	/* background-image: url('../js/images/Imagem03.jpg'); */
 }
