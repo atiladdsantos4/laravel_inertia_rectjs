@@ -18,7 +18,7 @@ import { IMaskInput,IMaskMixin } from 'react-imask';
 export const ModalAvaliacao = (props) =>{
 
    const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
-   const { isOpen, close, dados, tela, token } = props
+   const { isOpen, close, section, tela, token } = props
    const [nome,setNome] = useState(null)
    const [profissao,setProfissao] = useState(null)
    const [comentario,setComentario]  = useState(null)
@@ -51,6 +51,7 @@ export const ModalAvaliacao = (props) =>{
         formData.append('tes_valor_rate', valor)
         formData.append('tes_comentario', comentario)
         formData.append('tes_sexo', sexo)
+        formData.append('tes_id_sec', section)
         formData.append('tes_email', email)
         axios
             .post(`${endpoint}/testemunho`, formData, {
