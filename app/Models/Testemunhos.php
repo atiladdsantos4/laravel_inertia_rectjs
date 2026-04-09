@@ -14,10 +14,10 @@ class Testemunhos extends Model
     public $timestamps = true; //--> update automarically by laravel <--//
     protected $table = 'tes_testemunhos';
     protected $primaryKey = 'tes_id_tes';
-    protected $appends = ['acao'];
+    protected $appends = ['load'];
     //,'pla_planosaude','pac_planosaude'];
     protected $fillable = [
-        'tes_nome','tes_profissao','tes_comentario','tes_sexo','tes_valor_rate','tes_created_at', 'tes_updated_at', 'tes_deleted_at'
+        'tes_nome','tes_email','tes_profissao','tes_comentario','tes_sexo','tes_valor_rate','tes_exibir','tes_id_sec','tes_created_at', 'tes_updated_at', 'tes_deleted_at'
     ];
     //tes_id_emp,tes_email,tes_tipo_empresa,tes_cnpj_cpf,tes_tipo_telefone,tes_telefone,tes_created_at,tes_updated_at,tes_deleted_at
     protected $dates = ['tes_deleted_at'];//campo obrigatório pra o SoftDeletes
@@ -34,8 +34,8 @@ class Testemunhos extends Model
         'tes_deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    protected function getacaoAttribute(){ //--> qtde_escopos
-        return 1;
+    protected function getloadAttribute(){ //--> qtde_escopos
+        return false;
     }
 
     //boot events
@@ -46,6 +46,7 @@ class Testemunhos extends Model
         self::creating(function($model){//before create
             $model->tes_created_at = date("Y-m-d H:i:s.u");
             $model->tes_updated_at = date("Y-m-d H:i:s.u");
+            $model->tes_exibir = 0;
         });
 
         self::updating(function($model){

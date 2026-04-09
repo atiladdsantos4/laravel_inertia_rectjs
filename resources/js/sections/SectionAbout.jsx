@@ -5,6 +5,7 @@ import imgAbout1 from '../images/about/Imagem01.jpg'
 import imgAbout2 from '../images/Imagem02.jpg';
 import imgAbout3 from '../images/Imagem03.jpg';
 import { RateComp } from '../components/RateComp';
+import { RateCompNew } from '../components/RateCompNew';
 import {
   CContainer,
   CPlaceholder,
@@ -147,7 +148,7 @@ export const SectionAbout = (props) => {
                         <div class="circle">
                             <div className="div-circle">
                                 <h4>{pontuacao}
-                                    <div className="div-rate"><RateComp/></div>
+                                    <div className="div-rate"><RateCompNew readonly={true}/></div>
                                     <div className="div-score">{textorate}</div>
                                 </h4>
                             </div>

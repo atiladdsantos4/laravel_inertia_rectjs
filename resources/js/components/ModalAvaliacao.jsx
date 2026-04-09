@@ -7,8 +7,11 @@ import { Calendario } from './Calendario';
 import { ButtonOutlineComp } from './ButtonOutlineComp';
 import { BadgeComp } from './BadgeComp';
 import { RateComp } from './RateComp';
+import { RateCompNew } from './RateCompNew';
 import axios from 'axios';
 import { CssSyntaxError } from 'postcss';
+import { IMaskInput,IMaskMixin } from 'react-imask';
+
 //<FontAwesomeIcon size="2x" style={{ color: '#229741' }} icon={faHeartbeat} />
 
 
@@ -20,12 +23,14 @@ export const ModalAvaliacao = (props) =>{
    const [profissao,setProfissao] = useState(null)
    const [comentario,setComentario]  = useState(null)
    const [valor,setValor] = useState(null)
+   const [email,setEmail] = useState(null)
    const [sexo,setSexo] = useState(null)
    const [load,setLoad] = useState(false)
    const [show,setShow] = useState(false)
    const [telefone,setTelefone] = useState(null)
    const [validated, setValidated] = useState(false)
    const styleinput = {width:'100px'}
+
 
    useEffect(()=>{},[
       console.log(props)
@@ -46,6 +51,7 @@ export const ModalAvaliacao = (props) =>{
         formData.append('tes_valor_rate', valor)
         formData.append('tes_comentario', comentario)
         formData.append('tes_sexo', sexo)
+        formData.append('tes_email', email)
         axios
             .post(`${endpoint}/testemunho`, formData, {
                 headers: {
@@ -126,7 +132,7 @@ export const ModalAvaliacao = (props) =>{
         <CForm
              className="row g-3 needs-validation" noValidate  id="form-id" onSubmit={handleSubmit} validated={validated}>
         <CModalBody className="pt-5">
-            <CAlert visible={show} color="success" onClose={() => setShow(false)}>Testemunho Enviado</CAlert>
+            <CAlert dismissible visible={show} color="success" onClose={() => setShow(false)}>Testemunho Enviado Comsucesso</CAlert>
             <CRow>
                <CCol md={12} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
@@ -142,8 +148,24 @@ export const ModalAvaliacao = (props) =>{
                             required
                         />
                     </CInputGroup>
-                </CCol>
-                <CCol md={12} xs={12}>
+
+               </CCol>
+               <CCol md={12} xs={12}>
+                    <CInputGroup size="sm" className="mb-3">
+                        <CInputGroupText style={styleinput} className="inputwidth has-validation" id="basic-addon1">Email</CInputGroupText>
+                        <CFormInput
+                            placeholder="Digite seu nome"
+                            className="input-text"
+                            aria-label="Username"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            feedbackInvalid="O Email deve ser informado."
+                            aria-describedby="basic-addon1"
+                            required
+                        />
+                    </CInputGroup>
+               </CCol>
+               <CCol md={12} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
                         <CInputGroupText style={styleinput} className="inputwidth" id="basic-addon1">Sexo</CInputGroupText>
                          <CFormSelect
@@ -181,7 +203,7 @@ export const ModalAvaliacao = (props) =>{
                 <CCol md={6} xs={6}>
                     <CInputGroup size="sm" className="mb-3">
                         <CInputGroupText style={styleinput} className="inputwidth" id="basic-addon1">Rate</CInputGroupText>
-                        <div style={{maxHeight:'20px',width:'130px',display:'flex',top:'8px;'}}><RateComp click={setValor}/></div>
+                        <div style={{maxHeight:'20px',width:'130px',display:'flex',top:'8px;'}}><RateCompNew click={setValor}/></div>
                     </CInputGroup>
                 </CCol>
                 <CCol md={6} xs={6}>

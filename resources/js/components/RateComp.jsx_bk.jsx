@@ -4,43 +4,23 @@ import imgStarEmpty from '../images/star_empty.png'
 
 export const RateComp = (props) => {
 
-  const  {click,valorate,prefix} = props
+  const  {click,valorate} = props
   const  [image1,setimage1] = useState(imgStar)// ref to full star
   const  [image2,setimage2] = useState(imgStarEmpty)// ref to full empty star
   const  [valueRate,setvalueRate] = useState(null)// ref to full empty star
 
-  useEffect(() => {
-      console.log('renderizei:'+valorate)
+   useEffect(() => {
       let all = document.querySelectorAll('.imgrate');
       all.forEach((element) =>{
-         element.addEventListener('click', clickStar);
+         element.addEventListener('click', clickStar(element.id));
       });
       setimage1(imgStar)
       setimage2(imgStarEmpty)
-      if ("valorate" in props) {
-        //setStar(valorate)
-      }
-
    },[])
 
    //Set all stars full until current id element
-  const clickStar = (event) =>{
-     console.log(event.target.id)
+  const clickStar = (event,id) =>{
      let ele = event.target;
-     if(   ele.src === image2 ){
-         ele.src=image1;
-     } else {
-         ele.src=image2;
-     }
-     changeAllFalse(ele.dataset.id);
-     setvalueRate(ele.dataset.id)
-     if ("click" in props) {
-         click(ele.id)
-     }
-  }
-
-  const setStar = (id) =>{
-     let ele = eval("document.getElementById('"+id+"')")
      if(   ele.src === image2 ){
          ele.src=image1;
      } else {
@@ -52,7 +32,6 @@ export const RateComp = (props) => {
          click(ele.id)
      }
   }
-
 
   //Fisrt changes all stars to empty and fill again until de elment defined by id param
   const changeAllFalse = (id) =>{
@@ -67,7 +46,7 @@ export const RateComp = (props) => {
 
     //Fill until param id elemet//
     all.forEach((element) =>{
-      valor = element.dataset.id
+      valor = element.id
       if( valor <= id){
         element.src=image1;
       }
@@ -77,11 +56,11 @@ export const RateComp = (props) => {
    return(
    <div class="uldiv">
       <ul class="rateimg flex-list">
-        <li><img data-id="1" id={prefix+'1'} className="imgrate" src={image1}/>&nbsp;</li>
-        <li><img data-id="2" id={prefix+'2'} className="imgrate" src={image1}/>&nbsp;</li>
-        <li><img data-id="3" id={prefix+'3'} className="imgrate" src={image1}/>&nbsp;</li>
-        <li><img data-id="4" id={prefix+'4'} className="imgrate" src={image1}/>&nbsp;</li>
-        <li><img data-id="5" id={prefix+'5'} className="imgrate" src={image1}/></li>
+        <li><img id="1" className="imgrate" src={image1}/>&nbsp;</li>
+        <li><img id="2" className="imgrate" src={image1}/>&nbsp;</li>
+        <li><img id="3" className="imgrate" src={image1}/>&nbsp;</li>
+        <li><img id="4" className="imgrate" src={image1}/>&nbsp;</li>
+        <li><img id="5" className="imgrate" src={image1}/></li>
       </ul>
   </div>
    )

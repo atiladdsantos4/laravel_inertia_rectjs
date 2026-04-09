@@ -570,6 +570,8 @@
      border-radius: 15px 15px 0px 0px;
   }
 
+
+
   @media screen and (max-width: 500px) {
    .barra{
         display: none;
@@ -878,6 +880,18 @@
      color: white;
 }
 
+.clthinputtext {
+     background: linear-gradient(90deg, #200D35 14.33%, #E95E86 214.54%);
+     border-radius: 5px 0px 0px 5px;
+     color: white !important;
+}
+
+.clthinterno {
+     background: linear-gradient(90deg, #200D35 14.33%, #E95E86 214.54%);
+     /* border-radius: 5px 0px 0px 5px; */
+     color: white !important;
+}
+
 /* end footer */
 
 /*inputs section*/
@@ -1096,19 +1110,12 @@
   height: 300px;           /* Required for vertical centering */
 }
 
-/* .collapse {
-  transition: height 2.5s ease !important;
-} */
+.clavatar{
+    width: 85px;
+    height: 85px;
+    background-color: #e9bfe3;
+    border-radius: 50%;
+}
 
-/*
-const DynamicBackground = ({ imageUrl }) => {
-  const divStyle = {
-    backgroundImage: `url(${imageUrl})`,
-    backgroundSize: 'cover',
-    height: '400px'
-  };
-
-  return <div style={divStyle}>Content here</div>;
-};*/
 
 

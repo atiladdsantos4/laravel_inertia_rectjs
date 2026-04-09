@@ -14,6 +14,7 @@ import ManOffers from './Manutencao/ManOffers';
 import ManServices from './Manutencao/ManServices';
 import ManCarrosel from './Manutencao/ManCarrosel';
 import ManStaff from './Manutencao/ManStaff';
+import ManTestemunhos from './Manutencao/ManTestemunhos';
 import axios from 'axios'
 import Aos from 'aos';
 
@@ -42,7 +43,7 @@ const Admin = (props) => {
                {name:'ManOffers',href:'#'},
                {name:'ManServices',href:'#'},
                {name:'ManStaffs',href:'#'},
-               {name:'Services',href:'#section-contact'},
+               {name:'ManTestemunhos',href:'#'},
            ]
   }]
 
@@ -119,6 +120,12 @@ const Admin = (props) => {
         //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
         array = listasections.filter((item)=> item.sec_nome === 'SectionStaff')
         return(<ManStaff end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "ManTestemunhos":
+        //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManTestemunhos end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
     }
 

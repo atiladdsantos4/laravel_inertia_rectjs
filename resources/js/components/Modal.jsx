@@ -37,7 +37,6 @@ export const Modal = (props) =>{
       close()
    }
 
-
    const InputMaskCPF = () => {
     const CFormInputCpf = IMaskMixin(({ inputRef, ...props }) => (
         <CFormInput {...props} ref={inputRef} />

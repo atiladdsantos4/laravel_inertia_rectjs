@@ -121,7 +121,7 @@ export const SectionCarrosel = (props)=> {
         className="mySwiper"
       >
         {listaimg.map((item, index) => (
-            <SwiperSlide  style={{backgroundColor:'white !important',textAlign:'center'}}>
+            <SwiperSlide key={index} style={{backgroundColor:'white !important',textAlign:'center'}}>
                 <DivImagem texto={true} imagem={imgpath+item.path+'/'+item.imagem}/>
             {/* <div class="card" style={{margin:'auto',width: '18rem'}}> */}
             {/* {

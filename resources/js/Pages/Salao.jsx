@@ -47,7 +47,9 @@ const Home = ({ appName }) => {
     servicesstore,
     removeAllservices,
     staffstore,
-    removeAllstaff
+    removeAllstaff,
+    testemunhostore,
+    removeAlltestemunho,
   } = useStore();
   const [estadogeral,setEstadogeral] = useState(true)
 
@@ -61,6 +63,8 @@ const Home = ({ appName }) => {
   const [dadosservice,setDadosService] = useState([]);
   const [dadoscarrosel,setDadosCarrosel] = useState([]);
   const [dadosstaff,setDadosStaff] = useState([]);
+  const [dadostestemunho,setDadosTestemunho] = useState([]);
+  const [listatestemunho,setListaTestemunho] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [openAvaliacao,setOpenAvaliacao] = useState(false)
@@ -116,9 +120,14 @@ const Home = ({ appName }) => {
                 setDadosCarrosel(item.sec_itens)
              }
 
-             if( item.sec_nome === 'SectionStaff'){
+             if( item.sec_nome === 'SectionStaff' ){
                 setDadosStaff(item.sec_itens)
              }
+             if( item.sec_nome === 'SectionTestemunho' ){
+                setDadosTestemunho(item.sec_itens)
+                setListaTestemunho(item.sec_testemunhos)
+             }
+
 
              //
              console.log('useEffect')
@@ -128,6 +137,7 @@ const Home = ({ appName }) => {
              removeAllservices()
              removeAllstaff()
              removeAllabout()
+             removeAlltestemunho()
          })
     })
      document.documentElement.setAttribute('data-coreui-theme', theme_light);
@@ -232,6 +242,9 @@ const Home = ({ appName }) => {
                     classe="clcontainer section-testemonial"
                     paragraph="It is a long established fact that a reader will be tracked distracted by the readable content of a page is when looking at its layout. The point of using Lorem of distribution it look like readable English"
                     author="Samantha Wilian"
+                    dados={dadostestemunho}
+                    testemunhos={listatestemunho}
+                    token={_token}
                 />
                 <SectionContact
                     title="Contact"

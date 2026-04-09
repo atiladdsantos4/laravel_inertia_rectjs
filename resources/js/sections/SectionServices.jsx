@@ -133,7 +133,7 @@ export const SectionServices = (props) => {
                 {
                    listacard.map((item,index)=>{
                      return(
-                       <CCol md={4} xs={12} className="pb-4 px-5">
+                       <CCol key={index} md={4} xs={12} className="pb-4 px-5">
                             <CardServiceComp
                                 price={item.preco}
                                 title={item.titulo}

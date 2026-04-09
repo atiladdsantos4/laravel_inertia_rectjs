@@ -27,8 +27,9 @@ class TestemunhoController extends Controller
         $all = $request->all();
 
         if( isset($all["listagem"]) ){ //para renderizar as interfaces convencionais
-           $testemunho = Testemunhos::orderBy('tes_created_at');
-           $result_testemunho = TestemunhoResource::collection($section); //only works for colection
+           $testemunho = Testemunhos::all();
+           //orderBy('tes_created_at');
+           $result_testemunho = TestemunhoResource::collection($testemunho); //only works for colection
 
            $response = [
                 'status' => true,
@@ -60,7 +61,8 @@ class TestemunhoController extends Controller
             'tes_nome' => 'required',
             'tes_profissao' => 'required',
             'tes_valor_rate' => 'required',
-            'tes_sexo'=> 'required',
+            'tes_sexo' => 'required',
+            'tes_email'=> 'required',
         ]);
 
         if($validator->fails()){
@@ -118,15 +120,15 @@ class TestemunhoController extends Controller
     {
 
        $input = $request->all();
-       $section = Testemunhos::find($id);
-       $section->sec_nome = $input["sec_nome"];
-       $section->update();
+       $testemunho = Testemunhos::find($id);
+       $testemunho->tes_exibir = $input["tes_exibir"];
+       $testemunho->update();
 
-       $sec = new SectionResource(Testemunhos::find($id));
+       $tes = new TestemunhoResource($testemunho);
        $arr_result = [
             "status" => true,
-            "mensagem" => "Seção Atualizada com Sucesso!!!",
-            "data" => $sec
+            "mensagem" => "Testemunho Atualizada com Sucesso!!!",
+            "data" => $tes
         ];
 
         return json_encode($arr_result,JSON_PRETTY_PRINT);
