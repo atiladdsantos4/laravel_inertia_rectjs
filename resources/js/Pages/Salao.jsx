@@ -64,6 +64,7 @@ const Home = ({ appName }) => {
   const [dadoscarrosel,setDadosCarrosel] = useState([]);
   const [dadosstaff,setDadosStaff] = useState([]);
   const [dadostestemunho,setDadosTestemunho] = useState([]);
+  const [sectestemunho,setSectestemunho] = useState([]);
   const [listatestemunho,setListaTestemunho] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
@@ -124,6 +125,7 @@ const Home = ({ appName }) => {
                 setDadosStaff(item.sec_itens)
              }
              if( item.sec_nome === 'SectionTestemunho' ){
+                setSectestemunho(item.sec_id_sec)
                 setDadosTestemunho(item.sec_itens)
                 setListaTestemunho(item.sec_testemunhos)
              }
@@ -195,6 +197,7 @@ const Home = ({ appName }) => {
                close={closeModalAvaliacao}
                dados={dadosModal}
                token={_token}
+               section={sectestemunho}
             />
 
 
