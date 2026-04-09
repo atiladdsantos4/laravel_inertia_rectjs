@@ -49,6 +49,14 @@ class Sections extends Model
        ->join('tag_campo','sei_id_tag','tag_id_tag')
        ->orderBy('sei_id_sei');
     }
+
+    public function itens_testemunho(){
+        return $this->hasMany(Testemunhos::class, 'tes_id_sec', 'sec_id_sec')
+        ->select('tes_id_tes','tes_nome','tes_email','tes_profissao','tes_comentario','tes_sexo','tes_valor_rate','tes_id_sec','tes_exibir','tes_created_at')
+        ->orderBy('tes_created_at');
+    }
+
+
     /*
     public function doctors(){
         return $this->hasMany(Doctors::class, 'doc_id_sec', 'sec_id_sec');

@@ -23,7 +23,8 @@ class SectionResource extends JsonResource
                 'sec_empresa' => $this->empresa->emp_nome,
                 'sec_created_at' => Carbon::parse($this->sec_created_at)->format('d/m/Y H:i:s'),
                 'sec_updated_at' => $this->sec_updated_at != null ? Carbon::parse($this->updated_at)->format('d/m/Y H:i:s') : null,
-                'sec_itens'=> $this->itens
+                'sec_itens'=> $this->itens,
+                'sec_testemunhos' => $this->sec_id_sec == 6 ? $this->itens_testemunho: null,
             ];
       }  else if($request->has('init')){
           $data =  [
@@ -56,6 +57,8 @@ class SectionResource extends JsonResource
                 'sec_created_at' => Carbon::parse($this->sec_created_at)->format('d/m/Y H:i:s'),
                 'sec_updated_at' => $this->sec_updated_at != null ? Carbon::parse($this->updated_at)->format('d/m/Y H:i:s') : null,
                 'sec_itens' => $this->itens,
+                'sec_testemunhos' => $this->sec_id_sec == 6 ? $this->itens_testemunho: null,
+                //$this->tratamentos->makeHidden('esp_especialidades'),
             ];
         } else {
              $data =  [

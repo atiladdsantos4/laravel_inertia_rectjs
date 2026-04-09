@@ -106,8 +106,9 @@ export const SectionOffers = (props) => {
                 {
                   listacard.map((item,index)=>{
                      return(
-                       <CCol md={3} xs={12} className="pb-4">
+                       <CCol key={index} md={3} xs={12} className="pb-4">
                             <CardComp
+                                key={index}
                                 price={item.preco}
                                 title={item.servico}
                                 subtitle={item.destaque}
