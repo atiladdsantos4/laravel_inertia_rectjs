@@ -201,13 +201,13 @@ export const ModalAvaliacao = (props) =>{
                         </CFormSelect>
                     </CInputGroup>
                 </CCol>
-                <CCol md={6} xs={6}>
+                <CCol md={6} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
                         <CInputGroupText style={styleinput} className="inputwidth" id="basic-addon1">Rate</CInputGroupText>
                         <div style={{maxHeight:'20px',width:'130px',display:'flex',top:'8px;'}}><RateCompNew click={setValor}/></div>
                     </CInputGroup>
                 </CCol>
-                <CCol md={6} xs={6}>
+                <CCol md={6} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
                         <CInputGroupText style={styleinput} className="inputwidth" id="basic-addon1">Valor</CInputGroupText>
                         <CFormInput

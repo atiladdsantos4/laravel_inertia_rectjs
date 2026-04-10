@@ -9,16 +9,7 @@ import axios from 'axios';
 import {
   CTable, CTableRow,CTableHeaderCell,CTableBody,CTableDataCell,CTableHead,
   CButton,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardGroup,
-  CCardHeader,
-  CCardImage,
-  CCardLink,
-  CCardSubtitle,
-  CCardText,
-  CCardTitle,
+  CCard,CCardBody,CCardFooter,CCardGroup,CCardHeader,CCardImage,CCardLink,CCardSubtitle,CCardText,CCardTitle,
   CCol,
   CSpinner,
   CRow,
@@ -26,22 +17,15 @@ import {
   CFormInput,
   CFormTextarea,
   CAlert,
-  CInputGroup,
-  CInputGroupText,
-  CFormLabel,
-  CFormCheck,
-  CToaster,
-  CToast,
-  CToastBody,
-  CToastClose,
+  CInputGroup,CInputGroupText,
+  CFormLabel,CFormCheck,
+  CToaster,CToast,CToastBody,CToastClose,
   CBadge,
   CContainer,
-  CDropdown,
-  CDropdownToggle,
-  CDropdownMenu,
-  CDropdownItem,
+  CDropdown,CDropdownToggle,CDropdownMenu,CDropdownItem,
   CImage,
-  CCollapse
+  CCollapse,
+  CPagination, CPaginationItem
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 
@@ -55,8 +39,11 @@ const ManTestemunhos = (props) =>{
   const [listatipos,setListatipos] = useState([])
   const [listacard,setListacard] = useState([])
   const [listatestemunho,setListatestemunho] = useState([])
+  const [listafiltro,setListafiltro] = useState([])
   const [estcard,setEstcard] = useState(false)
   const [est,setEst] = useState(false)
+  const [numnpagination,setNumpagination] = useState(false)
+  const [pesquisar,setPesquisar] = useState(null)
   const [saved,setSaved] = useState(false)
   const [toast, addToast] = useState()//toast
   const token = props.token
@@ -73,6 +60,7 @@ const ManTestemunhos = (props) =>{
   const styleimg = {width:'20%',marginRight:'auto'}
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
+  const style_cursor = {cursor:'pointer'}
   //console.log(props)
 
   const handleClick = (event,id,nome,valor) => {
@@ -290,6 +278,19 @@ const ManTestemunhos = (props) =>{
             let link = null
             let string = null
             setListatestemunho(result.data.data.sec_testemunhos)
+            setListafiltro(result.data.data.sec_testemunhos)
+            let tam = result.data.data.sec_testemunhos.length
+            let pages = parseInt(tam) / 5;
+            let resto = parseInt(tam) % 5;
+            if( resto == 0 ){
+              setNumpagination(pages)
+            } else {
+              setNumpagination((pages+1))
+            }
+            console.log('items:'+Math.floor(tam))
+            console.log('pages:'+Math.floor(pages))
+            console.log('resto:'+resto)
+            //setNumpagination
             result.data.data.sec_itens.map((item,index)=>{
                label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
                nlinhas = null
@@ -682,7 +683,7 @@ const  handleSave = (id,lista,valor) =>{
             return(
               <CTableRow color={classe}>
                     <CTableDataCell>
-                    {item.load ? (<CSpinner size="sm" color="primary"/>) : (<></>)}
+                    {item.load ? (<CSpinner size="sm" color="primary"/>) : (item.tes_id_tes)}
                     </CTableDataCell>
                     <CTableDataCell>
                     {
@@ -1079,6 +1080,55 @@ const  handleSave = (id,lista,valor) =>{
      )
   }
 
+  const pesquisarGrid = (event) => {
+     console.log(listafiltro)
+     console.log(event.target.value)
+     let valor =  event.target.value
+     if( valor.trim() != ''){
+        let lista = listafiltro.filter(
+            (item)=>item.tes_nome.toLowerCase().includes(valor.toLowerCase()) ||
+                    item.tes_email.toLowerCase().includes(valor.toLowerCase()) ||
+                    item.tes_profissao.toLowerCase().includes(valor.toLowerCase()) ||
+                    item.tes_sexo.includes(valor)
+        )
+        //listafiltro.filter((item)=> item.tes_id_tes == event.target.value)
+        console.log(lista)
+        setListatestemunho(lista.slice(0,5))
+     } else {
+        setListatestemunho(listafiltro.slice(0,5))
+     }
+  }
+
+  const clickPagination = (event,idx) =>{
+    //  0,5,5,10
+    let ref = idx == 1 ? 0 : idx
+    let inicio = ref == 0 ? ref : (ref * 5) - 5
+    let fim = idx * 5
+    let lista = null
+    lista = listafiltro.slice(inicio,fim)
+    setListatestemunho(lista)
+  }
+
+  const Pagination = (props) => {
+    let elemento = []
+
+    for(let i = 1; i <= props.pages; i++ ){
+      elemento.push(<CPaginationItem className='cpointer' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+    }
+
+    return (
+        <CPagination aria-label="Page navigation example">
+        <CPaginationItem className='cpointer' aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </CPaginationItem>
+        { elemento }
+        <CPaginationItem className='cpointer' aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </CPaginationItem>
+        </CPagination>
+    )
+  }
+
   return(
          <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
@@ -1100,11 +1150,17 @@ const  handleSave = (id,lista,valor) =>{
                      <CCol md={12} xs={12} >
                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) :
                         (
-                        <CCard style={{padding:'2px'}}>
+                        <CCard style={{padding:'3px'}}>
+                            <div style={{display:'flex',justifyContent:'flex-end'}}>
+                            <CInputGroup style={{maxWidth:'400px'}} className="mb-2 mt-2">
+                                <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
+                                <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>
+                             </CInputGroup>
+                             </div>
                             <CTable>
-                                <CTableHead>
+                                <CTableHead style={{fontSize:'11px !important'}}>
                                     <CTableRow>
-                                        <CTableHeaderCell className='clthinputtext'style={{borderRadius:'5px 0px 0px 0px'}} scope="col">#</CTableHeaderCell>
+                                        <CTableHeaderCell className='clthinputtext'style={{borderRadius:'5px 0px 0px 0px',fontSize:'11px !important'}} scope="col">#</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' scope="col">Exibir</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' scope="col">Nome</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' scope="col">Email</CTableHeaderCell>
@@ -1119,6 +1175,9 @@ const  handleSave = (id,lista,valor) =>{
                                     <CorpoTabela lista={listatestemunho} estado={est}/>
                                 </CTableBody>
                             </CTable>
+                            <div style={{display:'flex',justifyContent:'flex-end'}}>
+                               <Pagination pages={numnpagination}/>
+                            </div>
                         </CCard>
                         )}
                      </CCol>

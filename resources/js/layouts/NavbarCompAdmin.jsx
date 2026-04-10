@@ -8,6 +8,7 @@ import {
   CNavbarToggler,
   CNavItem,
   CNavLink,
+  CDropdown, CDropdownHeader, CDropdownToggle, CDropdownMenu, CDropdownItem, CDropdownDivider
 } from '@coreui/react'
 //import { ButtonLinkComp } from '../components/ButtonLinkComp'
 
@@ -31,6 +32,21 @@ export const NavbarCompAdmin = memo(( props ) => {
      tela(valor)
   }
 
+  const DropDown = () =>{
+    return(
+        <CDropdown variant="btn-group">
+            <CDropdownToggle size="sm" style={{borderRadius:'5px 5px 5px 5px'}} className="clinputtext" color={'secondary'}>Outras Opções</CDropdownToggle>
+            <CDropdownMenu>
+                <CDropdownItem href="#">Action</CDropdownItem>
+                <CDropdownItem href="#">Another action</CDropdownItem>
+                <CDropdownItem href="#">Something else here</CDropdownItem>
+                <CDropdownDivider />
+                <CDropdownItem href="#">Separated link</CDropdownItem>
+            </CDropdownMenu>
+        </CDropdown>
+    )
+  }
+
    return (
     load ? (<></>) :
     (
@@ -43,7 +59,9 @@ export const NavbarCompAdmin = memo(( props ) => {
             onClick={() => setVisible(!visible)}
           />
           <CCollapse className="navbar-collapse" visible={visible}>
+
             <CNavbarNav className="navbar-nav ms-auto">
+               <DropDown/>
                {
                 dados[0].itens.map((item,index)=>{
                   return(

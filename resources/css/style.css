@@ -1117,5 +1117,13 @@
     border-radius: 50%;
 }
 
+.cpointer{
+  cursor: pointer;
+}
+
+.table{
+   font-size: 12px !important;
+}
+
 
 
