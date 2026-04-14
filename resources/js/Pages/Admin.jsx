@@ -15,6 +15,8 @@ import ManServices from './Manutencao/ManServices';
 import ManCarrosel from './Manutencao/ManCarrosel';
 import ManStaff from './Manutencao/ManStaff';
 import ManTestemunhos from './Manutencao/ManTestemunhos';
+import ManServicos from './Manutencao/ManServicos';
+import ManTratamentos from './Manutencao/ManTratamentos';
 import axios from 'axios'
 import Aos from 'aos';
 
@@ -44,6 +46,11 @@ const Admin = (props) => {
                {name:'ManServices',href:'#'},
                {name:'ManStaffs',href:'#'},
                {name:'ManTestemunhos',href:'#'},
+           ],
+           outros:[
+               {name:'Servicos',href:'#'},
+               {name:'Tratamentos',href:'#'},
+               {name:'Definir Valores',href:'#'},
            ]
   }]
 
@@ -127,6 +134,19 @@ const Admin = (props) => {
         array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
         return(<ManTestemunhos end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
+
+      case "Servicos":
+        //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManServicos end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "Tratamentos":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManTratamentos end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+
     }
 
   }

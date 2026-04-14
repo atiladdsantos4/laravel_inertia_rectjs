@@ -1050,6 +1050,18 @@
   border: 1.5px solid red;    /* The key property to make it round */
 }
 
+/*trash image upload css circle*/
+.circlemoney {
+  width: 30px;         /* Height and width must be equal */
+  height: 30px;
+  background-color: rgb(160, 50, 120); /* Visibility */
+  opacity: 1.0;
+  border-radius: 50%;
+  justify-content: center;
+  text-align: center;
+  border: 1.5px solid gray;    /* The key property to make it round */
+}
+
 .containerimg {
   display: flex;
   justify-content: center; /* Horizontal centering */
@@ -1123,6 +1135,17 @@
 
 .table{
    font-size: 12px !important;
+}
+
+.exibepagination{
+   font-size: 14px;
+   padding-left: 3px;
+   padding-right: 3px;
+   background-color: #722E56 ;
+   color: white;
+   display: flex;
+   border-radius: 5px 5px 5px 5px;
+    /* fontSize:'14px',paddingLeft:'3px',paddingRight:'3px',backgroundColor:'#722E56',color:'white',display:'flex',borderRadius:'5px 5px 5px 5px'} */
 }
 
 

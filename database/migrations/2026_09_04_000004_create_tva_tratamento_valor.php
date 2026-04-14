@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('tva_tratamento_valor', function (Blueprint $table) {
             $table->Increments('tva_id_tva');
             $table->decimal('tva_valor',12,2);
+            $table->decimal('tva_max_desconto',12,2);
             $table->char('tva_version_atual',1);
             $table->unsignedBigInteger('tva_id_tra',1);
             $table->timestamp('tva_created_at');

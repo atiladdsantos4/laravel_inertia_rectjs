@@ -3,6 +3,7 @@ import laravel from 'laravel-vite-plugin';
 //import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 
 
@@ -24,6 +25,7 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/app.js'],
             refresh: true,
         }),
+        nodePolyfills(),
         //tailwindcss(),
         react()
     ],

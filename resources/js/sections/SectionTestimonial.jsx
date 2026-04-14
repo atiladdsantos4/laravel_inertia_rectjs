@@ -11,9 +11,7 @@ import Avatar7 from '../images/avatar/avatar_homem.png'
 import { RateComp } from '../components/RateComp';
 import { useStore } from '../store/useStore';
 import axios from 'axios';
-
 export const SectionTestimonial = (props) => {
-
   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
   const { testemunhostore } = useStore();
 
@@ -34,6 +32,10 @@ export const SectionTestimonial = (props) => {
 //   },[])
 
 useEffect(()=>{
+    // socket.on('changeState', (newData) => {
+    //   setData(newData); // Updates UI
+    // });
+    // socket.off('changeState');
     setClasse(props.classe)
      if( testemunhostore == 0 ){
         let string =  null
@@ -83,7 +85,6 @@ useEffect(()=>{
                 })
             })
      }
-
    },[props,testemunhostore])
 
 
