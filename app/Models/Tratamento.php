@@ -23,25 +23,26 @@ class Tratamento extends Model
     public $timestamps = true; //--> update automarically by laravel <--//
     protected $table = 'tra_tratamento';
     protected $primaryKey = 'tra_id_tra';
-    protected $appends = ['esp_especialidades'];
+    //protected $appends = ['esp_especialidades'];
     protected $fillable = [
-      'tra_id_tra','tra_descritivo','tra_qtde','tra_intervalo','tra_id_esp','tra_emp','tra_created_at','tra_updated_at','tra_deleted_at'
+      'tra_id_tra','tra_titulo','tra_texto','tra_display','tra_id_ser','tra_created_at','tra_updated_at','tra_deleted_at'
     ];
     protected $dates = ['tra_dat_deleted'];//campo obrigatório pra o SoftDeletes
 
     //protected $dateFormat = 'U';
+    //tra_id_tra,tra_titulo,tra_texto,tra_display,tra_id_ser,tra_created_at,tra_updated_at,tra_deleted_at
     //tra_id_esp,tra_name,tra_descritivo,tra_position,tra_id_sec,tra_display,tra_dat_created,tra_dat_updated,tra_dat_deleted
 
     protected $casts = [
-        'tra_created_at' => 'datetime:Y-m-d H:i:s',
-        'tra_updated_at' => 'datetime:Y-m-d H:i:s',
-        'tra_deleted_at' => 'datetime:Y-m-d H:i:s',
+       'tra_created_at' => 'datetime:Y-m-d H:i:s',
+       'tra_updated_at' => 'datetime:Y-m-d H:i:s',
+       'tra_deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
 
 
-    public function especialidade()
+    public function servico()
     {
-        return $this->hasOne(Especialidade::class, 'esp_id_esp', 'tra_id_esp');
+        return $this->hasOne(Service::class, 'ser_id_ser', 'tra_id_ser');
     }
 
     public function especialidade_filtro()

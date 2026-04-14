@@ -31,8 +31,14 @@ import { ModalAvaliacao } from '../components/ModalAvaliacao';
 import Aos from 'aos';
 import axios from 'axios';
 import { useStore } from '../store/useStore';
+//import { socket } from '../socket';
 
+
+// The Home component receives props passed from the Laravel controller
 const Home = ({ appName }) => {
+
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [fooEvents, setFooEvents] = useState([]);
 
   //global variable shared between
   const {
@@ -67,7 +73,10 @@ const Home = ({ appName }) => {
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
   const [openAvaliacao,setOpenAvaliacao] = useState(false)
-
+  /*
+  isOpen={openAvaliacao}
+            close={closeModalAvaliacao}
+  */
   const [dadosModal,setdadosModal] = useState({
      nome: "atila",
      price: "10,00",
@@ -87,9 +96,20 @@ const Home = ({ appName }) => {
         ]
 }]
 
-
   useEffect(() => {
+    /*socket*/
+    function onConnect() {
+      setIsConnected(true);
+    }
 
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onFooEvent(value) {
+      setFooEvents(previous => [...previous, value]);
+    }
+    /*socket*/
      axios
       .get(`${endpoint}/section?listagem=S`, {
         headers: {
@@ -146,8 +166,17 @@ const Home = ({ appName }) => {
       duration: 800, // Animation duration (e.g., 1000ms)
       once: false, // Whether animation should only happen once (true) or every time it enters the view (false)
     });
+    /* socket */
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('foo', onFooEvent);
 
-},[])
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('foo', onFooEvent);
+    };
+  },[])
 
   const estadoGeral = () =>{
      return estadogeral
@@ -182,13 +211,78 @@ const Home = ({ appName }) => {
      setdadosModal(dados)
   }
 
+  const ConnectionState = ({ isConnected }) => {
+     return <p>State: { '' + isConnected }</p>;
+  }
+
+  const Events = ({ events  }) => {
+    console.log(events)
+    return(
+        <>
+        <div>eventos</div>
+        <ul>
+        {
+            events.map((event, index) =>
+                <li key={ index }>{ event }</li>
+            )
+        }
+        </ul>
+        </>
+    )
+  }
+
+  const ConnectionManager = () => {
+        function connect() {
+            socket.connect();
+            console.log('conected')
+        }
+
+        function disconnect() {
+            socket.disconnect();
+            console.log('disconnect')
+        }
+
+        return (
+            <>
+            <button className="btn btn-primary" onClick={ connect }>Connect</button><br></br>
+            <button className="btn btn-seconadary" onClick={ disconnect }>Disconnect</button>
+            </>
+        );
+  }
+
+  const  MyForm = () => {
+  const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  function onSubmit(event) {
+    event.preventDefault();
+    setIsLoading(true);
+
+    socket.timeout(5000).emit('create-something', value, () => {
+      setIsLoading(false);
+    });
+  }
 
   return (
+    <form onSubmit={ onSubmit }>
+      <input onChange={ e => setValue(e.target.value) } />
+
+      <button type="submit" disabled={ isLoading }>Submit</button>
+    </form>
+  );
+}
+  return (
       <Suspense fallback={<SpinnerComp />}>
+            {/* <div className="App">
+               <ConnectionState isConnected={ isConnected } />
+               <Events events={ fooEvents } />
+               <ConnectionManager />
+               <MyForm />
+           </div> */}
             <Modal
-               isOpen={open}
-               close={closeModal}
-               dados={dadosModal}
+            isOpen={open}
+            close={closeModal}
+            dados={dadosModal}
             />
 
             <ModalAvaliacao
@@ -264,6 +358,6 @@ const Home = ({ appName }) => {
       </Suspense>
 
   );
-}
+};
 
 export default Home

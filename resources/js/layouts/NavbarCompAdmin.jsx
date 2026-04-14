@@ -37,9 +37,13 @@ export const NavbarCompAdmin = memo(( props ) => {
         <CDropdown variant="btn-group">
             <CDropdownToggle size="sm" style={{borderRadius:'5px 5px 5px 5px'}} className="clinputtext" color={'secondary'}>Outras Opções</CDropdownToggle>
             <CDropdownMenu>
-                <CDropdownItem href="#">Action</CDropdownItem>
-                <CDropdownItem href="#">Another action</CDropdownItem>
-                <CDropdownItem href="#">Something else here</CDropdownItem>
+                {
+                  dados[0].outros.map((item,index)=>{
+                   return(
+                     <CDropdownItem href="#" onClick={(e)=>handleClick(e,item.name)}>{item.name}</CDropdownItem>
+                   )
+                  })
+                }
                 <CDropdownDivider />
                 <CDropdownItem href="#">Separated link</CDropdownItem>
             </CDropdownMenu>

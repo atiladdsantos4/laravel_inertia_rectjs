@@ -477,6 +477,39 @@ const  handleSave = (id,lista,valor) =>{
     }
   }
 
+  const saveService = () =>{
+        setLoad
+        formData.append('ser_display', sei_display)
+        formData.append('ser_titulo', lista[index].nome)
+        formData.append('ser_titulo', lista[index].valor)
+        formData.append('sei_placeholder', lista[index].placeholder)
+        formData.append('sei_json', json)
+        formData.append('sei_id_emp', empresa)
+        formData.append('sei_id_sec', sei_id_sec)
+        formData.append('sei_id_tip', lista[index].tipo_id)
+        formData.append('sei_id_tag', tag)
+
+        axios
+        .post(`${endpoint}/sectionitem`, formData, {
+            headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Bearer ' + token,//dentro do env//
+            },
+        })
+        .then((result) => {
+            setSaved(!saved)
+            atualizaItem(id, 'idfield', result.data.data.sei_id_sei)
+            atualizaItem(id, 'spinner', false)
+            changeservices()
+            addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
+            setTimeout(() => {
+                document.getElementById('idtoast').classList.remove('show')
+                document.getElementById('idtoast').remove()
+            }, 2000)
+        })
+  }
+
   const  handleSaveImg = (event,id,lista,valor) =>{
 
     if( validaTipo(id) ){

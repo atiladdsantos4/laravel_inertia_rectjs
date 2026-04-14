@@ -28,8 +28,10 @@ import {
   CPagination, CPaginationItem
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
-
-const ManTestemunhos = (props) =>{
+import { io } from 'socket.io-client';
+//const io = require('socket.io-client');
+  //const socket = io('http://jemosistemas-domain.com/inertia-react/salao');
+  const ManTestemunhos = (props) =>{
 
   const { changetestemunho } = useStore();
   const [loadpage,setLoadpage] = useState(true)
@@ -710,6 +712,7 @@ const  handleSave = (id,lista,valor) =>{
   }
 
   const AualizaExibe = (id,valor) =>{
+        //socket.emit('changeState', 'Updated from Terminal!');
         setListatestemunho(prevItems =>
             prevItems.map(item =>
                 item.tes_id_tes === id ? { ...item, load: true } : item
@@ -1134,7 +1137,7 @@ const  handleSave = (id,lista,valor) =>{
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
              <CCardHeader className="clfooter">
-               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Staffs</span>
+               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Testemonial</span>
              </CCardHeader>
              <CCardBody>
                  <CRow>
