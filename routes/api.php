@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\TestemunhoController;
 use App\Http\Controllers\Api\ServicesController;
 use App\Http\Controllers\Api\TratamentosController;
 use App\Http\Controllers\Api\TratamentosValorController;
+use App\Http\Controllers\Api\PacoteController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -21,3 +23,4 @@ Route::apiResource('testemunho',TestemunhoController::class)->middleware('auth:s
 Route::apiResource('services',ServicesController::class)->middleware('auth:sanctum');
 Route::apiResource('tratamentos',TratamentosController::class)->middleware('auth:sanctum');
 Route::apiResource('tratamentosvalor',TratamentosValorController::class)->middleware('auth:sanctum');
+Route::apiResource('pacote',PacoteController::class)->middleware('auth:sanctum');

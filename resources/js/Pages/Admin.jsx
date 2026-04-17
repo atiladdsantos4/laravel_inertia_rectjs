@@ -17,6 +17,8 @@ import ManStaff from './Manutencao/ManStaff';
 import ManTestemunhos from './Manutencao/ManTestemunhos';
 import ManServicos from './Manutencao/ManServicos';
 import ManTratamentos from './Manutencao/ManTratamentos';
+import ManValores from './Manutencao/ManValores';
+import CriarPacote from './Manutencao/CriarPacote';
 import axios from 'axios'
 import Aos from 'aos';
 
@@ -51,6 +53,7 @@ const Admin = (props) => {
                {name:'Servicos',href:'#'},
                {name:'Tratamentos',href:'#'},
                {name:'Definir Valores',href:'#'},
+               {name:'Criar Pacotes',href:'#'},
            ]
   }]
 
@@ -146,6 +149,15 @@ const Admin = (props) => {
         return(<ManTratamentos end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
+      case "Definir Valores":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManValores abretela={setTelaatual} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "Criar Pacotes":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<CriarPacote abretela={setTelaatual} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
 
     }
 

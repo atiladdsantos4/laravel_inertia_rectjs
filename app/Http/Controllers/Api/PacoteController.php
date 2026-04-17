@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Tratamento;
+use App\Models\Pacote;
+use App\Models\PacoteItem;
 use App\Models\TipoParametro;
 use App\Models\Service;
-use App\Http\Resources\TratamentoResource;
+use App\Http\Resources\PacoteResource;
 use App\Http\Resources\ServiceResource;
 use App\Http\Resources\TipoParametroResource;
 use App\Http\Resources\TagCampoResource;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
-class TratamentosController extends Controller
+class PacoteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,16 +29,16 @@ class TratamentosController extends Controller
 
         if( isset($all["listagem"]) ){ //para renderizar as interfaces convencionais
 
-           $tratamento = Tratamento::orderBy('tra_id_tra')->get();
+           $pacote = Pacote::orderBy('pac_id_pac')->get();
 
-           $result_tratamento = TratamentoResource::collection($tratamento); //only works for colection
+           $result_pacote = PacoteResource::collection($pacote); //only works for colection
            $ser = Service::orderBy('ser_titulo')->get();
            $servicos= ServiceResource::collection($ser);
            $response = [
                'status' => true,
                'message' => 'Dados Serviços',
                'data'    => [
-                 'tratamentos'=>$result_tratamento,
+                 'tratamentos'=>$result_pacote,
                  'servicos'=>$servicos
                ]
            ];
@@ -61,14 +62,13 @@ class TratamentosController extends Controller
     public function store(Request $request)
     {
         $input = null;
-        $request->merge(['tra_created_at' => date("Y-m-d H:i:s")]);
+        $request->merge(['pac_created_at' => date("Y-m-d H:i:s")]);
         $input = $request->all();
 
-
         $validator = Validator::make($input, [
-            'tra_titulo' => 'required',
-            'tra_texto' => 'required',
-            'tra_display' => 'required',
+            'pac_nome' => 'required',
+            'pac_ativo' => 'required',
+            'pac_display' => 'required',
         ]);
 
         if($validator->fails()){
@@ -78,14 +78,23 @@ class TratamentosController extends Controller
             }
         }
 
-        $tratamento = Tratamento::create($input);
-        $tra = new TratamentoResource(Tratamento::findOrFail($tratamento->tra_id_tra));
+        $pacote = Pacote::create($input);
+        //salvando os itens os//
+        $postjson = json_decode($input["pac_itens"], true);
+        for($i = 0;$i < count($postjson["meta"]); $i++){
+            $valor = $postjson["meta"][$i];
+            $valor+=["pai_id_pac"=>$pacote->pac_id_pac];
+            $teste =  $valor;
+            PacoteItem::create($valor);
+        }
+
+        $pac = new PacoteResource(Pacote::findOrFail($pacote->pac_id_pac));
 
 
        $arr_result = [
            "status" => true,
-           "mensagem" => "Tratamento Inserido com sucesso!!!",
-           "data" => $tra
+           "mensagem" => "Pacote Inserido com sucesso!!!",
+           "data" => $pac
        ];
 
         return json_encode($arr_result,JSON_PRETTY_PRINT);
@@ -98,11 +107,11 @@ class TratamentosController extends Controller
     public function show(string $id)
     {
        //$section = Tratamentos::find($id);
-       $tra = new TratamentoResource(Tratamento::find($id));
+       $pac = new PacoteResource(Pacote::find($id));
        $arr_result = [
             "status" => true,
             "mensagem" => "Dados listados com sucesso!!!",
-            "data" => $tra
+            "data" => $pac
         ];
 
         return json_encode($arr_result,JSON_PRETTY_PRINT);
@@ -124,15 +133,15 @@ class TratamentosController extends Controller
     {
 
        $input = $request->all();
-       $tratamento = Tratamento::find($id);
-        //$Tratamento->tes_exibir = $input["tes_exibir"];
-       $tratamento->update($input);
+       $pacote = Pacote::find($id);
+        //$Pacote->tes_exibir = $input["tes_exibir"];
+       $pacote->update($input);
 
-       $tra = new TratamentoResource($tratamento);
+       $pac = new PacoteResource($pacote);
        $arr_result = [
             "status" => true,
-            "mensagem" => "Tratamento Atualizado com Sucesso!!!",
-            "data" => $tra
+            "mensagem" => "Pacote Atualizado com Sucesso!!!",
+            "data" => $pac
         ];
 
         return json_encode($arr_result,JSON_PRETTY_PRINT);
