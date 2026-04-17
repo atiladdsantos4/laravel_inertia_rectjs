@@ -24,8 +24,10 @@ class TratamentoResource extends JsonResource
                 'tra_texto' => $this->tra_texto,
                 'tra_display' => $this->tra_display,
                 'tra_id_ser' => $this->tra_id_ser,
-                'tra_servico' => $this->servico,
                 'tra_load' => false,
+                'tra_valor_atual' => $this->valor_atual,
+                'tra_servico' => $this->servico,
+                'tra_valores' => $this->valores,
                 'tra_created_at' => Carbon::parse($this->tra_created_at)->format('d/m/Y H:i:s'),
                 'tra_updated_at' => $this->tra_updated_at != null ? Carbon::parse($this->tra_updated_at)->format('d/m/Y H:i:s') : null,
             ];

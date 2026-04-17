@@ -50,9 +50,16 @@ class Tratamento extends Model
         return $this->hasOne(Especialidade::class, 'esp_id_esp', 'tra_id_esp')->select('esp_id_esp','esp_titulo') ;
     }
 
-    public function itens()
+    public function valores()
     {
-        return $this->hasMany(TratamentoItens::class, 'tri_id_tra', 'tra_id_tra');
+        return $this->hasMany(TratamentoValor::class, 'tva_id_tra', 'tra_id_tra');
+    }
+
+    public function valor_atual()
+    {
+       return $this->hasOne(TratamentoValor::class, 'tva_id_tra', 'tra_id_tra')
+       ->select('tva_id_tra','tva_max_desconto','tva_valor')
+       ->where('tva_version_atual',1);
     }
 
     public function itens_api()

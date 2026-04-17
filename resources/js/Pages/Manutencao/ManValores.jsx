@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import img01 from '../../images/foto01.jpeg'
 import img02 from '../../images/foto02.png'
 import { ModalTratamentoValor } from '../../components/ModalTratamentoValor';
-import { faBrazilianRealSign,faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
+import { faBrazilianRealSign,faSave, faNewspaper, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CTable, CTableRow,CTableHeaderCell,CTableBody,CTableDataCell,CTableHead,
@@ -35,7 +35,7 @@ import { Modal } from '../../components/Modal';
 //const io = require('socket.io-client');
 //const socket = io('http://jemosistemas-domain.com/inertia-react/salao');
 
-const ManTratamentos = (props) =>{
+const ManValores = (props) =>{
 
   const { changetestemunho } = useStore();
   const [loadpage,setLoadpage] = useState(true)
@@ -58,7 +58,7 @@ const ManTratamentos = (props) =>{
   const [registroini,setRegistroini] = useState(0)
   const [registrofim,setRegistrofim] = useState(0)
   const [qtderegistros,setQtderegistros] = useState(0)
-  const [qtderegistrospagina,setQtderegistrospagina] = useState(5)
+  const [qtderegistrospagina,setQtderegistrospagina] = useState(10)
   const [pesquisar,setPesquisar] = useState(null)
   const [saved,setSaved] = useState(false)
   const [toast, addToast] = useState()//toast
@@ -79,6 +79,7 @@ const ManTratamentos = (props) =>{
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
   const style_cursor = {cursor:'pointer'}
+  const {abretela} = props
   const [dadosmodal,setDadosmodal] = useState({
     tra_id_tra:null,
     tra_titulo:null,
@@ -329,7 +330,7 @@ const ManTratamentos = (props) =>{
            console.log('lista tratamento')
            console.log(result.data.data.tratamentos)
            setListafiltro(result.data.data.tratamentos)
-           setListatratamento(result.data.data.tratamentos.slice(0,5))
+           setListatratamento(result.data.data.tratamentos.slice(0,qtderegistrospagina))
            let tam = result.data.data.tratamentos.length
            setQtderegistros(tam)
            let res = tam / qtderegistrospagina
@@ -343,18 +344,10 @@ const ManTratamentos = (props) =>{
               setNumpagination(numpag)
               console.log('num_reg_pagina:'+numpag)
            }
+
            setUltimapagina(res)
-        //    let tam = result.data.data.tratamentos.length
-        //    setQtderegistros(tam)
-        //    let res = tam % 5
-        //    if( res % 2 ===0){
-        //       setNumpagination(res)
-        //    } else {
-        //       res = res + 1
-        //       setNumpagination(res)
-        //    }
-        //    setUltimapagina(res)
            let array_service = result.data.data.servicos
+           array_service.unshift({ser_id_ser:'99',ser_titulo:'Todos Serviços'})
            array_service.unshift({ser_id_ser:'',ser_titulo:'---> Selecione o serviço <---'})
            setListaservices(array_service)
            setListacampos(lista)
@@ -500,8 +493,8 @@ const ManTratamentos = (props) =>{
         const formData = new FormData()
         let val_display = valorSeq(4) ? 1 : 0;
         formData.append('tra_display', val_display)
-        formData.append('tra_titulo', valorSeq(2))
-        formData.append('tra_texto', valorSeq(3))
+        formData.append('tra_titulo', valorSeq(3))
+        formData.append('tra_texto', valorSeq(2))
         formData.append('tra_id_ser', valorSeq(1))
         if(traid == null ){
           axios
@@ -582,7 +575,7 @@ const ManTratamentos = (props) =>{
                defaultValue={props.valor}
                feedbackInvalid={props.feedbackerro}
                required={props.required}
-               onChange={(e)=>atualizaDados(props.seq,e.target.value)}
+               onChange={(e)=>atualizaDadosSelect(e,props.seq,e.target.value)}
             >
             {
             //   <option value="">{''}</option>
@@ -694,14 +687,21 @@ const ManTratamentos = (props) =>{
   const CorpoTabela = (props) =>{
       let classe = null
       let cont = 0
+      let tam = props.lista.length
+      if(tam == 0){
+        return(
+           <CTableRow color={classe}>
+              <CTableDataCell style={{textAlign:'center'}} colspan={9} >Não há dados para pesquisa</CTableDataCell>
+            </CTableRow>
+        )
+        return
+      }
+      let list = props.lista.sort((a,b)=>a.tra_id_tra - b.tra_id_tra)
       return(
-         props.lista.map((item,index)=>{
+          list.map((item,index)=>{
             cont++
             classe = index % 2 == 0 ? 'primary' : 'danger'
-            if(cont > 5){
-               return
-            } else {
-               return(
+            return(
                 <CTableRow color={classe}>
                     <CTableDataCell>
                         {item.tra_load ? (<CSpinner size="sm" color="primary"/>) : (item.tra_id_tra)}
@@ -721,8 +721,7 @@ const ManTratamentos = (props) =>{
                     <CTableDataCell>{item.tra_created_at}</CTableDataCell>
                     <CTableDataCell style={{textAlign:'center'}}><ItensAcao id={item.tra_id_tra}/></CTableDataCell>
                     </CTableRow>
-               )
-            }
+            )
          })
       )
   }
@@ -742,12 +741,14 @@ const ManTratamentos = (props) =>{
 
   const EditaValorModal = (id) =>{
     let idx = getIndexTratamento(listatratamento,id)
+    let historico = listatratamento[idx].tra_valores.filter((item)=> item.tva_id_tra === listatratamento[idx].tra_id_tra)
     let obj ={
         tra_id_tra:listatratamento[idx].tra_id_tra,
         tra_titulo:listatratamento[idx].tra_titulo,
         tra_servico:listatratamento[idx].tra_servico.ser_titulo,
         tra_valor:listatratamento[idx].tra_valor_atual ? listatratamento[idx].tra_valor_atual.tva_valor : null,
         tra_desconto:listatratamento[idx].tra_valor_atual ? listatratamento[idx].tra_valor_atual.tva_max_desconto : null,
+        tra_historico:historico.sort((a,b)=>b.tva_version_atual - a.tva_version_atual)
     }
     setDadosmodal(obj)
     openModal()
@@ -772,13 +773,13 @@ const ManTratamentos = (props) =>{
   //--> Display dos Ícones no grid
   const ItensAcao = (props) => {
     return(
-       <>
-       <FontAwesomeIcon style={{color:'red',cursor:'pointer'}} icon={faTrash}/>
-       &nbsp;
-       <FontAwesomeIcon onClick={(e)=>EditaService(props.id)} style={{color:'blue',cursor:'pointer'}} icon={faEdit}/>
-       &nbsp;
-       <FontAwesomeIcon onClick={(e)=>  EditaValorModal(props.id)} style={{color:'gray',cursor:'pointer'}} icon={faBrazilianRealSign}/>
-       </>
+       <div style={{display:'flex',gap:'7px'}}>
+           {/* <FontAwesomeIcon style={{color:'red',cursor:'pointer'}} icon={faTrash}/>
+           &nbsp;
+           <FontAwesomeIcon onClick={(e)=>EditaService(props.id)} style={{color:'blue',cursor:'pointer'}} icon={faEdit}/>
+           &nbsp; */}
+           <FontAwesomeIcon onClick={(e)=>  EditaValorModal(props.id)} style={{color:'gray',cursor:'pointer'}} icon={faBrazilianRealSign}/>
+       </div>
     )
   }
 
@@ -849,7 +850,26 @@ const ManTratamentos = (props) =>{
   const atualizaDados = (seq,valor) =>{
     let index = getIndexSeq(listacampos,seq)
     listacampos[index].valor = valor
-    console.log(listacampos)
+
+  }
+
+  const atualizaDadosSelect = (event,seq,valor) =>{
+    // if(pesquisar !== ''){
+    //    setPesquisar('')
+    // }
+    console.log(event.target.value)
+    atualizaDados(seq,valor)
+    if( event.target.value == 99){
+        //-->exibe todos registros
+        setListatratamento(listafiltro.slice(0,qtderegistrospagina))
+    } else {
+       //-->filtra po0r serviço selecionado
+       let text = event.target.options[event.target.selectedIndex].text;
+       let lista = listafiltro.filter(
+            (item)=>item.tra_servico.ser_titulo.toLowerCase().includes(text.toLowerCase())
+       )
+       setListatratamento(lista.slice(0,qtderegistrospagina))
+    }
   }
 
   //--> Envia o Cursor ao id informada
@@ -893,9 +913,9 @@ const ManTratamentos = (props) =>{
         )
         //listafiltro.filter((item)=> item.tes_id_tes == event.target.value)
         console.log(lista)
-        setListatratamento(lista.slice(0,5))
+        setListatratamento(lista.slice(0,qtderegistrospagina))
      } else {
-        setListatratamento(listafiltro.slice(0,5))
+        setListatratamento(listafiltro.slice(0,qtderegistrospagina))
      }
   }
 
@@ -988,11 +1008,19 @@ const ManTratamentos = (props) =>{
 
   return(
          <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
-           <ModalTratamentoValor icone={faBrazilianRealSign}isOpen={openmodal} dados={dadosmodal} close={closeModal} token={token}/>
+           <ModalTratamentoValor
+               icone={faBrazilianRealSign}
+               isOpen={openmodal}
+               dados={dadosmodal}
+               close={closeModal}
+               token={token}
+               showhistorico={true}
+               saved={setSaved}
+           />
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
              <CCardHeader className="clfooter">
-               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Tratamento</span>
+               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Definir Valores Tratamento</span>
              </CCardHeader>
              <CCardBody>
                 <CForm
@@ -1002,45 +1030,8 @@ const ManTratamentos = (props) =>{
                             {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputSelectSimples {...listacampos[0]} />)}
                         </CCol>
                     </CRow>
-                    <CRow className='mt-3'>
-                        <CCol md={12} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[1]}/>)}
-                        </CCol>
-                    </CRow>
                     <CRow>
-                    <CCol md={12} xs={12} >
-                        {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextAreaSimples {...listacampos[2]}/>)}
-                    </CCol>
-                    </CRow>
-                    <CRow>
-                    <CCol md={12} xs={12} >
-                        {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoCheck {...listacampos[3]}/>)}
-                    </CCol>
-                    </CRow>
-                    <CRow>
-                    <CCol md={12} xs={12} >
-                        {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[4]}/>)}
-                    </CCol>
-                    </CRow>
-                    <CRow>
-                        <CCol md={12} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
-                            <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
-                                &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
-                            </CButton>
-                            &nbsp;
-                            <CButton
-                                //saveService()
-                                className='clinputtext mb-3'
-                                type="submit"
-                                style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
-                                    Salvar&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
-                                    { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
-                            </CButton>
-                        </CCol>
-                    </CRow>
-                 </CForm>
-                 <CRow>
-                     <CCol md={12} xs={12} >
+                      <CCol md={12} xs={12} >
                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) :
                         (
                         <CCard style={{padding:'3px'}}>
@@ -1079,7 +1070,70 @@ const ManTratamentos = (props) =>{
                         </CCard>
                         )}
                      </CCol>
-                 </CRow>
+                    </CRow>
+                    {/* <CRow className='mt-3'>
+                        <CCol md={12} xs={12} >
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[1]}/>)}
+                        </CCol>
+                    </CRow>
+                    <CRow>
+                    <CCol md={12} xs={12} >
+                        {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextAreaSimples {...listacampos[2]}/>)}
+                    </CCol>
+                    </CRow>
+                    <CRow>
+                    <CCol md={12} xs={12} >
+                        {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoCheck {...listacampos[3]}/>)}
+                    </CCol>
+                    </CRow>
+                    <CRow>
+                    <CCol md={12} xs={12} >
+                        {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[4]}/>)}
+                    </CCol>
+                    </CRow>*/}
+                    <CRow>
+                        <CCol md={12} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
+                            {loadpage == true ? (
+                                <>
+                                <CPlaceholder as={CButton} className='grad38full' color="secondary" disabled href="#" tabIndex={-1} xs={2} />
+                                &nbsp;
+                                <CPlaceholder as={CButton} className='grad38full' color="secondary" disabled href="#" tabIndex={-1} xs={2} />
+                                </>
+                            )
+                            :(
+                            <>
+                            <CButton
+                                onClick={(e)=>abretela('Tratamentos')}
+                                className='clinputtext mb-3'
+                                type="button"
+                                style={{width:'200px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                    Novo Tratemento&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faNewspaper}/>
+                            </CButton>
+                            &nbsp;
+                            <CButton
+                                onClick={(e)=>abretela('Servicos')}
+                                className='clinputtext mb-3'
+                                type="button"
+                                style={{width:'200px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                    Novo Servico&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faNewspaper}/>
+                            </CButton>
+                            </>
+                            )}
+                            {/* <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
+                                &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
+                            </CButton>
+                            &nbsp;
+                            <CButton
+                                //saveService()
+                                className='clinputtext mb-3'
+                                type="submit"
+                                style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                    Salvar&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
+                                    { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
+                            </CButton> */}
+                        </CCol>
+                    </CRow>
+                 </CForm>
              </CCardBody>
            </CCard>
          </div>
@@ -1087,4 +1141,4 @@ const ManTratamentos = (props) =>{
 
 }
 
-export default ManTratamentos
+export default ManValores
