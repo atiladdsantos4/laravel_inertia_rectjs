@@ -25,6 +25,7 @@ class PacoteResource extends JsonResource
                 'pac_desconto' => $this->pac_desconto,
                 'pac_valor' => $this->pac_valor,
                 'pac_valor_final' => $this->pac_valor_final,
+                'pac_load'=> false,
                 'pac_itens'=> $this->itens,
                 'pac_created_at' => Carbon::parse($this->pac_created_at)->format('d/m/Y H:i:s'),
                 'pac_updated_at' => $this->pac_updated_at != null ? Carbon::parse($this->pac_updated_at)->format('d/m/Y H:i:s') : null,

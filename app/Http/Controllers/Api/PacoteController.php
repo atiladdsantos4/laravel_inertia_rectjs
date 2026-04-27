@@ -29,18 +29,19 @@ class PacoteController extends Controller
 
         if( isset($all["listagem"]) ){ //para renderizar as interfaces convencionais
 
-           $pacote = Pacote::orderBy('pac_id_pac')->get();
+           $pacote = Pacote::orderBy('pac_id_pac')
+           ->with('itens.tratamento')
+           ->with('itens.tratamento.servico_api')
+           ->with('itens.tratamento.valor_atual')
+           ->get();//brings relation
 
            $result_pacote = PacoteResource::collection($pacote); //only works for colection
-           $ser = Service::orderBy('ser_titulo')->get();
-           $servicos= ServiceResource::collection($ser);
+        //    $ser = Service::orderBy('ser_titulo')->get();
+        //    $servicos= ServiceResource::collection($ser);
            $response = [
                'status' => true,
-               'message' => 'Dados Serviços',
-               'data'    => [
-                 'tratamentos'=>$result_pacote,
-                 'servicos'=>$servicos
-               ]
+               'message' => 'Dados Pacote',
+               'data'    => $result_pacote
            ];
 
            return response()->json($response, 200);
@@ -79,13 +80,15 @@ class PacoteController extends Controller
         }
 
         $pacote = Pacote::create($input);
-        //salvando os itens os//
+        //salvando os itens do pacote //
         $postjson = json_decode($input["pac_itens"], true);
         for($i = 0;$i < count($postjson["meta"]); $i++){
             $valor = $postjson["meta"][$i];
-            $valor+=["pai_id_pac"=>$pacote->pac_id_pac];
-            $teste =  $valor;
-            PacoteItem::create($valor);
+            if( $postjson["meta"][$i]["pai_exclui"] == 'N'){
+                $valor+=["pai_id_pac"=>$pacote->pac_id_pac];
+                $teste =  $valor;
+                PacoteItem::create($valor);
+            }
         }
 
         $pac = new PacoteResource(Pacote::findOrFail($pacote->pac_id_pac));
@@ -134,15 +137,42 @@ class PacoteController extends Controller
 
        $input = $request->all();
        $pacote = Pacote::find($id);
-        //$Pacote->tes_exibir = $input["tes_exibir"];
+
+    //    $arr_result = [
+    //         "status" => true,
+    //         "mensagem" => "Pacote Atualizado com Sucesso!!!",
+    //         "data" => $pac
+    //    ];
+
+    //     return json_encode($arr_result,JSON_PRETTY_PRINT);
+       //$Pacote->tes_exibir = $input["tes_exibir"];
        $pacote->update($input);
+
+       $postjson = json_decode($input["pac_itens"], true);
+       for($i = 0;$i < count($postjson["meta"]); $i++){
+            $valor = $postjson["meta"][$i];
+            $existe_item = $postjson["meta"][$i]["pai_id_pai"] ?? null;
+            if( $existe_item != null ){
+               if( $postjson["meta"][$i]["pai_exclui"] == 'N'){
+                  $pac = PacoteItem::find($existe_item);
+                  $pac->update($valor);
+               } else {
+                  $pac = PacoteItem::find($existe_item)->delete();
+               }
+            } else {
+               if( $postjson["meta"][$i]["pai_exclui"] == 'N'){
+                  $valor+=["pai_id_pac"=>$pacote->pac_id_pac];
+                  PacoteItem::create($valor);
+               }
+            }
+       }
 
        $pac = new PacoteResource($pacote);
        $arr_result = [
             "status" => true,
             "mensagem" => "Pacote Atualizado com Sucesso!!!",
             "data" => $pac
-        ];
+       ];
 
         return json_encode($arr_result,JSON_PRETTY_PRINT);
     }

@@ -49,6 +49,12 @@ class PacoteItem extends Model
        return $this->hasOne(Tratamento::class, 'tra_id_tra', 'pai_id_tra');
     }
 
+    public function tratamento_api()
+    {
+       return $this->hasOne(Tratamento::class, 'tra_id_tra', 'pai_id_tra')
+       ->select('tra_id_tra','tra_titulo','tra_texto','tra_display');
+    }
+
 
     // protected function getEspEspecialidadesAttribute(){ //--> especilidade
     //    $esp = Especialidade::select('esp_id_esp','esp_titulo')->orderBy('esp_id_esp','asc')

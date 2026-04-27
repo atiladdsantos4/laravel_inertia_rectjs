@@ -45,6 +45,12 @@ class Tratamento extends Model
         return $this->hasOne(Service::class, 'ser_id_ser', 'tra_id_ser');
     }
 
+    public function servico_api()
+    {
+        return $this->hasOne(Service::class, 'ser_id_ser', 'tra_id_ser')
+        ->select('ser_id_ser','ser_titulo');
+    }
+
     public function especialidade_filtro()
     {
         return $this->hasOne(Especialidade::class, 'esp_id_esp', 'tra_id_esp')->select('esp_id_esp','esp_titulo') ;
