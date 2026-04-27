@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import img01 from '../../images/foto01.jpeg'
 import img02 from '../../images/foto02.png'
 import { ModalTratamentoValor } from '../../components/ModalTratamentoValor';
-import { faBrazilianRealSign,faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
+import { faBrazilianRealSign ,faCalendar, faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown, faCircleArrowUp, faSearch  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CTable, CTableRow,CTableHeaderCell,CTableBody,CTableDataCell,CTableHead,
@@ -25,7 +25,7 @@ import {
   CImage,
   CCollapse,
   CPagination, CPaginationItem,
-  CFormSelect
+  CFormSelect, CTooltip
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 import { io } from 'socket.io-client';
@@ -36,8 +36,9 @@ import { IMaskInput,IMaskMixin } from 'react-imask';
 //const io = require('socket.io-client');
 //const socket = io('http://jemosistemas-domain.com/inertia-react/salao');
 
-const CriarPacote = (props) =>{
-
+const ManProfissionais = (props) =>{
+  console.log('props ManProfissionais')
+  console.log(props)
   const { changetestemunho } = useStore();
   const [loadpage,setLoadpage] = useState(true)
   const [loadspin,setLoadspin] = useState(false)
@@ -47,14 +48,14 @@ const CriarPacote = (props) =>{
   const [listatipos,setListatipos] = useState([])
   const [listacard,setListacard] = useState([])
   const [listatratamento,setListatratamento] = useState([])
-  const [listapacote,setListapacote] = useState([])
-  const [listaservices,setListaservices] = useState([])
+  const [listaprofissional,setListaprofissional] = useState([])
+  const [listatipo,setListatipo] = useState([])
   const [listafiltro,setListafiltro] = useState([])
   const [listafiltrotra,setListafiltrotra] = useState([])
   const [estcard,setEstcard] = useState(false)
   const [est,setEst] = useState(false)
   const [estform,setEstform] = useState(true)
-  const [pacid,setPacid] = useState(null)
+  const [proid,setProid] = useState(null)
   const [numnpagination,setNumpagination] = useState(null)
   const [paginaatual,setPaginaatual] = useState(null)
   const [ultimapagina,setUltimapagina] = useState(null)
@@ -67,7 +68,7 @@ const CriarPacote = (props) =>{
   const [toast, addToast] = useState()//toast
   const [validated, setValidated] = useState(false)
   const [openmodal, setOpenmodal] = useState(false)
-
+  const [mainimage, setMainimage] = useState(false)
   //campos de máscara//
   //const [desconto,setDesconto]  = useState(null)
   //const [valortratmento,setValor] = useState(null)
@@ -80,13 +81,16 @@ const CriarPacote = (props) =>{
   const [estitens, setEstitens] = useState(false)
   const [listaitens, setListaitens] = useState([])
   const [estadovalor,setEstadovalor]  = useState(false)
-  const [valorglobal,setValorglobal]  = useState(0)
+  const [valorglobal,setValorglobal]  = useState(null)
   const [descontoglobal,setDescontoglobal]  = useState(0)
+  const [tipoglobal,setTipoglobal]  = useState(1)
+  const [idpesquisa,setIdpesquisa] = useState(props.idpesquisa)
 
   const token = props.token
   const sei_display = 1
   const empresa = props.dados_section.sec_id_emp
   const endpoint = props.end
+  //const idpesquisa = props.idpesquisa
   const endpoint_img = import.meta.env.VITE_APP_ENDPOINT_IMG
   const sei_id_sec = props.dados_section.sec_id_sec
   const toaster = useRef(null)
@@ -94,16 +98,16 @@ const CriarPacote = (props) =>{
   const stylebtsave = {width:'92px'}
   const styleinputcard = {width:'92px'}
   const styleinputcardimg = {width:'40px'}
-  const styleimg = {width:'20%',marginRight:'auto'}
+  const styleimg = {width:'30%',marginRight:'auto'}
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
   const style_placeholder = {paddingBottom:'15px'}
   const style_cursor = {cursor:'pointer'}
+  const { abretela } = props
   const [dadosmodal,setDadosmodal] = useState({
     tra_id_tra:null,
     tra_titulo:null,
   })
 
-  //console.log(props)
 
   const openModal = () =>{
      setOpenmodal(true)
@@ -204,11 +208,11 @@ const CriarPacote = (props) =>{
     }
   }
 
-  const getIndexPacote = (lista,id) => {
+  const getIndexProfissional = (lista,id) => {
     for(let i=0; i < lista.length; i++){
-        if( lista[i].pac_id_pac === id){
-          return i
-        }
+       if( lista[i].pro_id_pro === id){
+         return i
+       }
     }
   }
 
@@ -225,68 +229,68 @@ const CriarPacote = (props) =>{
     return array[0].tag_id_tag
   }
 
-  const array_campos = [////ser_id_ser,ser_titulo,ser_texto,ser_display,ser_created_at,ser_updated_at,ser_deleted_at
+  const array_campos = [////pro_id_pro,pro_nome,pro_apelido,pro_tipo,pro_cpf_cnpj,pro_path_image,pro_ativo,pro_created_at,pro_updated_at,pro_deleted_at
     {
        seq:1,
-       nome:'pac_nome',
-       label:'Descrição',
-       placeholder:'Informe o Nome do Pacote',
+       nome:'pro_nome',
+       label:'Nome',
+       placeholder:'Informe o Nome do Profissional',
        readonly:false,
-       erro:'O Nome do Pacote deve ser Informado'
+       erro:'Nome do Profissional dve ser Informado'
     },
     {
        seq:2,
-       nome:'pac_ativo',
-       label:'Ativo',
-       placeholder:'Ativo deve ser informado',
+       nome:'pro_apelido',
+       label:'Apelido',
+       placeholder:'Informe o Apelido',
        readonly:false,
-       erro:'Ativo  deve ser Informado'
+       erro:'Apelido deve ser Informado'
      },
      {
        seq:3,
-       nome:'pac_display',
-       label:'Exibe',
-       placeholder:'Informe se será Exibido',
+       nome:'pro_tipo',
+       label:'Tipo',
+       placeholder:'Pessoas Física/Juridica',
        readonly:false,
-       erro:'A forma de exibição deve ser Informada'
+       erro:'O Tipo de Pessoa deve ser informnado'
      },
      {
        seq:4,
-       nome:'pac_valor',
-       label:'Valor',
-       placeholder:'Informe o valor do pacote',
+       nome:'pro_cpf_cnpj',
+       label:'CNPJ/CPF',
+       placeholder:'Informe o Documento',
        readonly:false,
-       erro:'O Valor deve ser informado'
+       erro:'O Documento deve ser informado'
      },
      {
        seq:5,
-       nome:'pac_desconto',
-       label:'Desconto(%)',
-       placeholder:'Informe o percentual do desconto',
+       nome:'pro_path_image',
+       label:'Imagem',
+       placeholder:'Informe a Imagem do Profissional',
        readonly:false,
-       erro:'O Desconto deve ser informado'
+       erro:'A Imagem do Profissional deve ser informada'
      },
      {
        seq:6,
-       nome:'pac_created_at',
+       nome:'pro_ativo',
+       label:'Ativo',
+       placeholder:'Ativo',
+       readonly:true
+     },
+     {
+       seq:7,
+       nome:'pro_created_at',
        label:'Criação',
        placeholder:'Data de Criação',
        readonly:true
      },
      {
-       seq:7,
+       seq:8,
        nome:'filtro',
        label:'Tratamento',
        label1:'Adicionar',
        placeholder:'Selecione o tratamento',
        readonly:false
-     },
-     {
-       seq:8,
-       nome:'pac_valor_final',
-       label:'Valor Final',
-       placeholder:'Valor Final',
-       readonly:true
      },
   ]
 
@@ -331,7 +335,7 @@ const CriarPacote = (props) =>{
       estilo:style,
       type:'input',
       valor:'',
-      required:false
+      required:true
     },
     {
       idfield:3,
@@ -344,7 +348,7 @@ const CriarPacote = (props) =>{
       readonly:false,
       estilo:style,
       type:'input',
-      valor:0,
+      valor:'',
       required:true
     },
     {
@@ -359,6 +363,9 @@ const CriarPacote = (props) =>{
       estilo:style,
       type:'input',
       valor:'',
+      imgfile:[],
+      imgsaved:false,
+      link:'profissional/',
       required:true
     },
     {
@@ -404,10 +411,15 @@ const CriarPacote = (props) =>{
       type:'input',
       valor:'',
       required:true
-    }
+    },
  ]
 
- const lista_qtde =[
+ const lista_tipo =[
+    {nome:'Selecione o Tipo',valor:''},
+    {nome:'CPF',valor:1},
+    {nome:'CNPJ',valor:2}
+ ]
+ const lista_experiencia =[
     {qtde:1},
     {qtde:2},
     {qtde:3},
@@ -446,7 +458,7 @@ const CriarPacote = (props) =>{
                     Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
                 },
            }),
-           axios.get(`${endpoint}/pacote?listagem=S`,{
+           axios.get(`${endpoint}/profissional?listagem=S`,{
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'multipart/form-data',
@@ -458,23 +470,26 @@ const CriarPacote = (props) =>{
         const responses = await Promise.all(requests);
 
         let result = responses[0]
-        let result_pacote = responses[1]
+        let result_profissional = responses[1]
 
         //pacotes
-        setListapacote(result_pacote.data.data.slice(0,5))
-        setListafiltro(result_pacote.data.data)
-        let tam = result_pacote.data.data.length
+        setListaprofissional(result_profissional.data.data.slice(0,5))
+        setListafiltro(result_profissional.data.data)
+        let tam = result_profissional.data.data.length
            setQtderegistros(tam)
            let res = tam / qtderegistrospagina
-           console.log('divisao:'+res)
-           if( res % 2 === 0){
-              setNumpagination(res)
-              console.log('num_reg_pagina:'+res)
+           let resto = tam % qtderegistrospagina
+           if( resto > 0 ){
+               let resposta = res.toString().split('.');
+               if( parseInt(resposta[1]) === 0){
+                   setNumpagination(res)
+               } else {
+                   res = parseInt(resposta[0]) + 1
+                   let numpag = res.toFixed(0)
+                   setNumpagination(numpag)
+               }
            } else {
-              res = res + 1
-              let numpag = res.toFixed(0)
-              setNumpagination(numpag)
-              console.log('num_reg_pagina:'+numpag)
+               setNumpagination(res)
            }
            setUltimapagina(res)
            setPaginaatual(1)
@@ -482,7 +497,7 @@ const CriarPacote = (props) =>{
              setRegistroini(1)
              setRegistrofim(5)
            }
-        //let filtrotra =  result_pacote.data.data.sort((a,b)=>a.pac_id_pac - b.pac_id_pac)
+        //let filtrotra =  result_profissional.data.data.sort((a,b)=>a.pac_id_pac - b.pac_id_pac)
 
         //tratamentos
         //setListafiltro(result.data.data.tratamentos)
@@ -491,9 +506,16 @@ const CriarPacote = (props) =>{
         setListatratamento(result.data.data.tratamentos.slice(0,5))
         let array_service = result.data.data.servicos
         array_service.unshift({ser_id_ser:'',ser_titulo:'---> Selecione o serviço <---'})
-        setListaservices(array_service)
+        setListatipo(lista_tipo)
         setListacampos(lista)
         setLoadpage(false)
+        // setTimeout(() => {
+        //   console.log('edita_profissinal:'+listaprofissional.length)
+        //   if(listaprofissional.length > 0){
+
+        //   }
+        // }, 5000);
+
       }
       catch (error) {
         console.error("One of the requests failed", error);
@@ -542,7 +564,7 @@ const CriarPacote = (props) =>{
         //    setUltimapagina(res)
            let array_service = result.data.data.servicos
            array_service.unshift({ser_id_ser:'',ser_titulo:'---> Selecione o serviço <---'})
-           setListaservices(array_service)
+           setListatipo(array_service)
            setListacampos(lista)
            setPaginaatual(1)
            if( tam > 0){
@@ -553,6 +575,26 @@ const CriarPacote = (props) =>{
        })
  },[saved])
 
+ //funciona verificar passando parametro//
+  setTimeout(() => {
+     if(idpesquisa != null){
+        EditaProfissional(idpesquisa)
+        setIdpesquisa(null)
+     }
+  },100)
+
+ const atualizaDados = (seq,valor) =>{
+   let index = getIndexSeq(listacampos,seq)
+   listacampos[index].valor = valor
+   if( seq == 3){
+     setTipoglobal(valor)
+   }
+   if( seq == 4){
+     setValorglobal(valor)
+   }
+   console.log(listacampos)
+ }
+
  const  handleSave = (id,lista,valor) =>{
 
      if( validaTipo(id) ){
@@ -560,7 +602,7 @@ const CriarPacote = (props) =>{
        setTimeout(() => {
             document.getElementById('idtoast').classList.remove('show')
             document.getElementById('idtoast').remove()
-       }, 2000)
+       }, 3000)
        return
      }
 
@@ -680,28 +722,48 @@ const CriarPacote = (props) =>{
  }
 
   //--> Salva ou Atualiza os dados no banco de dados //
-  const saveService = () => {
-
-        setLoadspin(true)
-        let pac_itens = null
-        if(pacid == null ){
-          pac_itens = CriaJsonItens('novo')
-        } else {
-          pac_itens = CriaJsonItens('editar')
+  const saveProfissional = (event) => {
+        let filtro = listaitens.filter((item) => item.tra_exclui === 'N')
+        if( filtro.length == 0){
+          addToast(CompToast('Não foi associado nenhum serviço ao Profissional!!!', 'danger')) //--> usa toast
+          setTimeout(() => {
+                  document.getElementById('idtoast').classList.remove('show')
+                  document.getElementById('idtoast').remove()
+          }, 2500)
+          return
         }
+        setLoadspin(true)
+        let prt_itens = null
+        if(proid == null ){
+           let tem_imagem = listacampos[4].imgfile.length
+           if( tem_imagem == 0 ){
+              addToast(CompToast('Não foi selecionada nenhuma imagem!!!', 'danger')) //--> usa toast
+              setTimeout(() => {
+                    document.getElementById('idtoast').classList.remove('show')
+                    document.getElementById('idtoast').remove()
+              }, 2500)
+              setLoadspin(false)
+              return
+           }
+           prt_itens = CriaJsonItens('novo')
+        }
+        else {
+           prt_itens = CriaJsonItens('editar')
+        }
+        let path_image = listacampos[4].link+listacampos[4].valor
         const formData = new FormData()
-        let val_display = valorSeq(3) ? 1 : 0;
-        let val_ativo = valorSeq(2) ? 1 : 0;
-        formData.append('pac_display', val_display)
-        formData.append('pac_nome', valorSeq(1))
-        formData.append('pac_ativo', val_ativo)
-        formData.append('pac_desconto', descontoglobal)
-        formData.append('pac_valor', valorSeq(4))
-        formData.append('pac_valor_final', valorSeq(8))
-        formData.append('pac_itens', pac_itens)
-        if(pacid == null ){
+        let val_ativo = valorSeq(6) ? 1 : 0;
+        formData.append('pro_nome', valorSeq(1))
+        formData.append('pro_ativo', val_ativo)
+        formData.append('pro_apelido', valorSeq(2))
+        formData.append('pro_tipo', valorSeq(3))
+        formData.append('pro_cpf_cnpj', valorSeq(4))
+        formData.append('pro_path_image', path_image)
+        formData.append('prt_itens', prt_itens)
+        formData.append('file', listacampos[4].imgfile[0])
+        if(proid == null ){
           axios
-          .post(`${endpoint}/pacote`, formData, {
+          .post(`${endpoint}/profissional`, formData, {
               headers: {
               Accept: 'application/json',
               'Content-Type': 'multipart/form-data',
@@ -709,6 +771,7 @@ const CriarPacote = (props) =>{
               },
           })
           .then((result) => {
+              Limpar(event)
               setSaved(!saved)
               setLoadspin(false)
               setValidated(false) //--> set form validation to original state <--//
@@ -717,11 +780,16 @@ const CriarPacote = (props) =>{
                   document.getElementById('idtoast').classList.remove('show')
                   document.getElementById('idtoast').remove()
               }, 2000)
+
           })
         } else {
+            let tem_imagem = listacampos[4].imgfile.length
+            if( tem_imagem > 0){
+               formData.append('has_image', false)
+            }
             formData.append('_method', 'put')
           axios
-           .post(`${endpoint}/pacote/${pacid}`, formData, {
+           .post(`${endpoint}/profissional/${proid}`, formData, {
               headers: {
               Accept: 'application/json',
               'Content-Type': 'multipart/form-data',
@@ -729,10 +797,11 @@ const CriarPacote = (props) =>{
               },
           })
           .then((result) => {
+              Limpar(event)
               setSaved(!saved) // change list state force re-render
               setLoadspin(false) // hide spin
               setValidated(false) // set form validation to original state
-              setPacid(null) // set update id flag to null
+              setProid(null) // set update id flag to null
               addToast(CompToast('Dados Atulizados com sucesso !!!', 'success')) //--> usa toast
               setTimeout(() => {
                   document.getElementById('idtoast').classList.remove('show')
@@ -792,13 +861,53 @@ const CriarPacote = (props) =>{
                    setValue(value);
                 }}
                 //onBlur = {(e)=>handleBlur(e,'desconto')}
-                onBlur = {(e)=>atualizaDados(5,value)}
+                onBlur = {(e)=>atualizaDados(4,value)}
                 defaultValue={value}
                 placeholder="0,00"
                 required
             />
+        )
+  }
+
+  const CPFInput = (props) => {
+      const [value, setValue] = useState(props.valor)
+        return (
+            <IMaskInput
+                className="form-control"
+                mask='000.000.000-00' // Define o tipo da máscara como numérico
+                signed={false} // Se permite números negativos
+                // Captura o valor aceito (pode ser unmasked ou typed)
+                onAccept={(value, mask) => {
+                   setValue(value);
+                }}
+                //onBlur = {(e)=>handleBlur(e,'desconto')}
+                onBlur = {(e)=>atualizaDados(4,value)}
+                defaultValue={value}
+                placeholder="000.000.000-00"
+                required
+            />
         );
-  };
+  }
+
+  const CNPJInput = (props) => {
+      const [value, setValue] = useState(props.valor)
+        return (
+            <IMaskInput
+                className="form-control"
+                mask='00.000.000/0000-00' // Define o tipo da máscara como numérico
+                signed={false} // Se permite números negativos
+                // Captura o valor aceito (pode ser unmasked ou typed)
+                onAccept={(value, mask) => {
+                   setValue(value);
+                }}
+                //onBlur = {(e)=>handleBlur(e,'desconto')}
+                onBlur = {(e)=>atualizaDados(5,value)}
+                defaultValue={value}
+                placeholder="00.000.000/0000-00"
+                required
+            />
+        );
+  }
 
   //--> Componente Input type text
   const InputSelectSimples = (props) =>{
@@ -813,15 +922,15 @@ const CriarPacote = (props) =>{
                aria-label="Example text with button addon"
                aria-describedby="button-addon1"
                defaultValue={props.valor}
-               feedbackInvalid={props.erro}
+               //feedbackInvalid={props.erro}
                required={props.required}
                onChange={(e)=>atualizaDados(props.seq,e.target.value)}
             >
             {
             //   <option value="">{''}</option>
-              listaservices.map((item,index)=>{
+              listatipo.map((item,index)=>{
                   return(
-                    <option value={item.ser_id_ser}>{item.ser_titulo}</option>
+                    <option value={item.valor}>{item.nome}</option>
                   )
               })
             }
@@ -831,15 +940,16 @@ const CriarPacote = (props) =>{
     )
   }
 
-  const DropDownQtde = () =>{
+  const DropDownExperiencia = () =>{
    return(
+    <CTooltip content="Adicionar Tempo de Experiência" placement="top">
     <CDropdown variant="btn-group">
-      <CDropdownToggle size="sm" style={{maxHeight:'38px',borderRadius:'0px 0px 0px 0px'}} color={'secondary'}>Qtde</CDropdownToggle>
+      <CDropdownToggle size="sm" style={{maxHeight:'38px',borderRadius:'0px 0px 0px 0px'}} color={'secondary'}>Experiencia</CDropdownToggle>
       <CDropdownMenu>
       {
-        lista_qtde.map((item,index)=>{
+        lista_experiencia.map((item,index)=>{
             return(
-                <CDropdownItem style={{fontSize:'13px'}} href="#" onClick={(e)=>AlteraQtde(e,item.qtde)}>
+                <CDropdownItem style={{fontSize:'13px'}} href="#" onClick={(e)=>AlteraExperiencia(e,item.qtde)}>
                    {item.qtde}
                 </CDropdownItem>
             )
@@ -847,6 +957,7 @@ const CriarPacote = (props) =>{
       }
       </CDropdownMenu>
      </CDropdown>
+     </CTooltip>
     )
   }
 
@@ -856,20 +967,19 @@ const CriarPacote = (props) =>{
     let obj = null
     let arrayitens = []
     listaitens.map((item,index)=>{
-      //pai_id_pai,pai_id_pacpai_created_at,pai_updated_at,pai_deleted_at
+       //prt_id_prt,prt_id_tra,prt_id_pro,prt_tempo_experiencia,prt_ativo,prt_created_at,prt_updated_at,prt_deleted_at
        obj ={
-         pai_display:item.tra_display,
-         pai_id_tra:item.tra_id_tra,
-         pai_qtde:item.tra_qtde,
-         pai_valor:item.tra_valor_atual.tva_valor,
-         pai_desconto:item.tra_valor_atual.tva_max_desconto,
-         pai_exclui:item.tra_exclui
+         prt_ativo:item.tra_display,
+         prt_id_tra:item.tra_id_tra,
+         prt_tempo_experiencia:item.tra_experiencia,
+         prt_exclui:item.tra_exclui
        }
+
        if( acao == 'editar'){
-          obj.pai_id_pai = item.pai_id_pai
-          obj.pai_id_pac = item.pai_id_pac
-          obj.pai_exclui = item.tra_exclui
+          obj.prt_id_prt = item.prt_id_prt
+          obj.prt_exclui = item.tra_exclui
        }
+
        arrayitens.push(obj)
     })
     let objfinal = {
@@ -880,40 +990,53 @@ const CriarPacote = (props) =>{
 
   //--> Componente Input type text
   const InputSelectAdd = (props) =>{
-    console.log('//--> Componente Input type text')
-    console.log(props)
-    return(
+
+       let array =['badge1','badge2','badge3','badge4','badge5','badge6','badge7']
+       let classe = ''
+       let idxclasse = -1
+
+       return(
         <CInputGroup className="mb-3">
             <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
-            <CDropdown variant="btn-group">
-                <CDropdownToggle size="sm" style={{maxHeight:'38px',borderRadius:'0px 0px 0px 0px'}} color={'secondary'}>Escolher</CDropdownToggle>
-                <CDropdownMenu>
-                {
-                    //   <option value="">{''}</option>
-                    listafiltrotra.map((item,index)=>{
-                        return(
-                           <>
-                           <CDropdownItem style={{fontSize:'13px'}} href="#" onClick={(e)=>AlteraEscolha(e,item.tra_id_tra,item.tra_titulo)}>
-                              <CBadge color="success">{item.tra_servico.ser_titulo}</CBadge>&nbsp;{item.tra_servico.ser_titulo+' - '+item.tra_titulo}
-                           </CDropdownItem>
-                           </>
-                            // <option value={item.tra_id_tra}>{item.tra_servico.ser_titulo+' - '+item.tra_titulo}</option>
-                        )
-                    })
-                }
+            <CTooltip content="Selecionar Tratamento" placement="top">
+                <CDropdown variant="btn-group">
+                    <CDropdownToggle size="sm" style={{maxHeight:'38px',borderRadius:'0px 0px 0px 0px'}} color={'secondary'}>Escolher</CDropdownToggle>
+                    <CDropdownMenu>
+                    {
+                        listafiltrotra.map((item,index)=>{
+                            if( item.tra_servico.ser_titulo != classe){
+                                classe = item.tra_servico.ser_titulo
+                                idxclasse++
+                                if( idxclasse > 7){
+                                    idxclasse=0
+                                }
+                            }
+                            return(
+                            <>
+                                <CDropdownItem style={{fontSize:'13px'}} href="#" onClick={(e)=>AlteraEscolha(e,item.tra_id_tra,item.tra_titulo)}>
+                                    <CBadge className={array[idxclasse]} color="success">{item.tra_servico.ser_titulo}</CBadge>&nbsp;{item.tra_servico.ser_titulo+' - '+item.tra_titulo}
+                                </CDropdownItem>
+                            </>
+                            )
+                        })
+                    }
 
-                </CDropdownMenu>
-            </CDropdown>
+                    </CDropdownMenu>
+                </CDropdown>
+            </CTooltip>
             <CFormInput value={itematualtexto} placeholder='Item selecionado'readOnly/>
-            <DropDownQtde/>
-            <CFormInput style={{maxWidth:'62px'}} value={itemqtdeatualtexto} placeholder='Qtde'readOnly/>
-            <CInputGroupText style={{maxHeight:'38px',borderRadius:'0px 5px 5px 0px'}}  onClick={(e)=>addTratamento(e)} className="clinputtext">
-                {props.label1}&nbsp;&nbsp;<FontAwesomeIcon className="cpointer" size="sm" style={{color:'white'}} icon={faCircleArrowDown}/>
-            </CInputGroupText>
+            <DropDownExperiencia/>
+            <CFormInput style={{maxWidth:'62px'}} value={itemqtdeatualtexto} placeholder='Anos'readOnly/>
+            <CTooltip content="Adicionar Tratamento" placement="right">
+                <CInputGroupText style={{maxHeight:'38px',borderRadius:'0px 5px 5px 0px'}}  onClick={(e)=>addTratamento(e)} className="clinputtext">
+                    {props.label1}&nbsp;&nbsp;<FontAwesomeIcon className="cpointer" size="sm" style={{color:'white'}} icon={faCircleArrowDown}/>
+                </CInputGroupText>
+            </CTooltip>
             {/* {props.required ? (<CFormFeedback invalid>{props.erro}</CFormFeedback>) : (<></>) } */}
         </CInputGroup>
     )
   }
+
 
   //--> Componente Input type text
   const InputSelectAddOficial = (props) =>{
@@ -996,6 +1119,18 @@ const CriarPacote = (props) =>{
     )
   }
 
+  const InputTextoCPFCNPJ = (props) =>{
+    return(
+        <CInputGroup className="mb-3">
+            <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
+            {
+              tipoglobal == 1 ? (<CPFInput valor={valorglobal}/>) :<CNPJInput valor={valorglobal}/>
+            }
+            {props.required ? (<CFormFeedback invalid>{props.erro}</CFormFeedback>) : (<></>) }
+        </CInputGroup>
+    )
+  }
+
   //--> Componente Input type text
   const InputTextoSimples = (props) =>{
     console.log('readonly:'+props.readonly+'campo:'+props.titulo+'valor:'+props.valor)
@@ -1009,8 +1144,9 @@ const CriarPacote = (props) =>{
                aria-describedby="button-addon1"
                defaultValue={props.valor}
                readOnly={props.readonly}
-               //feedbackInvalid={props.erro}
                required={props.required}
+               //feedbackInvalid={props.erro}
+
                onChange={(e)=>atualizaDados(props.seq,e.target.value)}
             />
             {props.required ? (<CFormFeedback invalid>{props.erro}</CFormFeedback>) : (<></>) }
@@ -1066,26 +1202,63 @@ const CriarPacote = (props) =>{
     )
   }
 
-  //--> Componente Textarea
-  const InputTextAreaSimples = (props) =>{
-    return(
-        <CInputGroup className="mb-3">
-            <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
-            <CFormTextarea
-               id={props.titulo}
-               placeholder={props.placeholder}
-               aria-label="Example text with button addon"
-               aria-describedby="button-addon1"
-               rows={props.linhas}
-               defaultValue={props.valor}
-               feedbackInvalid={props.erro}
-               required={props.required}
-               onChange={(e)=>atualizaDados(props.seq,e.target.value)}
-            />
-            {/* {props.required ? (<CFormFeedback invalid>{props.erro}</CFormFeedback>) : (<></>) } */}
-        </CInputGroup>
-    )
+
+  const onImageChange = (e) =>{
+    let obj = null
+    if (event.target.files && event.target.files[0]) {
+      let imagem = event.target.files[0]
+      listacampos[4].valor = event.target.files[0].name;
+      listacampos[4].imgfile.length = 0;
+      listacampos[4].imgfile.push(event.target.files[0])
+      setMainimage(event.target.files[0])
+      console.log(listacampos)
+      setEst(!est)
+    }
   }
+
+  const onRemoveAnexo = (event) =>{
+    listacampos[4].valor = ''
+    listacampos[4].imgfile.length = 0;
+     setEst(!est)
+  }
+
+  const BadgeImg = (props) =>{
+        const fonte = props.fonte ? props.fonte : '10px'
+        const largura = props.fonte ? '110px' : ''
+        return(
+           <CBadge style={{minWidth:largura,borderRadius:'5px',fontSize:fonte,display:'inline-flex',alignItems:'center'}} color={props.color}>{props.valor}</CBadge>
+        )
+  }
+
+  const ImageSimple = (props) => {
+      return(
+          <>
+          { props.imgsaved ? (<div className='mb-1 d-flex justify-content-center align-items-center'><CCardImage style={styleimg} src={endpoint_img + props.link + props.valor}/></div>) :(<></>)}
+          <CInputGroup className="mb-3">
+              <CInputGroupText style={props.estilo} className="clinputtext">{props.label}</CInputGroupText>
+              <CFormInput
+                 type="file"
+                 id="inputGroupFile03"
+                 aria-describedby="inputGroupFileAddon03"
+                 aria-label="Upload"
+                 onChange={(e)=>onImageChange(e)}
+                 //value={mainimage}
+                 //required={props.required}
+              />
+              {props.required ? (<CFormFeedback invalid>{props.erro}</CFormFeedback>) : (<></>) }
+          </CInputGroup>
+          <div className="text-start" style={{display:'flex',gap:'5px',paddingBottom:'5px'}}>
+              <div className="circleimg">
+                <CTooltip content="Excluir Imagem" placement="top">
+                    <FontAwesomeIcon onClick={(e)=>onRemoveAnexo(e)} style={{cursor:'pointer',color:'red'}} icon={faTrash} />
+                </CTooltip>
+              </div>
+              { props.valor == null ? (<></>) : (<BadgeImg color="primary" fonte="11px" valor={props.valor}/>) }
+          </div>
+          </>
+      )
+   }
+
 
   const AlteraEscolha = (event,item,valor) =>{
     setItematual(item)
@@ -1093,7 +1266,7 @@ const CriarPacote = (props) =>{
     console.log(listacampos)
   }
 
-  const AlteraQtde = (event,valor) =>{
+  const AlteraExperiencia = (event,valor) =>{
     setItemqtdeatual(valor)
     setItemqtdeatualtexto(valor)
   }
@@ -1101,27 +1274,27 @@ const CriarPacote = (props) =>{
   //--> Atualiza o campo display do campo na tabela
   const atualizaLista = (id,event) =>{
      let valor = event.target.checked == true ? 1 : 0
-     setListapacote(prevItems =>
+     setListaprofissional(prevItems =>
             prevItems.map(item =>
                 item.pac_id_pac === id ? { ...item, pac_display: valor } : item
             )
      )
      setEst(!est)
      AualizaExibe(id,valor,'display')
-     console.log(listapacote)
+     console.log(listaprofissional)
   }
 
   //--> Atualiza o campo display do campo na tabela
   const atualizaListaAtivo = (id,event) =>{
      let valor = event.target.checked == true ? 1 : 0
-     setListapacote(prevItems =>
+     setListaprofissional(prevItems =>
             prevItems.map(item =>
-                item.pac_id_pac === id ? { ...item, pac_ativo: valor } : item
+                item.pro_id_pro === id ? { ...item, pro_ativo: valor } : item
             )
      )
      setEst(!est)
      AualizaExibe(id,valor,'ativo')
-     console.log(listapacote)
+     console.log(listaprofissional)
   }
 
   //--> Atualiza o campo display do campo na tabela
@@ -1133,7 +1306,7 @@ const CriarPacote = (props) =>{
             )
      )
      setEstitens(!estitens)
-     //AualizaExibe(id,valor)
+     AualizaExibe(id,valor)
      console.log(listafiltro)
   }
 
@@ -1151,28 +1324,22 @@ const CriarPacote = (props) =>{
                return(
                 <CTableRow color={classe}>
                     <CTableDataCell>
-                        {item.pac_load ? (<CSpinner size="sm" color="primary"/>) : (item.pac_id_pac)}
+                        {item.pro_load ? (<CSpinner size="sm" color="primary"/>) : (item.pro_id_pro)}
                     </CTableDataCell>
                     <CTableDataCell style={{textAlign:'center',width:'40px'}}>
                        {
-                            item.pac_display == true ?
-                            (<CFormCheck style={{backgroundColor:'#200D35 !important'}} checked onChange={(e)=>atualizaLista(item.pac_id_pac,e)}/>) :
-                            (<CFormCheck style={{backgroundColor:'#200D35 !important'}} onChange={(e)=>atualizaLista(item.pac_id_pac,e)}/>)
+                            item.pro_ativo == true ?
+                            (<CFormCheck style={{backgroundColor:'#5243C2'}} checked onChange={(e)=>atualizaListaAtivo(item.pro_id_pro,e)}/>) :
+                            (<CFormCheck style={{backgroundColor:'white'}} onChange={(e)=>atualizaListaAtivo(item.pro_id_pro,e)}/>)
                        }
                     </CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center',width:'40px'}}>
-                       {
-                            item.pac_ativo == true ?
-                            (<CFormCheck style={{backgroundColor:'#5243C2'}} checked onChange={(e)=>atualizaListaAtivo(item.pac_id_pac,e)}/>) :
-                            (<CFormCheck style={{backgroundColor:'white'}} onChange={(e)=>atualizaListaAtivo(item.pac_id_pac,e)}/>)
-                       }
-                    </CTableDataCell>
-                    <CTableDataCell>{item.pac_nome}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.pac_desconto}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.pac_valor}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.pac_valor_final}</CTableDataCell>
-                    <CTableDataCell>{item.pac_created_at}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center'}}><ItensAcao id={item.pac_id_pac}/></CTableDataCell>
+                    <CTableDataCell>{item.pro_nome}</CTableDataCell>
+                    <CTableDataCell>{item.pro_apelido}</CTableDataCell>
+                    <CTableDataCell>{item.pro_tipo == 1 ? 'Física' : 'Jurídica'}</CTableDataCell>
+                    <CTableDataCell>{item.pro_cpf_cnpj}</CTableDataCell>
+                    <CTableDataCell>{item.pro_path_image}</CTableDataCell>
+                    <CTableDataCell>{item.pro_created_at}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'center'}}><ItensAcao id={item.pro_id_pro}/></CTableDataCell>
                     </CTableRow>
                )
             }
@@ -1181,9 +1348,6 @@ const CriarPacote = (props) =>{
   }
 
 const CorpoTabelaItens = (props) =>{
-      console.log('inicio renderizou CorpoTabelaItens')
-      console.log(props)
-      console.log('fim renderizou CorpoTabelaItens')
       let classe = null
       return(
          props.lista.filter((it) => it.tra_exclui === 'N').map((item,index)=>{
@@ -1192,18 +1356,16 @@ const CorpoTabelaItens = (props) =>{
                     <CTableDataCell>{item.tra_id_tra}</CTableDataCell>
                     <CTableDataCell style={{textAlign:'center',width:'40px'}}>
                       {
-                          item.tra_display == 1 ?
-                          (<CFormCheck checked onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>) :
-                          (<CFormCheck onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>)
+                        item.tra_display == true ?
+                        (<CFormCheck checked onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>) :
+                        (<CFormCheck onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>)
                       }
                     </CTableDataCell>
-                    <CTableDataCell>{item.tra_servico.ser_titulo}</CTableDataCell>
+                    <CTableDataCell>{item.tra_servico}</CTableDataCell>
                     <CTableDataCell>{item.tra_titulo}</CTableDataCell>
                     <CTableDataCell>{item.tra_texto}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center'}}>{item.tra_qtde}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_valor : '000.00'}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_max_desconto : '00.00'}</CTableDataCell>
-                    {/* <CTableDataCell>{item.tra_created_at}</CTableDataCell> */}
+                    <CTableDataCell style={{textAlign:'center'}}>{item.tra_experiencia}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'center'}}>{item.tra_created_at}</CTableDataCell>
                     <CTableDataCell style={{textAlign:'center'}}><ItensAcaoAdd id={item.tra_id_tra}/></CTableDataCell>
                </CTableRow>
                )
@@ -1231,19 +1393,25 @@ const CorpoTabelaItens = (props) =>{
     let idx = itematual
     let lista = listaitens
     let filtro  = listafiltrotra.filter((item)=>item.tra_id_tra === idx)
-    filtro[0].tra_qtde = itemqtdeatual
-    filtro[0].tra_exclui = 'N'
-    console.log(filtro[0])
-    listaitens.push(filtro[0])
+    let obj = {
+      tra_load:false,
+      tra_id_tra:filtro[0].tra_id_tra,
+      tra_display:filtro[0].tra_display == 1 ? true : false,
+      tra_servico:filtro[0].tra_servico.ser_titulo,
+      tra_titulo:filtro[0].tra_titulo,
+      tra_texto:filtro[0].tra_texto,
+      tra_experiencia:itemqtdeatual,
+      tra_created_at:null,
+      tra_exclui:'N'
+    }
+    listaitens.push(obj)
     setEstitens(!estitens)
     setItematual(null)
     setItematualtexto(null)
     setItemqtdeatual(null)
     setItemqtdeatualtexto(null)
-    let val  = CalculaValor()
     atualizaDados(4,val)
     setValorglobal(val)
-    CalculaValorFinal()
    }
 
     const AddItensEdit = (lista) =>{
@@ -1251,50 +1419,21 @@ const CorpoTabelaItens = (props) =>{
       let obj = null
       lista.map((item,index)=>{
          obj={
-            pai_id_pai:item.pai_id_pai,
-            pai_id_pac:item.pai_id_pac,
-            tra_id_tra:item.pai_id_tra,
-            tra_display:item.pai_display,
+            tra_load:false,
+            tra_id_tra:item.prt_id_tra,
+            prt_id_prt:item.prt_id_prt,
+            tra_display:item.prt_ativo  == 1 ? true : false,
             tra_exclui:'N',
-            tra_servico:{
-                ser_titulo:item.tratamento.servico_api.ser_titulo
-            },
+            tra_servico:item.tratamento.servico_api.ser_titulo,
             tra_titulo:item.tratamento.tra_titulo,
             tra_texto:item.tratamento.tra_texto,
-            tra_qtde:item.pai_qtde,
-            tra_valor_atual:{
-                tva_valor:item.pai_valor,
-                tva_max_desconto:item.pai_desconto
-            },
-            tra_created_at:item.pai_created_at
+            tra_experiencia:item.prt_tempo_experiencia,
+            tra_created_at:item.prt_created_at
          }
          listaitens.push(obj)
       })
-
-    }
-
-   const CalculaValor = () =>{
-     //const total = listaitens.reduce((accumulator, current) => accumulator + (parseFloat(current.tra_valor_atual.tva_valor) * parseFloat(current.tra_qtde)), 0);
-     const total = listaitens
-                   .filter((item)=>item.tra_exclui == 'N')
-                   .reduce((accumulator, current) => accumulator + (parseFloat(current.tra_valor_atual.tva_valor) * parseFloat(current.tra_qtde)), 0);
-     console.log('total')
-     console.log(total)
-     return total
-  }
-
-  const CalculaValorFinal = () =>{
-     console.log('calculei')
-     let valor = parseFloat(listacampos[3].valor);
-     let desconto = parseFloat(listacampos[4].valor);
-     if( desconto > 0 ){
-        let val_desc = valor - ((valor * desconto)/100)
-        listacampos[7].valor = val_desc.toFixed(2)
-     } else {
-        listacampos[7].valor = valor.toFixed(2)
-     }
-     console.log(listacampos)
-  }
+      console.log(listaitens)
+   }
 
   const Existe = (index) =>{
      let filtro  = listaitens.filter((item)=>item.tra_id_tra === index)
@@ -1328,7 +1467,7 @@ const CorpoTabelaItens = (props) =>{
      let achou = false
      if( itemqtdeatual === null){
         achou = true
-        addToast(CompToast('Nenhuma Qtde foi definida!!!', 'danger')) //--> usa toast
+        addToast(CompToast('Nenhuma Experiencia foi definida!!!', 'danger')) //--> usa toast
         setTimeout(() => {
             document.getElementById('idtoast').classList.remove('show')
             document.getElementById('idtoast').remove()
@@ -1339,7 +1478,7 @@ const CorpoTabelaItens = (props) =>{
   }
 
   const ExcluirItem = (event,id) =>{
-     let index = getIndexPacote(listaitens,id)
+     let index = getIndexProfissional(listaitens,id)
     //  console.log(listaitens)
     //  listaitens[index].pai_exclui = 'S'
      listaitens.splice(index,1)
@@ -1347,53 +1486,44 @@ const CorpoTabelaItens = (props) =>{
      setEstitens(!estitens)
      setItematual(null)
      setItematualtexto(null)
-     let val= CalculaValor()
      atualizaDados(4,val)
-     setValorglobal(val)
-     CalculaValorFinal()
   }
 
-  const ExcluirItemPacote = (event,id) =>{
+  const ExcluirItemTratamento = (event,id) =>{
      let index = getIndexItensPacote(listaitens,id)
      listaitens[index].tra_exclui='S'
      console.log(listaitens)
-     //listaitens.splice(index,1)
      setListaitens(listaitens)
      setEstitens(!estitens)
      setItematual(null)
      setItematualtexto(null)
-     let val= CalculaValor()
-     atualizaDados(4,val)
-     setValorglobal(val)
-     CalculaValorFinal()
   }
 
 
   //--> Edita os campos e atualiza os dados
-  const EditaPacote = (id) =>{
-     let idx = getIndexPacote(listapacote,id)
-     listacampos[0].valor = listapacote[idx].pac_nome
-     listacampos[1].valor = listapacote[idx].pac_ativo == 1 ? true : false
-     listacampos[2].valor = listapacote[idx].pac_display == 1 ? true : false
-
-     listacampos[4].valor = listapacote[idx].pac_desconto
-     setDescontoglobal(listapacote[idx].pac_desconto)
-
-     listacampos[3].valor = listapacote[idx].pac_valor
-     setValorglobal(listapacote[idx].pac_valor)
-
-     listacampos[5].valor = listapacote[idx].pac_created_at
-
-     listacampos[7].valor = listapacote[idx].pac_valor_final
-     AddItensEdit(listapacote[idx].pac_itens)
-     setPacid(listapacote[idx].pac_id_pac)
-     setEst(!est)
-     console.log(listacampos)
-     console.log(listapacote[idx])
+  const EditaProfissional = (id) =>{
+      let idx = getIndexProfissional(listaprofissional,id)
+      listacampos[0].valor = listaprofissional[idx].pro_nome
+      listacampos[1].valor = listaprofissional[idx].pro_apelido
+      listacampos[2].valor = listaprofissional[idx].pro_tipo
+      listacampos[5].valor = listaprofissional[idx].pro_ativo == 1 ? true : false
+      listacampos[6].valor = listaprofissional[idx].pro_created_at
+      setValorglobal(listaprofissional[idx].pro_cpf_cnpj)
+      listacampos[3].valor = listaprofissional[idx].pro_cpf_cnpj
+      listacampos[4].imgsaved = true
+      let imagepath = listaprofissional[idx].pro_path_image.split('/')
+      listacampos[4].valor = imagepath[1]
+      listacampos[4].required = false
+      AddItensEdit(listaprofissional[idx].pro_tratamentos)
+      setProid(listaprofissional[idx].pro_id_pro)
+      setEst(!est)
+      console.log(listacampos)
+      console.log(listaprofissional[idx])
+      scrollToId('target-id')
   }
 
   const EditaValorModal = (id) =>{
-    let idx = getIndexPacote(listatratamento,id)
+    let idx = getIndexProfissional(listatratamento,id)
     let obj ={
         tra_id_tra:listatratamento[idx].tra_id_tra,
         tra_titulo:listatratamento[idx].tra_titulo,
@@ -1407,18 +1537,19 @@ const CorpoTabelaItens = (props) =>{
 
   //--> Limpa os campos e resseta o form
   const Limpar = (event) => {
-     listacampos[0].valor = ''
-     listacampos[1].valor = ''
+     listacampos[0].valor = null
+     listacampos[1].valor = null
      listacampos[2].valor = ''
-     listacampos[3].valor = ''
+     listacampos[4].imgsaved = false
+     listacampos[4].imgfile.length = 0
+     listacampos[4].required = true
      listacampos[4].valor = ''
      listacampos[5].valor = ''
      listacampos[6].valor = ''
      listacampos[7].valor = ''
      listaitens.length = 0
      setValorglobal(null)
-     setDescontoglobal(null)
-     setPacid(null)
+     setProid(null)
      setEst(!est)
      setValidated(false)
   }
@@ -1427,9 +1558,13 @@ const CorpoTabelaItens = (props) =>{
   const ItensAcao = (props) => {
     return(
        <>
-       <FontAwesomeIcon style={{color:'red',cursor:'pointer'}} icon={faTrash}/>
+       <CTooltip content="Excluir Registro" placement="top">
+         <FontAwesomeIcon style={{color:'red',cursor:'pointer'}} icon={faTrash}/>
+       </CTooltip>
        &nbsp;
-       <FontAwesomeIcon onClick={(e)=>EditaPacote(props.id)} style={{color:'blue',cursor:'pointer'}} icon={faEdit}/>
+       <CTooltip content="Editar Registro" placement="top">
+           <FontAwesomeIcon onClick={(e)=>EditaProfissional(props.id)} style={{color:'blue',cursor:'pointer'}} icon={faEdit}/>
+        </CTooltip>
        </>
     )
   }
@@ -1437,31 +1572,24 @@ const CorpoTabelaItens = (props) =>{
   //--> Display dos Ícones no grid
   const ItensAcaoAdd = (props) => {
     return(
-       <FontAwesomeIcon style={{color:'red',cursor:'pointer'}} icon={faTrash} onClick={(e)=>ExcluirItemPacote(e,props.id)}/>
+       <FontAwesomeIcon style={{color:'red',cursor:'pointer'}} icon={faTrash} onClick={(e)=>ExcluirItemTratamento(e,props.id)}/>
     )
   }
 
   //--> Atualiza o display de exibição do traviço
    const AualizaExibe = (id,valor,campo) =>{
-        //socket.emit('changeState', 'Updated from Terminal!');
-        setListapacote(prevItems =>
+        setListaprofissional(prevItems =>
             prevItems.map(item =>
-                item.pac_id_pac === id ? { ...item, pac_load: true } : item
+                item.pro_id_pro === id ? { ...item, pro_load: true } : item
             )
         )
         const formData = new FormData()
-        if( campo === 'display'){
-            formData.append('pac_display', valor)
-        }
-
-        if( campo === 'ativo'){
-            formData.append('pac_ativo', valor)
-        }
-
+        let valck = valor ? 1 : 0
+        formData.append('pro_ativo', valck)
         formData.append('_method', 'put')
 
         axios
-        .post(`${endpoint}/pacote/${id}`, formData, {
+        .post(`${endpoint}/profissional/${id}`, formData, {
             headers: {
             Accept: 'application/json',
             'Content-Type': 'multipart/form-data',
@@ -1469,35 +1597,20 @@ const CorpoTabelaItens = (props) =>{
             },
         })
         .then((result) => {
-            if( campo === 'display'){
-                setListafiltro(prevItems =>
-                    prevItems.map(item =>
-                        item.pac_id_pac === id ? { ...item, pac_exibe: valor } : item
-                    )
-                )
-                setListapacote(prevItems =>
-                    prevItems.map(item =>
-                        item.pac_id_pac === id ? { ...item, pac_exibe: valor } : item
-                    )
-                )
-            }
-            if( campo === 'ativo'){
-                setListafiltro(prevItems =>
-                    prevItems.map(item =>
-                        item.pac_id_pac === id ? { ...item, pac_ativo: valor } : item
-                    )
-                )
-                setListapacote(prevItems =>
-                    prevItems.map(item =>
-                        item.pac_id_pac === id ? { ...item, pac_ativo: valor } : item
-                    )
-                )
-            }
-
-            //setListatratamento(listafiltro.slice(0,5))
-             setListapacote(prevItems =>
+            setListafiltro(prevItems =>
                 prevItems.map(item =>
-                    item.pac_id_pac === id ? { ...item, pac_load: false } : item
+                     item.pro_id_pro === id ? { ...item, pro_ativo: valor } : item
+                )
+            )
+            setListaprofissional(prevItems =>
+                prevItems.map(item =>
+                        item.pro_id_pro === id ? { ...item, pro_ativo: valor } : item
+                )
+            )
+            //setListatratamento(listafiltro.slice(0,5))
+            setListaprofissional(prevItems =>
+                prevItems.map(item =>
+                    item.pro_id_pro === id ? { ...item, pro_load: false } : item
                 )
             )
             setEst(!est)
@@ -1525,17 +1638,6 @@ const CorpoTabelaItens = (props) =>{
     return listacampos[idx].valor
   }
 
-  const atualizaDados = (seq,valor) =>{
-    console.log(seq)
-    console.log(valor)
-    let index = getIndexSeq(listacampos,seq)
-    listacampos[index].valor = valor
-    if( seq == 5 ){
-       setDescontoglobal(valor)
-       CalculaValorFinal()
-    }
-    console.log(listacampos)
-  }
 
   //--> Envia o Cursor ao id informada
   const scrollToId = (id) => {
@@ -1570,12 +1672,13 @@ const CorpoTabelaItens = (props) =>{
      let valor =  event.target.value
      if( valor.trim() != ''){
         let lista = listafiltro.filter(
-            (item)=>item.pac_nome.toLowerCase().includes(valor.toLowerCase())
+            (item)=>item.pro_nome.toLowerCase().includes(valor.toLowerCase()) ||
+                    item.pro_apelido.toLowerCase().includes(valor.toLowerCase())
         )
         console.log(lista)
-        setListapacote(lista.slice(0,5))
+        setListaprofissional(lista.slice(0,5))
      } else {
-        setListapacote(listafiltro.slice(0,5))
+        setListaprofissional(listafiltro.slice(0,5))
      }
   }
 
@@ -1594,7 +1697,7 @@ const CorpoTabelaItens = (props) =>{
     } else {
        setRegistrofim(fim)
     }
-    setListapacote(lista)
+    setListaprofissional(lista)
   }
 
   //--> Exibe o componente de paginação
@@ -1634,11 +1737,11 @@ const CorpoTabelaItens = (props) =>{
     let elemento = []
 
     for(let i = 1; i <= props.pages; i++ ){
-       if( i == paginaatual){
-             elemento.push(<CPaginationItem active={true} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
-       } else {
-             elemento.push(<CPaginationItem active={false} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
-       }
+      if( i == paginaatual){
+         elemento.push(<CPaginationItem active={true} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      } else {
+         elemento.push(<CPaginationItem active={false} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      }
     }
 
     return (
@@ -1656,7 +1759,6 @@ const CorpoTabelaItens = (props) =>{
 
   //--> Efetua a validação do form e envoia os dados
   const handleSubmit = (event) => {
-        console.log('submit')
         const form = event.currentTarget
         let erro = false
         if (form.checkValidity() === false) {
@@ -1667,9 +1769,7 @@ const CorpoTabelaItens = (props) =>{
         event.preventDefault()
         setValidated(true)
         if(erro == false){
-           saveService()
-        //    let valor = CriaJsonItens()
-        //    console.log(valor)
+           saveProfissional(event)
         }
   }
 
@@ -1678,8 +1778,9 @@ const CorpoTabelaItens = (props) =>{
            <ModalTratamentoValor icone={faBrazilianRealSign} isOpen={openmodal} dados={dadosmodal} close={closeModal} token={token}/>
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
+             <div id="target-id"></div>
              <CCardHeader className="clfooter">
-               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Criação de Pacotes</span>
+               <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Mantenção de Profissionais</span>
              </CCardHeader>
              <CCardBody>
                 <CForm
@@ -1689,37 +1790,39 @@ const CorpoTabelaItens = (props) =>{
                             {/* {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputSelectSimples {...listacampos[0]} />)} */}
                             {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples index="0" {...listacampos[0]}/>)}
                         </CCol>
+                        <CCol md={12} xs={12} >
+                            {/* {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputSelectSimples {...listacampos[0]} />)} */}
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples index="0" {...listacampos[1]}/>)}
+                        </CCol>
                     </CRow>
                     <CRow className='mt-1'>
-                        <CCol md={4} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoValor index="3" {...listacampos[3]}/>)}
+                        <CCol md={3} xs={12} >
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputSelectSimples index="3" {...listacampos[2]}/>)}
                          </CCol>
                          <CCol md={4} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoDesconto {...listacampos[4]}/>)}
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoCPFCNPJ {...listacampos[3]}/>)}
                          </CCol>
-                         <CCol md={4} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[7]}/>)}
+                         <CCol md={2} xs={12} >
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoCheck {...listacampos[5]}/>)}
                          </CCol>
+                         <CCol md={3} xs={12} >
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[6]}/>)}
+                        </CCol>
+
                     </CRow>
                     <CRow>
-                        <CCol md={4} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoCheck {...listacampos[1]}/>)}
-                        </CCol>
-                        <CCol md={4} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoCheck {...listacampos[2]}/>)}
-                        </CCol>
-                        <CCol md={4} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputTextoSimples {...listacampos[5]}/>)}
+                        <CCol md={6} xs={12} >
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <ImageSimple {...listacampos[4]}/>)}
                         </CCol>
                     </CRow>
-                    <CRow className='mb-3'>
+                    <CRow className='mb-3 mt-3'>
                         <CCol md={6} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <CBadge style={{backgroundColor:'#722E56 !important'}} color="primary">Items do Pacote</CBadge>)}
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <CBadge className='badge8' color="primary">Associar Tratamentos</CBadge>)}
                         </CCol>
                     </CRow>
                     <CRow>
                         <CCol md={10} xs={12} >
-                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputSelectAdd {...listacampos[6]}/>)}
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <InputSelectAdd {...listacampos[7]}/>)}
                         </CCol>
                     </CRow>
                     <CRow>
@@ -1733,9 +1836,8 @@ const CorpoTabelaItens = (props) =>{
                                             <CTableHeaderCell className='clthinterno' scope="col">Serviço</CTableHeaderCell>
                                             <CTableHeaderCell className='clthinterno' scope="col">Tratamento</CTableHeaderCell>
                                             <CTableHeaderCell className='clthinterno' scope="col">Descrição</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Qtde</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Preço</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Desc(%)</CTableHeaderCell>
+                                            <CTableHeaderCell className='clthinterno' scope="col">Tempo Experiencia</CTableHeaderCell>
+                                            <CTableHeaderCell className='clthinterno' scope="col">Criação</CTableHeaderCell>
                                             <CTableHeaderCell className='clthinterno' style={{textAlign:'center',borderRadius:'0px 5px 0px 0px'}} scope="col">Acão</CTableHeaderCell>
                                         </CTableRow>
                                     </CTableHead>
@@ -1746,24 +1848,43 @@ const CorpoTabelaItens = (props) =>{
                             </CCard>
                         </CCol>
                     </CRow>
-                    <CRow>
+                    <CRow className='mt-3'>
                         <CCol md={12} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
-                            <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
-                                &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
-                            </CButton>
+                            <CTooltip content="Efetuar Agendamentos" placement="top">
+                                <CButton
+                                        onClick={(e)=>abretela('Agendamento')}
+                                        className='clinputtext mb-3'
+                                        type="button"
+                                        style={{width:'200px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                            Agendamentos&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faCalendar}/>
+                                </CButton>
+                            </CTooltip>
                             &nbsp;
-                            <CButton
-                                //saveService()
-                                className='clinputtext mb-3'
-                                type="submit"
-                                style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
-                                    Salvar&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
-                                    { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
-                            </CButton>
+                            <CTooltip content="Limpar Dados do Formulário" placement="top">
+                                <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
+                                    &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
+                                </CButton>
+                            </CTooltip>
+                            &nbsp;
+                            <CTooltip content="Gravar Infomações" placement="top">
+                                <CButton
+                                    //saveProfissional()
+                                    className='clinputtext mb-3'
+                                    type="submit"
+                                    style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                        Salvar&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
+                                        { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
+                                </CButton>
+                            </CTooltip>
                         </CCol>
                     </CRow>
-                 </CForm>
-                 <CRow className='mt-5'>
+                  </CForm>
+                  <CRow className='mb-0 mt-1'>
+                        <CCol md={6} xs={12} >
+                            {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) : ( <CBadge className='badge8' color="primary">Listagem de Profissionais</CBadge>)}
+                        </CCol>
+                  </CRow>
+                  <CRow className='mt-3'>
                      <CCol md={12} xs={12} >
                         {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) :
                         (
@@ -1778,18 +1899,18 @@ const CorpoTabelaItens = (props) =>{
                                 <CTableHead style={{fontSize:'11px !important'}}>
                                     <CTableRow>
                                         <CTableHeaderCell className='clthinputtext'style={{borderRadius:'5px 0px 0px 0px',fontSize:'11px !important'}} scope="col">#</CTableHeaderCell>
-                                        <CTableHeaderCell className='clthinterno' scope="col">Exibir</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' scope="col">Ativo</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' scope="col">Nome</CTableHeaderCell>
-                                        <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Desconto</CTableHeaderCell>
-                                        <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Valor(Bruto)</CTableHeaderCell>
-                                        <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">ValorFinal</CTableHeaderCell>
+                                        <CTableHeaderCell className='clthinterno' scope="col">Apelido</CTableHeaderCell>
+                                        <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Tipo</CTableHeaderCell>
+                                        <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">CPF/CNPJ</CTableHeaderCell>
+                                        <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Imagem</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' scope="col">Criação</CTableHeaderCell>
                                         <CTableHeaderCell className='clthinterno' style={{textAlign:'center',borderRadius:'0px 5px 0px 0px'}} scope="col">Acão</CTableHeaderCell>
                                     </CTableRow>
                                 </CTableHead>
                                 <CTableBody>
-                                    <CorpoTabela lista={listapacote} estado={est}/>
+                                    <CorpoTabela lista={listaprofissional} estado={est}/>
                                 </CTableBody>
                             </CTable>
                             <div>
@@ -1811,4 +1932,4 @@ const CorpoTabelaItens = (props) =>{
 
 }
 
-export default CriarPacote
+export default ManProfissionais

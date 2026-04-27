@@ -9,7 +9,10 @@ use App\Http\Controllers\Api\ServicesController;
 use App\Http\Controllers\Api\TratamentosController;
 use App\Http\Controllers\Api\TratamentosValorController;
 use App\Http\Controllers\Api\PacoteController;
-
+use App\Http\Controllers\Api\FeriadosController;
+use App\Http\Controllers\Api\ProfissionalController;
+use App\Http\Controllers\Api\ProTratamentoController;
+use App\Http\Controllers\Api\HorarioAgendaController;
 
 
 Route::get('/user', function (Request $request) {
@@ -24,3 +27,7 @@ Route::apiResource('services',ServicesController::class)->middleware('auth:sanct
 Route::apiResource('tratamentos',TratamentosController::class)->middleware('auth:sanctum');
 Route::apiResource('tratamentosvalor',TratamentosValorController::class)->middleware('auth:sanctum');
 Route::apiResource('pacote',PacoteController::class)->middleware('auth:sanctum');
+Route::apiResource('feriado',FeriadosController::class)->middleware('auth:sanctum');
+Route::apiResource('profissional',ProfissionalController::class)->middleware('auth:sanctum');
+Route::apiResource('protratamento',ProTratamentoController::class)->middleware('auth:sanctum');
+Route::apiResource('horarioagenda',HorarioAgendaController::class)->middleware('auth:sanctum');

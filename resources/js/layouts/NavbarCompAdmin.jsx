@@ -40,12 +40,19 @@ export const NavbarCompAdmin = memo(( props ) => {
                 {
                   dados[0].outros.map((item,index)=>{
                    return(
-                     <CDropdownItem href="#" onClick={(e)=>handleClick(e,item.name)}>{item.name}</CDropdownItem>
+                     <CDropdownItem href="#" onClick={(e)=>handleClick(e,item.call)}>{item.name}</CDropdownItem>
                    )
                   })
                 }
                 <CDropdownDivider />
-                <CDropdownItem href="#">Separated link</CDropdownItem>
+                {
+                  dados[0].agenda.map((item,index)=>{
+                   return(
+                     <CDropdownItem href="#" onClick={(e)=>handleClick(e,item.call)}>{item.name}</CDropdownItem>
+                   )
+                  })
+                }
+                {/* <CDropdownItem href="#">Separated link</CDropdownItem> */}
             </CDropdownMenu>
         </CDropdown>
     )

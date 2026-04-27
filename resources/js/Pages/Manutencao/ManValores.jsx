@@ -974,7 +974,11 @@ const ManValores = (props) =>{
     let elemento = []
 
     for(let i = 1; i <= props.pages; i++ ){
-      elemento.push(<CPaginationItem className='cpointer' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      if( i == paginaatual){
+         elemento.push(<CPaginationItem active={true} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      } else {
+         elemento.push(<CPaginationItem active={false} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      }
     }
 
     return (

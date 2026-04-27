@@ -25,7 +25,7 @@ import {
   CImage,
   CCollapse,
   CPagination, CPaginationItem,
-  CFormSelect
+  CFormSelect,CTooltip
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 import { io } from 'socket.io-client';
@@ -954,7 +954,11 @@ const ManTratamentos = (props) =>{
     let elemento = []
 
     for(let i = 1; i <= props.pages; i++ ){
-      elemento.push(<CPaginationItem className='cpointer' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      if( i == paginaatual){
+         elemento.push(<CPaginationItem active={true} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      } else {
+         elemento.push(<CPaginationItem active={false} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+      }
     }
 
     return (
@@ -1024,18 +1028,22 @@ const ManTratamentos = (props) =>{
                     </CRow>
                     <CRow>
                         <CCol md={12} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
-                            <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
-                                &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
-                            </CButton>
+                            <CTooltip content="Limpar Fomulário" placement="top">
+                                <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
+                                    &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
+                                </CButton>
+                            </CTooltip>
                             &nbsp;
-                            <CButton
-                                //saveService()
-                                className='clinputtext mb-3'
-                                type="submit"
-                                style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
-                                    Salvar&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
-                                    { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
-                            </CButton>
+                            <CTooltip content="Gravar Dados" placement="top">
+                                <CButton
+                                    //saveService()
+                                    className='clinputtext mb-3'
+                                    type="submit"
+                                    style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                        Salvar&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
+                                        { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
+                                </CButton>
+                            </CTooltip>
                         </CCol>
                     </CRow>
                  </CForm>

@@ -44,6 +44,12 @@ class Pacote extends Model
        return $this->hasMany(PacoteItem::class, 'pai_id_pac', 'pac_id_pac');
     }
 
+    public function itens_api()
+    {
+       return $this->hasMany(PacoteItem::class, 'pai_id_pac', 'pac_id_pac')
+       ->select('pai_id_pai','pai_display','pai_id_pac','pai_id_tra','pai_qtde','pai_desconto','pai_valor','pai_created_at') ;
+    }
+
 
     // protected function getEspEspecialidadesAttribute(){ //--> especilidade
     //    $esp = Especialidade::select('esp_id_esp','esp_titulo')->orderBy('esp_id_esp','asc')

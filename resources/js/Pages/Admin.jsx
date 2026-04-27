@@ -19,6 +19,9 @@ import ManServicos from './Manutencao/ManServicos';
 import ManTratamentos from './Manutencao/ManTratamentos';
 import ManValores from './Manutencao/ManValores';
 import CriarPacote from './Manutencao/CriarPacote';
+import ManFeriados from './Manutencao/ManFeriados';
+import ManAgendamentos from './Manutencao/ManAgendamentos';
+import ManProfissionais from './Manutencao/ManProfissionais';
 import axios from 'axios'
 import Aos from 'aos';
 
@@ -37,23 +40,29 @@ const Admin = (props) => {
   const [listasections,setListasections] = useState([]);
   const [listatipos,setListatipos] = useState([]);
   const [listatags,setListatags] = useState([]);
+  const [idpesquisapro,setIdpesquisapro]  = useState(null);
   let arrayNavbar =[{
            titulo:'My Salon (Admin)',
            textoButon:'Agendamento',
            icon: faCalendar,
            itens:[
-               {name:'ManCarrosel',href:'#'},
-               {name:'ManAbout',href:'#'},
-               {name:'ManOffers',href:'#'},
-               {name:'ManServices',href:'#'},
-               {name:'ManStaffs',href:'#'},
-               {name:'ManTestemunhos',href:'#'},
+               {call:'ManCarrosel',name:'ManCarrosel',href:'#'},
+               {call:'ManAbout',name:'ManAbout',href:'#'},
+               {call:'ManOffers',name:'ManOffers',href:'#'},
+               {call:'ManServices',name:'ManServices',href:'#'},
+               {call:'ManStaffs',name:'ManStaffs',href:'#'},
+               {call:'ManTestemunhos',name:'ManTestemunhos',href:'#'},
            ],
            outros:[
-               {name:'Servicos',href:'#'},
-               {name:'Tratamentos',href:'#'},
-               {name:'Definir Valores',href:'#'},
-               {name:'Criar Pacotes',href:'#'},
+               {call:'Servicos',name:'Servicos',href:'#'},
+               {call:'Tratamentos',name:'Tratamentos',href:'#'},
+               {call:'DefinirValores',name:'Definir Valores',href:'#'},
+               {call:'CriarPacotes',name:'Criar Pacotes',href:'#'},
+               {call:'Feriados',name:'Feriados',href:'#'},
+               {call:'Profissionais',name:'Cadastrar Profissionais',href:'#'},
+           ],
+           agenda:[
+               {call:'Agendamento',name:'Realizar Agendamento',href:'#'},
            ]
   }]
 
@@ -88,6 +97,12 @@ const Admin = (props) => {
       //setloadPage(true)
   },[props])
 
+
+  const PesqRegistro = (tela,id) => {
+    console.log('tela:'+tela+' id:'+id)
+    setTelaatual(tela)
+    setIdpesquisapro(id)
+  }
 
   const ExibeLayout = (props) => {
     let dados = null
@@ -149,16 +164,30 @@ const Admin = (props) => {
         return(<ManTratamentos end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
-      case "Definir Valores":
+      case "DefinirValores":
         array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
         return(<ManValores abretela={setTelaatual} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
-      case "Criar Pacotes":
+      case "CriarPacotes":
         array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
         return(<CriarPacote abretela={setTelaatual} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
+      case "Feriados":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManFeriados abretela={setTelaatual} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "Agendamento":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManAgendamentos abretela={PesqRegistro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "Profissionais":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        return(<ManProfissionais abretela={setTelaatual} idpesquisa={idpesquisapro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
     }
 
   }
