@@ -22,8 +22,10 @@ import CriarPacote from './Manutencao/CriarPacote';
 import ManFeriados from './Manutencao/ManFeriados';
 import ManAgendamentos from './Manutencao/ManAgendamentos';
 import ManProfissionais from './Manutencao/ManProfissionais';
+import ConsultaAgendas from './Manutencao/ConsultaAgendas';
 import axios from 'axios'
 import Aos from 'aos';
+//const ConsultaAgendas = React.lazy(() => import('./Manutencao/ConsultaAgendas'))
 
 
 const Admin = (props) => {
@@ -62,7 +64,8 @@ const Admin = (props) => {
                {call:'Profissionais',name:'Cadastrar Profissionais',href:'#'},
            ],
            agenda:[
-               {call:'Agendamento',name:'Realizar Agendamento',href:'#'},
+               {call:'Agendamento',name:'Realizar Agendamentos',href:'#'},
+               {call:'ConsultaAgenda',name:'Consultar Agendamentos',href:'#'},
            ]
   }]
 
