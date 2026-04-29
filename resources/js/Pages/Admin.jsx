@@ -1,4 +1,4 @@
-import { React,useEffect, useState, Suspense } from 'react';
+import { React,useEffect, useState, Suspense,lazy,memo } from 'react';
 import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { NavbarCompAdmin } from '../layouts/NavbarCompAdmin';
 import { SpinnerComp } from '../components/SpinnerComp';
@@ -22,11 +22,11 @@ import CriarPacote from './Manutencao/CriarPacote';
 import ManFeriados from './Manutencao/ManFeriados';
 import ManAgendamentos from './Manutencao/ManAgendamentos';
 import ManProfissionais from './Manutencao/ManProfissionais';
+import ConsultaAgendamentos from './Manutencao/ConsultaAgendamentos';
 import axios from 'axios'
 import Aos from 'aos';
-
-
 const Admin = (props) => {
+
   const theme_dark = import.meta.env.VITE_APP_THEME_DARK
   const theme_light = import.meta.env.VITE_APP_THEME_LIGHT
   const endpoint = import.meta.env.VITE_APP_ENDPOINT
@@ -62,7 +62,8 @@ const Admin = (props) => {
                {call:'Profissionais',name:'Cadastrar Profissionais',href:'#'},
            ],
            agenda:[
-               {call:'Agendamento',name:'Realizar Agendamento',href:'#'},
+               {call:'Agendamento',name:'Realizar Agendamentos',href:'#'},
+               {call:'ConsultaAgenda',name:'Consultar Agendamentos',href:'#'},
            ]
   }]
 
@@ -120,18 +121,21 @@ const Admin = (props) => {
       case "ManAbout":
         //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
         array = listasections.filter((item)=> item.sec_nome === 'SectionAbout')
+        //const ManAbout = lazy(() => import('./Manutencao/ManAbout'))
         return(<ManAbout end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
       case "ManOffers":
         //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
         array = listasections.filter((item)=> item.sec_nome === 'SectionOffer')
+        //const ManOffers = lazy(() => import('./Manutencao/ManOffers'))
         return(<ManOffers end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
       case "ManServices":
         //array = listasections.filter((item)=> item.sec_nome === 'SectionNews')
         array = listasections.filter((item)=> item.sec_nome === 'SectionServices')
+        //const ManServices = lazy(() => import('./Manutencao/ManServices'))
         return(<ManServices end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
 
@@ -186,15 +190,34 @@ const Admin = (props) => {
 
       case "Profissionais":
         array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        //const ManProfissionais = lazy(() => import('./Manutencao/ManProfissionais'))
         return(<ManProfissionais abretela={setTelaatual} idpesquisa={idpesquisapro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
+
+      case "ConsultaAgenda":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        //const ConsultaAgendamentos = lazy(() => import('./Manutencao/ConsultaAgendamentos'))
+        return(<ConsultaAgendamentos abretela={setTelaatual} idpesquisa={idpesquisapro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
     }
+
+    //const ConsultaAgendamentos = React.lazy(() => import('./Manutencao/ConsultaAgendamentos'))
 
   }
 
   const Layout = (valor) =>{
      ExibeLayout(valor)
   }
+
+  const Navegador = memo((props) => {
+    console.log("Rendering MyComponent");
+    return (<NavbarCompAdmin tela={props.tela} dados={props.dados}/>)
+  });
+
+  const ExibeTela = memo((props) => {
+    console.log("Rendering MyComponent");
+    return (<ExibeLayout tela={props.tela}/>)
+  });
 
 
   return(

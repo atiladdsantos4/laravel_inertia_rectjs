@@ -3,14 +3,14 @@ import laravel from 'laravel-vite-plugin';
 //import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+//import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 
 
 export default defineConfig({
     base: './',
     build: {
-            chunkSizeWarningLimit: 1000,
+            chunkSizeWarningLimit: 3000,
             rollupOptions: {
                 output: {
                     // Set fixed names for entry files, chunks, and general assets
@@ -25,9 +25,8 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/app.js'],
             refresh: true,
         }),
-        nodePolyfills(),
+        react(),
         //tailwindcss(),
-        react()
     ],
     server: {
         cors: true, // This is equivalent to origin: '*'
@@ -51,7 +50,7 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, 'resources/jsx'),
             '@images': path.resolve(__dirname, 'resources/images'),
-            //'@components': path.resolve(__dirname, './resources/js/components'),
+            //'vite-plugin-node-polyfills/shims/buffer': 'vite-plugin-node-polyfills/shims/buffer/dist/index.js',
         },
     },
 });
