@@ -28,7 +28,15 @@ class HorarioAgendaResource extends JsonResource
                'hoa_dataini' => $this->dataini,
                'hoa_datafim' => $this->datafim,
                'hoa_load' => false
-            ];
+            ];//filtros_agenda
+        }  else if( $request->has('filtros_agenda') ){
+              $data =  [
+                'dat_ano' => $this->dat_ano,
+                'dat_mes' => $this->dat_mes,
+                'dat_mes_extenso' => $this->meses[$this->dat_mes],
+                'dat_semana_mes' => $this->dat_semana_mes,
+             ];
+
         }  else if( $request->has('listagem') ){
             $data =  [
                 'fer_id_fer' => $this->fer_id_fer,

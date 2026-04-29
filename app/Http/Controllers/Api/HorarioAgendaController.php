@@ -77,6 +77,27 @@ class HorarioAgendaController extends Controller
 
         }
 
+        if( isset($all["filtros_agenda"]) ){ //para renderizar as interfaces convencionais
+          $prtid = $all["hoa_id_prt"];
+          $horarioagenda = DataAgenda::distinct('dat_ano','dat_mes','dat_semana_mes')
+          ->whereRaw("exists(select 1 from hoa_horario_agenda where hoa_id_prt = $prtid and hoa_id_dat = dat_id_dat and hoa_deleted_at is null)")
+          ->orderBy('dat_ano')
+          ->orderBy('dat_mes')
+          ->orderBy('dat_semana_mes','ASC')
+          ->get();
+
+          $result_horarioagenda = HorarioAgendaResource::collection($horarioagenda); //only works for colection
+
+          $response = [
+                'status' => true,
+                'message' => 'Dados Section',
+                'data'    => $result_horarioagenda
+            ];
+
+          return response()->json($response, 200);
+
+        }
+
     }
 
     /**
@@ -128,7 +149,31 @@ class HorarioAgendaController extends Controller
         //for($i=0; $i < count($lista); $i++){
         foreach ($lista as $item) {
            $input["hoa_id_dat"] = $item->dat_id_dat;
-           HorarioAgenda::create($input);
+           DB::table('hoa_horario_agenda')->insert([//melhor perfomance//
+                "hoa_id_prt" => $input["hoa_id_prt"],
+                "hoa_id_dat" => $input["hoa_id_dat"],
+                "hoa_ativo" =>  $input["hoa_ativo"],
+                "hoa_agendado" => $input["hoa_agendado"],
+                "hoa_confirmado" => $input["hoa_confirmado"],
+                "hoa_cancelado" => $input["hoa_cancelado"],
+                "hoa_finalizado" => $input["hoa_finalizado"],
+                "hoa_pago" => $input["hoa_pago"],
+                "hoa_created_at" => $input["hoa_created_at"]
+           ]);
+           //--> hoa_id_hoa,hoa_id_prt,hoa_id_dat,hoa_ativo,hoa_agendado,hoa_confirmado,
+           //--> hoa_cancelado,hoa_finalizado,hoa_pago,hoa_created_at,hoa_updated_at,hoa_deleted_at
+           //  HorarioAgenda::insert([
+           //  $input["hoa_id_prt"],
+           //    $input["hoa_id_dat"],
+           //    $input["hoa_ativo"],
+           //    $input["hoa_agendado"],
+           //    $input["hoa_confirmado"],
+           //    $input["hoa_cancelado"],
+           //    $input["hoa_finalizado"],
+           //    $input["hoa_pago"],
+           //    $input["hoa_created_at"]
+           // ]);
+           //HorarioAgenda::create($input);
         }
         $qtde_registros = count($lista);
         if( count($lista) > 0 ){

@@ -20,9 +20,9 @@ createInertiaApp({
     },
     setup({ el, App, props }) {
         createRoot(el).render(
-        <Provider store={store}>
-            <App {...props} />
-        </Provider>
-    );
+            <Provider store={store}>
+                <App {...props} />
+            </Provider>
+        );
     },
 });

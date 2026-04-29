@@ -23,6 +23,7 @@ return new class extends Migration
             $table->char('dat_minuto',2);
             $table->char('dat_horainicial',5);
             $table->char('dat_horafinal',5);
+            $table->integer('dat_semana_mes');
             $table->timestamp('dat_created_at');
             $table->timestamp('dat_updated_at')->nullable();
             $table->timestamp('dat_deleted_at')->nullable();
