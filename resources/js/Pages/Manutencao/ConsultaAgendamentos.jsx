@@ -2,7 +2,7 @@ import { React,useEffect, useState, Suspense, useRef, memo, useMemo  } from 'rea
 import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { SpinnerComp } from '../../components/SpinnerComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBrazilianRealSign,faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp,faSearch  } from '@fortawesome/free-solid-svg-icons';
+import { faBrazilianRealSign, faCalendar ,faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp,faSearch  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CTable, CTableRow,CTableHeaderCell,CTableBody,CTableDataCell,CTableHead,
@@ -13,7 +13,7 @@ import {
   CPlaceholder,
   CFormInput,
   CFormTextarea,
-  CAlert,
+  CAlert,CTooltip,
   CInputGroup,CInputGroupText,
   CFormLabel,CFormCheck,CForm,CFormFeedback,
   CToaster,CToast,CToastBody,CToastClose,
@@ -28,6 +28,8 @@ import { useStore } from '../../store/useStore';
 import { Modal } from '../../components/Modal';
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { right } from '@popperjs/core';
+import { ModalAgendamento } from '../../components/ModalAgendamento';
 
 
 //const io = require('socket.io-client');
@@ -40,8 +42,10 @@ const ConsultaAgendamentos = (props) =>{
     const { changetestemunho } = useStore();
     const [loadpage,setLoadpage] = useState(true)
     const [loadspin,setLoadspin] = useState(false)
+    const [loadpesquisa,setLoadpesquisa] = useState(false)
     const [loadspinano,setLoadspinano] = useState(false)
     const [icone,setIcon] = useState(null)
+    const [dadosagenda,setDadosAgenda] = useState(null)
     const [listacampos,setListacampos] = useState([])
     const [listatags,setListatags] = useState([])
     const [listatipos,setListatipos] = useState([])
@@ -60,6 +64,15 @@ const ConsultaAgendamentos = (props) =>{
     const [listafiltro,setListafiltro] = useState([])
     const [listafiltrosprt,setListafiltrosprt] = useState([])
     const [listafiltrotra,setListafiltrotra] = useState([])
+    const [listadatasagenda,setListadatasagenda] = useState([])
+    const [listaseg,setListaseg] = useState([])
+    const [listater,setListater] = useState([])
+    const [listaqua,setListaqua] = useState([])
+    const [listaqui,setListaqui] = useState([])
+    const [listasex,setListasex] = useState([])
+    const [listasab,setListasab] = useState([])
+    const [qdtelinhas,setQdtelinhas] = useState([])
+    const [listaref,setListaref] = useState([])
     const [estcard,setEstcard] = useState(false)
     const [est,setEst] = useState(false)
     const [estform,setEstform] = useState(true)
@@ -76,7 +89,7 @@ const ConsultaAgendamentos = (props) =>{
     const [toast, addToast] = useState()//toast
     const [validated, setValidated] = useState(false)
     const [openmodal, setOpenmodal] = useState(false)
-    const [textosubmit,setTextosubmit] = useState('Salvar')
+    const [textosubmit,setTextosubmit] = useState('Pesquisar')
     const [estbutton, setEstbutton] = useState(false)
     const [intervalopesquisa,setIntervalopesquisa] = useState(1)
 
@@ -429,7 +442,6 @@ const ConsultaAgendamentos = (props) =>{
         setIcon(props.icon)
         setListatipos(props.tipos)
         setListatags(props.tags)
-        console.log(lista)
         const fetchData = async () => {
             try {
                 const requests = [
@@ -440,7 +452,7 @@ const ConsultaAgendamentos = (props) =>{
                                 Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
                             },
                     }),
-                    axios.get(`${endpoint}/protratamento?filtro=S`,{
+                    axios.get(`${endpoint}/protratamento?listagemagenda=S`,{
                             headers: {
                                 Accept: 'application/json',
                                 'Content-Type': 'multipart/form-data',
@@ -461,13 +473,6 @@ const ConsultaAgendamentos = (props) =>{
                             Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
                         },
                     }),
-                    axios.get(`${endpoint}/protratamento?listagem=S`,{
-                        headers: {
-                            Accept: 'application/json',
-                           'Content-Type': 'multipart/form-data',
-                            Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
-                        },
-                    }),
                 ]
 
                 const responses = await Promise.all(requests);
@@ -476,8 +481,7 @@ const ConsultaAgendamentos = (props) =>{
                 let result_protratamento = responses[1]
                 let result_agendamento = responses[2]
                 let result_anos = responses[3]
-                let result_listatratamentos = responses[4]
-                setListatratamento(result_listatratamentos.data.data)
+                setListatratamento(result_protratamento.data.data)
                 let vanos = []
                 let objeto = null
                 let existe = null
@@ -488,7 +492,7 @@ const ConsultaAgendamentos = (props) =>{
                      texto:item.dat_ano
                    }
                    if(vanos.length == 0){
-                      vanos.push({valor:'',texto:'Selecione o Ano'})
+                      //vanos.push({valor:'',texto:'Selecione o Ano'})
                       vanos.push(objeto)
                    } else {
                       existe = vanos.filter((it)=>it.valor === item.dat_ano)
@@ -498,14 +502,13 @@ const ConsultaAgendamentos = (props) =>{
                    }
                 })
                 setListaanos(vanos)
-
                 let vpro = []
                 objeto = null
                 existe = null
                 result_protratamento.data.data.map((item,index)=>{
                    objeto ={
                      valor:item.prt_id_pro,
-                     texto:item.prt_profissional
+                     texto:item.prt_profissional.pro_nome
                    }
                    if(vpro.length == 0){
                       vpro.push({valor:'',texto:'Selecione o Profissional'})
@@ -561,7 +564,7 @@ const ConsultaAgendamentos = (props) =>{
                 setLoadpage(false)
             }
             catch (error) {
-                console.error("One of the requests failed", error);
+                //console.error("One of the requests failed", error);
             }
                 // Create
         }
@@ -591,6 +594,8 @@ const ConsultaAgendamentos = (props) =>{
 
    const CarregaDatas = (valor) =>{
         setLoadspinano(true)
+        listaanos.length = 0
+        //setListaanos([])
         // const formData = new FormData()
         // formData.append('filtros_agenda', 'S')
         // formData.append('hoa_id_prt', valor)
@@ -627,7 +632,6 @@ const ConsultaAgendamentos = (props) =>{
    }
    //--> Componente Input type text
     const InputTextoSimples = (props) =>{
-       console.log('readonly:'+props.readonly+'campo:'+props.titulo+'valor:'+props.valor)
        return(
            <CInputGroup className="mb-3">
                <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
@@ -659,7 +663,6 @@ const ConsultaAgendamentos = (props) =>{
           listacampos[11].required = true
           listacampos[12].required = true
           setValidated(false)
-          console.log(listacampos)
        }
        if(valor == 1){
           listacampos[0].required = true
@@ -671,15 +674,14 @@ const ConsultaAgendamentos = (props) =>{
           listacampos[11].required = false
           listacampos[12].required = false
           setValidated(false)
-          console.log(listacampos)
        }
     }
 
     const AtualizaLista = (seq,valor) =>{
        let idx = getSeqIndex(listacampos,seq)
-       console.log(seq)
-       console.log(listacampos[idx])
-       console.log(valor)
+       //console.log(seq)
+       //console.log(listacampos[idx])
+       //console.log(valor)
        if(seq === 4){
           FormataData(valor,'inicio')
           setStartDate(valor)
@@ -691,7 +693,7 @@ const ConsultaAgendamentos = (props) =>{
           return
        }
        listacampos[idx].valor = valor
-       console.log(listacampos)
+       //console.log(listacampos)
     }
 
     const getSeqIndex = (lista,seq) => {
@@ -703,11 +705,11 @@ const ConsultaAgendamentos = (props) =>{
     }
 
     const FormataData = (data,valor) =>{
-       console.log(valor)
+       //console.log(valor)
        if(valor === 'inicio'){
-          console.log(data.getFullYear())
-          console.log(data.getMonth()+1)
-          console.log(data.getDate())
+          //console.log(data.getFullYear())
+          //console.log(data.getMonth()+1)
+          //console.log(data.getDate())
 
           listacampos[0].valor = data.getDate()
           listacampos[1].valor = data.getMonth()+1
@@ -729,9 +731,9 @@ const ConsultaAgendamentos = (props) =>{
       }
 
       if(valor === 'final'){
-          console.log(data.getFullYear())
-          console.log(data.getMonth()+1)
-          console.log(data.getDate())
+          //console.log(data.getFullYear())
+          //console.log(data.getMonth()+1)
+          //console.log(data.getDate())
 
           listacampos[4].valor = data.getDate()
           listacampos[5].valor = data.getMonth()+1
@@ -812,7 +814,7 @@ const ConsultaAgendamentos = (props) =>{
    }
 
    const Limpar = (event) => {
-       console.log('teste')
+       //console.log('teste')
        listacampos[0].valor = ''
        listacampos[1].valor = ''
        listacampos[2].valor = ''
@@ -831,7 +833,7 @@ const ConsultaAgendamentos = (props) =>{
    }
 
    const handleSubmit = (event) => {
-        console.log('submit')
+        //console.log('submit')
         const form = event.currentTarget
         let erro = false
         if (form.checkValidity() === false) {
@@ -842,9 +844,10 @@ const ConsultaAgendamentos = (props) =>{
         event.preventDefault()
         setValidated(true)
         if(erro == false){
-           saveAgenda()
+           //saveAgenda()
+           pesquisaAgenda()
         //    let valor = CriaJsonItens()
-        //    console.log(valor)
+        //    //console.log(valor)
         }
    }
 
@@ -853,6 +856,88 @@ const ConsultaAgendamentos = (props) =>{
       let idx  = getSeqIndex(listacampos,seq)
       return listacampos[idx].valor
 
+   }
+
+   const pesquisaAgenda = () => {
+     setLoadspin(true)
+     listaref.length = 0
+     let hoa_id_prt = itematual
+     let ano = valorSeq(11)
+     let mes = valorSeq(12)
+     let semana = valorSeq(13)
+     axios
+        .get(`${endpoint}/horarioagenda?consultaagendadia=S&hoa_id_prt=${hoa_id_prt}&ano=${ano}&mes=${mes}&&semana=${semana}`, {
+                headers: {
+                   Accept: 'application/json',
+                   'Content-Type': 'multipart/form-data',
+                   Authorization: 'Bearer ' + token,//dentro do env//
+                },
+        })
+        .then((result) => {
+           let tam = 0
+           setListadatasagenda(result.data.data)
+           let vetseg = result.data.data.filter((item)=>item.hoa_agendas.dat_diaextenso === 'seg').sort((a,b)=>a.hoa_agendas.dat_id_dat - b.hoa_agendas.dat_id_dat)
+           setListaseg(vetseg)
+           if(vetseg.length > tam){ tam = vetseg.length }
+
+           let vetter = result.data.data.filter((item)=>item.hoa_agendas.dat_diaextenso === 'ter').sort((a,b)=>a.hoa_agendas.dat_id_dat - b.hoa_agendas.dat_id_dat)
+           setListater(vetter)
+           if(vetter.length > tam){ tam = vetter.length }
+
+           let vetqua = result.data.data.filter((item)=>item.hoa_agendas.dat_diaextenso === 'qua').sort((a,b)=>a.hoa_agendas.dat_id_dat - b.hoa_agendas.dat_id_dat)
+           setListaqua(vetqua)
+           if(vetqua.length > tam){ tam = vetqua.length }
+
+           let vetqui = result.data.data.filter((item)=>item.hoa_agendas.dat_diaextenso === 'qui').sort((a,b)=>a.hoa_agendas.dat_id_dat - b.hoa_agendas.dat_id_dat)
+           setListaqui(vetqui)
+           if(vetqui.length > tam){ tam = vetqui.length }
+
+           let vetsex = result.data.data.filter((item)=>item.hoa_agendas.dat_diaextenso === 'sex').sort((a,b)=>a.hoa_agendas.dat_id_dat - b.hoa_agendas.dat_id_dat)
+           setListasex(vetsex)
+           if(vetsex.length > tam){ tam = vetsex.length }
+
+           let vetsab = result.data.data.filter((item)=>item.hoa_agendas.dat_diaextenso === 'sab').sort((a,b)=>a.hoa_agendas.dat_id_dat - b.hoa_agendas.dat_id_dat)
+           setListasab(vetsab)
+           if(vetsab.length > tam){ tam = vetsab.length }
+
+           setLoadspin(false)
+           setQdtelinhas(tam)
+           let vetor = []
+           for (let i = 0; i < tam; i++) {
+              vetor.push({item:i})
+           }
+           setListaref(vetor)
+           setEst(!est)
+        })
+   }
+
+   const AlteraAtivo = (dia,id,valor) => {
+     //setLoadspin(true)
+     let status = valor == 1 ? 'L' : 'B'
+     CarregaLoad(dia,id,true)
+     const formData = new FormData()
+     formData.append('listaload', 'S')
+     formData.append('hoa_ativo', valor)
+     formData.append('_method', 'put')
+     let hoa_id_hoa = id
+     axios
+        .post(`${endpoint}/horarioagenda/${hoa_id_hoa}`,formData, {
+                headers: {
+                   Accept: 'application/json',
+                   'Content-Type': 'multipart/form-data',
+                   Authorization: 'Bearer ' + token,//dentro do env//
+                },
+        })
+        .then((result) => {
+                CarregaLoad(dia,id,false)
+                console.log(listaseg)
+                let mensagem = 'Status Alterado com sucesso!!!'
+                addToast(CompToast(mensagem, 'success')) //--> usa toast
+                setTimeout(() => {
+                    document.getElementById('idtoast').classList.remove('show')
+                    document.getElementById('idtoast').remove()
+                }, 2000)
+        })
    }
 
    const saveAgenda = () => {
@@ -950,22 +1035,22 @@ const ConsultaAgendamentos = (props) =>{
 
     const PreviousPage =(event)=>{
        let page = paginaatual
-       console.log('paginaatual:'+paginaatual)
-       console.log('ultimapagina:'+ultimapagina)
+       //console.log('paginaatual:'+paginaatual)
+       //console.log('ultimapagina:'+ultimapagina)
        if(paginaatual < ultimapagina){
           page = page + 1
-          console.log('ultimapagina-entrei')
+          //console.log('ultimapagina-entrei')
           clickPagination(event,page)
        }
     }
 
     const PriousPage =(event)=>{
        let page = paginaatual
-       console.log('paginaatual:'+paginaatual)
-       console.log('ultimapagina:'+ultimapagina)
+       //console.log('paginaatual:'+paginaatual)
+       //console.log('ultimapagina:'+ultimapagina)
        if(paginaatual > 1){
           page = page - 1
-          console.log('ultimapagina-entrei')
+          //console.log('ultimapagina-entrei')
           clickPagination(event,page)
        }
     }
@@ -1003,14 +1088,317 @@ const ConsultaAgendamentos = (props) =>{
                     item.hoa_tratamento.tratamento.tra_titulo.toLowerCase().includes(valor.toLowerCase())
 
         )
-        console.log(lista)
+        //console.log(lista)
         setListaagendamento(lista.slice(0,5))
      } else {
         setListaagendamento(listafiltro.slice(0,5))
      }
   }
 
-   const CorpoTabela = (props) =>{
+  const ItemLabels = (props) => {
+    return(
+        <>
+          <CBadge className="badgedia badgecol">{'Dia'}</CBadge><br/>
+          <CBadge className="badgedia badgecol">{'Horário'}</CBadge><br/>
+          <CBadge className="badgedia badgecol">{'Status'}</CBadge><br/>
+          <CBadge className="badgedia badgecol">{'Ativo'}</CBadge><br/>
+        </>
+    )
+  }
+
+  const ItemTabela = (props) => {
+    let status = null
+    let classe = null
+    /*
+    "hoa_agendado": "N",
+    "hoa_confirmado": "N",
+    "hoa_cancelado": "N",
+    "hoa_finalizado": "N",
+    "hoa_pago": "N",
+    */
+    switch(props.agenda){
+      case 'L':
+          status = 'Liberado'
+          classe = 'badgeliberado badgecoldados'
+      break
+      case 'C':
+          status = 'Cancelado'
+          classe = 'badgecancelado badgecoldados'
+      break
+      case 'A':
+          status = 'Agendado'
+          classe = 'badgeagendado badgecoldados'
+      break
+      case 'F':
+          status = 'Finalizado'
+          classe = 'badgefinalizado badgecoldados'
+      break
+      case 'N':
+          status = 'Confirmado'
+          classe = 'badgeconfirmado badgecoldados'
+      break
+      case 'B':
+          status = 'Bloqueado'
+          classe = 'badgebloqueado badgecoldados'
+      break
+    }
+
+    return(
+       <div>
+          <CBadge className='badge4 badgecoldados'>{props.dia}</CBadge><br/>
+          <CBadge className='badge4 badgecoldados'>{'Horário: '+props.hora}</CBadge><br/>
+          <CBadge load={props.load} className={classe}>{status}</CBadge><br/>
+          <div style={{display:'flex',gap:'5px'}}><AtivoComp dia={props.diaext} hoa={props.hoa} ativo={props.ativo}/><Spinner load={props.load}/></div>
+          <div style={{display:'flex',justifyContent:'flex-end'}}><CBadge onClick={(e)=>Gerenciar(e,props.hoa,props.diaext,props.dadosagenda)} className="badgegerenciar badgecoldados">{'Gerenciar'}</CBadge></div>
+       </div>
+     )
+  }
+
+  const AtivoComp = (props) =>{
+     let ck = props.ativo == 1 ? <CFormCheck onChange={(e)=>MudaAtivo(e,props.hoa,props.dia)} checked label="Ativo"/> : <CFormCheck onChange={(e)=>MudaAtivo(e,props.hoa,props.dia)} label="Ativo"/>
+     return(ck)
+  }
+
+  const Gerenciar = (event,agendamento,dia,age) =>{
+     console.log(agendamento)
+     console.log(dia)
+     console.log(age)
+     setDadosAgenda(age)
+     setOpenmodal(true)
+  }
+
+  const Spinner = (props) =>{
+    let obj = props.load ? <CSpinner size="sm"/> : <></>
+    return obj
+  }
+
+  const MudaAtivo = (event,id,dia) =>{
+    console.log(id)
+    console.log(listaref)
+     let valor = event.target.checked == true ? 1 : 0
+     let status = event.target.checked == true ? 'L' : 'B'
+
+     if(dia === 'seg'){
+        setListaseg(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_ativo: valor } : item
+            )
+        )
+
+     }
+
+     if(dia === 'ter'){
+        setListater(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_ativo: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'qua'){
+        setListaqua(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_ativo: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'qui'){
+        setListaqui(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_ativo: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'sex'){
+        setListasex(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_ativo: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'sab'){
+        setListasab(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_ativo: valor } : item
+            )
+        )
+     }
+    setEst(!est)
+    MudaStatus(dia,id,status)
+    AlteraAtivo(dia,id,valor)
+    console.log(listaseg)
+  }
+
+  const CarregaLoad = (dia,id,valor) =>{
+
+     if(dia === 'seg'){
+        setListaseg(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_load: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'ter'){
+        setListater(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_load: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'qua'){
+        setListaqua(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_load: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'qui'){
+        setListaqui(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_load: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'sex'){
+        setListasex(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_load: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'sab'){
+        setListasab(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_load: valor } : item
+            )
+        )
+     }
+  }
+
+  const MudaStatus = (dia,id,valor) =>{
+
+     if(dia === 'seg'){
+        setListaseg(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_status_atual: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'ter'){
+        setListater(prevItems =>
+            prevItems.map(item =>
+                item.hoa_id_hoa === id ? { ...item, hoa_status_atual: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'qua'){
+        setListaqua(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_status_atual: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'qui'){
+        setListaqui(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_status_atual: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'sex'){
+        setListasex(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_status_atual: valor } : item
+            )
+        )
+     }
+
+     if(dia === 'sab'){
+        setListasab(prevItems =>
+            prevItems.map(item =>
+               item.hoa_id_hoa === id ? { ...item, hoa_status_atual: valor } : item
+            )
+        )
+     }
+     setEst(!est)
+  }
+
+  const CorpoTabela = (props) =>{
+    let classe = ''
+    let semana = valorSeq(13)
+    let seg = null
+    let ter = null
+    let qua = null
+    let qui = null
+    let sex = null
+    let sab = null
+    return(
+        props.lista.map((item,index)=>{
+            seg = listaseg[index] && listaseg[index].hoa_agendas.dat_semana_mes == semana ? listaseg[index] : null
+            ter = listater[index] && listater[index].hoa_agendas.dat_semana_mes == semana ? listater[index] : null
+            qua = listaqua[index] && listaqua[index].hoa_agendas.dat_semana_mes == semana ? listaqua[index] : null
+            qui = listaqui[index] && listaqui[index].hoa_agendas.dat_semana_mes == semana ? listaqui[index] : null
+            sex = listasex[index] && listasex[index].hoa_agendas.dat_semana_mes == semana ? listasex[index] : null
+            sab = listasab[index] && listasab[index].hoa_agendas.dat_semana_mes == semana ? listasab[index] : null
+            return(
+                <CTableRow key={index} color={classe}>
+                    <CTableDataCell>{index+1}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'right'}}>
+                        {seg ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {seg ? <ItemTabela dadosagenda={seg} ativo={seg.hoa_ativo} hoa={seg.hoa_id_hoa} diaext="seg" load={seg.hoa_load} agenda={seg.hoa_status_atual} dia={seg.hoa_agendas.dat_dia} hora={seg.hoa_agendas.dat_horainicial+'-'+seg.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {ter ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {ter ? <ItemTabela dadosagenda={ter}  ativo={ter.hoa_ativo} hoa={ter.hoa_id_hoa} diaext="ter" load={ter.hoa_load} agenda={ter.hoa_status_atual} dia={ter.hoa_agendas.dat_dia} hora={ter.hoa_agendas.dat_horainicial+'-'+ter.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {qua ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {qua ? <ItemTabela dadosagenda={qua} ativo={qua.hoa_ativo} hoa={qua.hoa_id_hoa} diaext="qua" load={qua.hoa_load} agenda={qua.hoa_status_atual} dia={qua.hoa_agendas.dat_dia} hora={qua.hoa_agendas.dat_horainicial+'-'+qua.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {qui ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {qui ? <ItemTabela dadosagenda={qui} ativo={qui.hoa_ativo} hoa={qui.hoa_id_hoa} diaext="qui" load={qui.hoa_load} agenda={qui.hoa_status_atual} dia={qui.hoa_agendas.dat_dia} hora={qui.hoa_agendas.dat_horainicial+'-'+qui.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {sex ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {sex ? <ItemTabela dadosagenda={sex} ativo={sex.hoa_ativo} hoa={sex.hoa_id_hoa} diaext="sex" load={sex.hoa_load} agenda={sex.hoa_status_atual} dia={sex.hoa_agendas.dat_dia} hora={sex.hoa_agendas.dat_horainicial+'-'+sex.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {sab ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {sab ? <ItemTabela dadosagenda={sab} ativo={sab.hoa_ativo} hoa={sab.hoa_id_hoa} diaext="sab" load={sab.hoa_load} agenda={sab.hoa_status_atual} dia={sab.hoa_agendas.dat_dia} hora={sab.hoa_agendas.dat_horainicial+'-'+sab.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell style={{textAlign:'center'}}></CTableDataCell>
+                </CTableRow>
+            )
+        })
+    )
+  }
+
+  const CorpoTabela1 = (props) =>{
         let classe = null
         let cont = 0
         return(
@@ -1086,7 +1474,7 @@ const ConsultaAgendamentos = (props) =>{
   //--> Edita os campos e atualiza os dados
   const EditaFeriado = (id) =>{
         let idx = getIndexFeriado(listaagendamento,id)
-        console.log(listaagendamento[idx])
+        //console.log(listaagendamento[idx])
         listacampos[0].valor = listaagendamento[idx].fer_descricao
         let ano = listaagendamento[idx].fer_ano
         let mes = listaagendamento[idx].fer_mes
@@ -1104,13 +1492,13 @@ const ConsultaAgendamentos = (props) =>{
      //--> Componente Input type text
      const InputSelectAdd = (props) =>{
        let array =['badge1','badge2','badge3','badge4','badge5','badge6','badge7']
-       console.log('//--> Componente Input type text')
-       console.log(props)
        let classe = ''
        let idxclasse = -1
        return(
            <CInputGroup className="mb-3">
-               <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
+               <CTooltip content="Pesquisar Tratamentos" placement="top">
+                  <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
+               </CTooltip>
                <CDropdown variant="btn-group">
                    <CDropdownToggle size="sm" style={{maxHeight:'38px',borderRadius:'0px 0px 0px 0px'}} color={'secondary'}>Escolher</CDropdownToggle>
                    <CDropdownMenu>
@@ -1149,17 +1537,25 @@ const ConsultaAgendamentos = (props) =>{
    }
 
    const AlteraEscolha = (event,prt,item,servico,valor) =>{
-      setItematual(item)
+      console.log(listacampos)
+      setItematual(prt)
       setItematualtexto(servico+' - '+valor)
+      listacampos[11].valor=''
+      listacampos[12].valor=''
+      listacampos[13].valor=''
+      listameses.length = 0
+      listasemanas.length = 0
       CarregaDatas(prt)
    }
 
     const InputSelectSimples = (props) =>{
-       console.log('//--> Componente Input type text')
-       console.log(props)
+       //console.log('//--> Componente Input type text')
+       //console.log(props)
        return(
            <CInputGroup className="mb-3">
-               <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
+               <CTooltip content="Pesquisar Profissional" placement="top">
+                  <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
+               </CTooltip>
                <CFormSelect
                   id={props.titulo}
                   placeholder={props.placeholder}
@@ -1185,8 +1581,8 @@ const ConsultaAgendamentos = (props) =>{
      }
 
      const InputSelectSimplesAnos = (props) =>{
-       console.log('//--> Componente Input type text')
-       console.log(props)
+       //console.log('//--> Componente Input type text')
+       //console.log(props)
        return(
            <CInputGroup className="mb-3">
                <CInputGroupText style={props.estilo} className="clinputtext has-validation">
@@ -1205,10 +1601,12 @@ const ConsultaAgendamentos = (props) =>{
                >
                {
                //   <option value="">{''}</option>
+                 //listaanos.push({valor:'',texto:'Selecione o Ano'})
                  listaanos.map((item,index)=>{
-                     return(
-                       <option value={item.valor}>{item.texto}</option>
-                     )
+                    if( item.valor !== ''){
+                      return(<option value={item.valor}>{item.texto}</option>)
+                    }
+                      return(<option value={item.valor} selected>{item.texto}</option>)
                  })
                }
                </CFormSelect>
@@ -1218,8 +1616,8 @@ const ConsultaAgendamentos = (props) =>{
     }
 
     const InputSelectSimplesMeses = (props) =>{
-       console.log('//--> Componente Input type text')
-       console.log(props)
+       //console.log('//--> Componente Input type text')
+       //console.log(props)
        return(
            <CInputGroup className="mb-3">
                <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
@@ -1249,8 +1647,6 @@ const ConsultaAgendamentos = (props) =>{
 
 
     const InputSelectSimplesSemanas = (props) =>{
-       console.log('//--> Componente Input type text')
-       console.log(props)
        return(
            <CInputGroup className="mb-3">
                <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
@@ -1260,14 +1656,12 @@ const ConsultaAgendamentos = (props) =>{
                   aria-label="Example text with button addon"
                   aria-describedby="button-addon1"
                   defaultValue={props.valor}
-                  //feedbackInvalid={props.erro}
                   required={props.required}
                   onChange={(e)=>atualizaDados(props.seq,e.target.value)}
                >
                {
-               //   <option value="">{''}</option>
-                 listasemanas.map((item,index)=>{
-                   return(<option value={item.dat_semana_mes}>{index > 0 ? item.dat_semana_mes+'ª Semana' : 'Selecione a Semana'}</option>)
+                 listasemanas.sort((a,b)=>a.dat_semana_mes - b.dat_semana_mes).map((item,index)=>{
+                   return(<option value={item.dat_semana_mes}>{index > 0 ? index+'ª Semana' : 'Selecione a Semana'}</option>)
                  })
                }
                </CFormSelect>
@@ -1291,8 +1685,8 @@ const ConsultaAgendamentos = (props) =>{
    }
 
    const atualizaDados = (seq,valor) =>{
-       console.log(seq)
-       console.log(valor)
+       //console.log(seq)
+       //console.log(valor)
        let index = getIndexSeq(listacampos,seq)
        listacampos[index].valor = valor
        if( seq == 10){
@@ -1301,32 +1695,26 @@ const ConsultaAgendamentos = (props) =>{
           listaanos.length = 0
           listameses.length = 0
           listasemanas.length = 0
-          //setListaanos([])
           let filtro_tratamento = listatratamento.filter((item) => item.prt_id_pro == valor) // '==' inteiros '===' string
           setListatratamentofiltro(filtro_tratamento)
        }
        if( seq == 11){
          let filtro = listafiltrosprt.filter((item) => item.dat_ano == valor) // '==' inteiros '===' string
          let filtro_data = filtro.filter((obj,index,self) =>
-            //item.dat_ano == valor
             index === self.findIndex((t) => t.dat_mes === obj.dat_mes)
         ) // '==' inteiros '===' string
           filtro_data.unshift({dat_mes:'',dat_mes_extenso:'Selecione o Mês'})
           setListameses(filtro_data)
-          console.log(listaanosmes)
-          console.log(filtro_data)
        }
 
        if( seq == 12){
-         let filtro = listafiltrosprt.filter((item) => item.dat_mes == valor) // '==' inteiros '===' string
-         let filtro_data = listafiltrosprt.filter((obj,index,self) =>
+         let filtro = listafiltrosprt.filter((item) => item.dat_mes == valor && item.dat_ano == valorSeq(11)) // '==' inteiros '===' string
+         let filtro_data = filtro.filter((obj,index,self) =>
             //item.dat_ano == valor
             index === self.findIndex((t) => t.dat_semana_mes === obj.dat_semana_mes)
         ) // '==' inteiros '===' string
           filtro_data.unshift({dat_semana_mes:''})
           setListasemanas(filtro_data)
-          console.log(filtro_data)
-          console.log(filtro_data)
        }
        //let filtro = filtpo
     //    if( seq == 3 ){
@@ -1336,12 +1724,13 @@ const ConsultaAgendamentos = (props) =>{
     //    if( seq == 4 ){
     //       setValorglobal(valor)
     //    }
-      console.log(listacampos)
+      //console.log(listacampos)
    }
 
    return(
         <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
             {/* <ModalTratamentoValor icone={faBrazilianRealSign}isOpen={openmodal} dados={dadosmodal} close={closeModal} token={token}/> */}
+            <ModalAgendamento open={openmodal} close={setOpenmodal} agenda={dadosagenda} tratamento={itematualtexto}/>
             <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
             <CCard className="mb-4">
                 <CCardHeader className="clfooter">
@@ -1433,19 +1822,33 @@ const ConsultaAgendamentos = (props) =>{
                         </CRow>
                         <CRow>
                             <CCol md={12} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
-                                <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
-                                    &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
-                                </CButton>
+                                <CTooltip content="Efetuar Agendamentos" placement="top">
+                                    <CButton
+                                            onClick={(e)=>abretela('Agendamento')}
+                                            className='clinputtext mb-3'
+                                            type="button"
+                                            style={{width:'200px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                                Agendamentos&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faCalendar}/>
+                                    </CButton>
+                                </CTooltip>
                                 &nbsp;
-                                <CButton
-                                    //saveAgenda()
-                                    className='clinputtext mb-3'
-                                    type="submit"
-                                    estado={estbutton}
-                                    style={{width:'110px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
-                                        {textosubmit}&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
-                                        { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
-                                </CButton>
+                                <CTooltip content="Limpar Formulário" placement="top">
+                                    <CButton style={{height:'38px'}} onClick={(e)=>Limpar(e)} color="secondary">Limpar / Novo Registro
+                                        &nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faEraser}/>
+                                    </CButton>
+                                </CTooltip>
+                                &nbsp;
+                                <CTooltip content="Efetuar Pesquisa" placement="top">
+                                    <CButton
+                                        //saveAgenda()
+                                        className='clinputtext mb-3'
+                                        type="submit"
+                                        estado={estbutton}
+                                        style={{width:'140px',borderRadius:'5px 5px 5px 5px',color:'white'}} >
+                                            {textosubmit}&nbsp;&nbsp;<FontAwesomeIcon size="sm" style={{color:'white'}} icon={faSave}/>
+                                            { loadspin ? (<>&nbsp;<CSpinner size="sm"/></>) : (<></>)}
+                                    </CButton>
+                                </CTooltip>
                             </CCol>
                         </CRow>
                         <CRow className='mt-5'>
@@ -1454,28 +1857,26 @@ const ConsultaAgendamentos = (props) =>{
                             (
                             <CCard style={{padding:'3px'}}>
                                 <div style={{display:'flex',justifyContent:'flex-end'}}>
-                                <CInputGroup style={{maxWidth:'400px'}} className="mb-2 mt-2">
-                                    <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
-                                    <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>
+                                    <CInputGroup style={{maxWidth:'400px'}} className="mb-2 mt-2">
+                                        <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
+                                        <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>
                                     </CInputGroup>
-                                    </div>
+                                </div>
                                 <CTable responsive>
-                                    <CTableHead style={{fontSize:'11px !important'}}>
+                                    <CTableHead style={{fontSize:'12px !important'}}>
                                         <CTableRow>
                                             <CTableHeaderCell className='clthinputtext'style={{borderRadius:'5px 0px 0px 0px',fontSize:'11px !important'}} scope="col">#</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Profissional</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Serviço</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Tratamento</CTableHeaderCell>
-                                            <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Inicio</CTableHeaderCell>
-                                            <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Fim</CTableHeaderCell>
-                                            {/* <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Ano</CTableHeaderCell>
-                                            <CTableHeaderCell style={{maxWidth:'20px'}} className='clthinterno' scope="col">Data</CTableHeaderCell> */}
-                                            {/* <CTableHeaderCell className='clthinterno' scope="col">Criação</CTableHeaderCell> */}
-                                            <CTableHeaderCell className='clthinterno' style={{textAlign:'center',borderRadius:'0px 5px 0px 0px'}} scope="col">Acão</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' scope="col">Segunda</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' scope="col">Terça</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' scope="col">Quarta</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' scope="col">Quinta</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' scope="col">Sexta</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' scope="col">Sábado</CTableHeaderCell>
+                                            <CTableHeaderCell colspan="2" className='clthinterno' style={{textAlign:'center',borderRadius:'0px 5px 0px 0px'}} scope="col">Acão</CTableHeaderCell>
                                         </CTableRow>
                                     </CTableHead>
                                     <CTableBody>
-                                        <CorpoTabela lista={listaagendamento} estado={est}/>
+                                        <CorpoTabela lista={listaref} estado={est}/>
                                     </CTableBody>
                                 </CTable>
                                 <div>

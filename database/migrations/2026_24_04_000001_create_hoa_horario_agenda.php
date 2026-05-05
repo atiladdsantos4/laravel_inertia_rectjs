@@ -22,6 +22,7 @@ return new class extends Migration
             $table->char('hoa_cancelado',1);
             $table->char('hoa_finalizado',1);
             $table->char('hoa_pago',1);
+            $table->char('hoa_status_atual',1);
             $table->timestamp('hoa_created_at');
             $table->timestamp('hoa_updated_at')->nullable();
             $table->timestamp('hoa_deleted_at')->nullable();

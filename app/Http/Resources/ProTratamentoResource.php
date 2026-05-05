@@ -15,7 +15,7 @@ class ProTratamentoResource extends JsonResource
      */
     public function toArray(Request $request): array
     {   //'prt_id_tra', 'prt_id_pro', 'prt_tempo_experiencia', 'prt_ativo','prt_created_at', 'prt_updated_at'
-        if( $request->has('listagem') ){
+        if( $request->has('listagem') || $request->has('listagemagenda') ){
            $data =  [
                 'prt_id_prt' => $this->prt_id_prt,
                 'prt_id_tra' => $this->prt_id_tra,
