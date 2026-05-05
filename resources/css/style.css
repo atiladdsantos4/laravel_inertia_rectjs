@@ -1195,6 +1195,75 @@
    background-color: #722E56 !important;
 }
 
+/* colors badge */
+.badgeliberado{
+   background-color:#ebe41a !important;
+   color:black;
+}
+
+.badgeagendado{
+   background-color:#3B6DE3 !important;
+   color:white;
+}
+
+.badgeconfirmado{
+   background-color:#14be47 !important;
+   color:white;
+}
+
+.badgefinalizado{
+   background-color:#2617d3 !important;
+   color:white;
+}
+
+.badgepago{
+   background-color:#9998ab !important;
+   color:black;
+}
+
+
+.badgecancelado{
+   background-color:#dd1818 !important;
+   color:white;
+}
+
+.badgeativo{
+   background-color:#b9d11b !important;
+   color:black;
+}
+
+.badgebloqueado{
+   background-color:#d34775 !important;
+   color:white;
+}
+
+.badgedia{
+  background-color:#502149 !important;
+  color:white;
+}
+
+.badgegerenciar{
+  background-color:#9e999d !important;
+  border: 1px solid black;
+  color:white;
+  cursor: pointer;
+}
+
+
+.badgecol{
+   min-width: 50px;
+   border-radius: 3px 3px 3px 3px;
+}
+
+.badgecoldados{
+   border-radius: 3px 3px 3px 3px;
+}
+
+.badge5{
+   background-color:#D97445 !important;
+}
+
+
 .tooltip {
   --cui-tooltip-bg: #722E56; /* Change background color */
   --cui-tooltip-color: #ffffff; /* Change text color */

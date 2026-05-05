@@ -35,6 +35,20 @@ class ProTratamentoController extends Controller
             return response()->json($response, 200);
         }
 
+        if( isset($all["listagemagenda"]) ){ //para renderizar as interfaces convencionais
+           $protratamento = ProTratamento::whereRaw('exists (select 1 from hoa_horario_agenda where hoa_id_prt=prt_id_prt and hoa_deleted_at is null)')->get();
+           //orderBy('tes_created_at');
+           $result_protratamento = ProTratamentoResource::collection($protratamento); //only works for colection
+
+           $response = [
+                'status' => true,
+                'message' => 'Dados Section',
+                'data'    => $result_protratamento
+            ];
+
+            return response()->json($response, 200);
+        }
+
         if( isset($all["filtro"]) ){ //para renderizar as interfaces convencionais
            $protratamento = ProTratamento::all();
            //orderBy('tes_created_at');

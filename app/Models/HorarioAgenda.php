@@ -19,7 +19,7 @@ class HorarioAgenda extends Model
     //protected $appends = ['acao','pla_planosaude','hoa_planosaude'];
     protected $appends = ['dataini','datafim'];
     protected $fillable = [
-        'hoa_id_prt','hoa_id_dat','hoa_ativo','hoa_agendado','hoa_confirmado','hoa_cancelado','hoa_finalizado','hoa_pago','hoa_created_at','hoa_updated_at'
+       'hoa_id_prt','hoa_id_dat','hoa_ativo','hoa_agendado','hoa_confirmado','hoa_cancelado','hoa_finalizado','hoa_pago','hoa_status_atual','hoa_created_at','hoa_updated_at'
     ];
     protected $dates = ['hoa_deleted_at'];//campo obrigatório pra o SoftDeletes
 
@@ -51,7 +51,13 @@ class HorarioAgenda extends Model
     {
        return $this->hasOne(DataAgenda::class, 'dat_id_dat', 'hoa_id_dat')
        ->select('dat_data')->where('dat_id_dat',$valor);
+    }
 
+    public function dataagendaconsulta()
+    {
+       return $this->hasOne(DataAgenda::class, 'dat_id_dat', 'hoa_id_dat')
+       //->select('dat_id_dat','dat_data','dat_dia','dat_diasemana','dat_diaextenso','dat_horainicial','dat_horafinal','dat_semana_mes');
+       ->selectRaw("dat_id_dat,TO_CHAR(dat_data, 'DD/MM/YYYY HH24:MI:SS') as dat_data,dat_dia,dat_diasemana,dat_diaextenso,dat_horainicial,dat_horafinal,dat_semana_mes,DATE_PART('year',dat_data) as ano,DATE_PART('month',dat_data) as mes");
     }
 
     public function setValorIni($valor)
@@ -106,6 +112,7 @@ class HorarioAgenda extends Model
         self::creating(function($model){//before create
             $model->hoa_created_at = date("Y-m-d H:i:s.u");
             $model->hoa_updated_at = date("Y-m-d H:i:s.u");
+            $model->hoa_status_atual = 'L';
         });
 
         self::updating(function($model){

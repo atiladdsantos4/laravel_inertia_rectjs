@@ -58,6 +58,41 @@ class HorarioAgendaController extends Controller
             return response()->json($response, 200);
         }
 
+        if( isset($all["consultaagenda"]) ){ //para renderizar as interfaces convencionais
+           $horarioagenda = HorarioAgenda::all();
+           //orderBy('tes_created_at');
+           $result_horarioagenda = HorarioAgendaResource::collection($horarioagenda); //only works for colection
+
+           $response = [
+                'status' => true,
+                'message' => 'Dados Section',
+                'data'    => $result_horarioagenda
+            ];
+
+            return response()->json($response, 200);
+        }
+
+        if( isset($all["consultaagendadia"]) ){ //para renderizar as interfaces convencionais
+           $prt = $all["hoa_id_prt"];
+           $ano = $all["ano"];
+           $mes = $all["mes"];
+           $semana = $all["semana"];
+           $horarioagenda = HorarioAgenda::where("hoa_id_prt",$prt)
+           ->whereRaw("exists (select 1 from dat_data_agenda where hoa_id_dat = dat_id_dat and dat_ano=$ano and dat_mes=$mes and dat_semana_mes=$semana)")
+           ->get();
+           //orderBy('tes_created_at');
+           $result_horarioagenda = HorarioAgendaResource::collection($horarioagenda); //only works for colection
+
+           $response = [
+                'status' => true,
+                'message' => 'Dados Section',
+                'registros'=> count($horarioagenda),
+                'data'    => $result_horarioagenda
+            ];
+
+            return response()->json($response, 200);
+        }
+
         if( isset($all["anos"]) ){ //para renderizar as interfaces convencionais
           $horarioagenda = DataAgenda::select('dat_ano','dat_mes')
           ->groupBy('dat_ano','dat_mes')
@@ -123,6 +158,7 @@ class HorarioAgendaController extends Controller
         $request->merge(['hoa_cancelado' => 'N']);
         $request->merge(['hoa_finalizado' => 'N']);
         $request->merge(['hoa_pago' => 'N']);
+        $request->merge(['hoa_status_atual' => 'L']);
         $request->merge(['hoa_created_at' => date('Y-m-d H:i:s')]);
         $input = $request->all();
 
@@ -227,8 +263,19 @@ class HorarioAgendaController extends Controller
 
        $input = $request->all();
        $horarioagenda = HorarioAgenda::find($id);
-       $horarioagenda->prt_ativo = $input["prt_ativo"];
-       $horarioagenda->update();
+
+       if( isset($input["listaload"]) ){
+          $horarioagenda->hoa_ativo = $input["hoa_ativo"];
+          if( $input["hoa_ativo"] == 0 ){
+             $horarioagenda->hoa_status_atual ='B';
+          } else {
+             $horarioagenda->hoa_status_atual ='L';
+          }
+          $horarioagenda->update();
+       } else {
+          $horarioagenda->hoa_ativo = $input["hoa_ativo"];
+          $horarioagenda->update();
+       }
 
        $tes = new HorarioAgendaResource($horarioagenda);
        $arr_result = [

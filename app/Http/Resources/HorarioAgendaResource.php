@@ -36,6 +36,26 @@ class HorarioAgendaResource extends JsonResource
                 'dat_mes_extenso' => $this->meses[$this->dat_mes],
                 'dat_semana_mes' => $this->dat_semana_mes,
              ];
+        } else if( $request->has('consultaagendadia') ){
+            $data =  [
+                'hoa_id_hoa'  => $this->hoa_id_hoa,
+                'hoa_id_prt' => $this->hoa_id_prt,
+                'hoa_ativo'=> (int)$this->hoa_ativo,
+                'hoa_agendado' => $this->hoa_agendado,
+                'hoa_confirmado' => $this->hoa_confirmado,
+                'hoa_cancelado' => $this->hoa_cancelado,
+                'hoa_finalizado' => $this->hoa_finalizado,
+                'hoa_pago' => $this->hoa_pago,
+                'hoa_status_atual'  => $this->hoa_status_atual,
+                'hoa_profissional' => $this->protratamento->profissional->pro_nome,
+                'hoa_tratamento' => $this->protratamento->tratamento_filtro,
+                'hoa_tratamento_desconto' => $this->protratamento->tratamento_filtro->valor_atual->tva_max_desconto,
+                'hoa_tratamento_valor' => $this->protratamento->tratamento_filtro->valor_atual->tva_valor,
+                'hoa_load' => false,
+                //'hoa_tratamento' => $this->protratamento,
+                'hoa_agendas'=> $this->dataagendaconsulta
+            ];
+
 
         }  else if( $request->has('listagem') ){
             $data =  [
