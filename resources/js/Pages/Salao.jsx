@@ -1,6 +1,5 @@
 import { React,useEffect, useState, Suspense } from 'react';
-
-
+import { useLocation } from 'react-router-dom';
 // import { useSelector, useDispatch } from 'react-redux'
 // import { increment, decrement } from '../features/counter/counterSlice';
 
@@ -89,7 +88,9 @@ const Home = ({ appName }) => {
 
 
   useEffect(() => {
-
+     //  const queryParams = new URLSearchParams(window.location.search);
+     //  console.log('query params')
+     //  console.log(queryParams)
      axios
       .get(`${endpoint}/section?listagem=S`, {
         headers: {
@@ -146,8 +147,16 @@ const Home = ({ appName }) => {
       duration: 800, // Animation duration (e.g., 1000ms)
       once: false, // Whether animation should only happen once (true) or every time it enters the view (false)
     });
-
 },[])
+
+  const hashValue = window.location.hash.substring(1);
+  if( hashValue !== '' ){
+     setTimeout(()=>{
+         //let hashValue='section-staff'
+         const targetElement = eval("document.getElementById('" + hashValue + "')")
+         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+     },1000)
+  }
 
   const estadoGeral = () =>{
      return estadogeral
@@ -181,6 +190,14 @@ const Home = ({ appName }) => {
      }
      setdadosModal(dados)
   }
+
+  const scrollToId = (id) => {
+     const element = document.getElementById(id);
+     console.log('elemento:'+element)
+     if (element) {
+         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+     }
+  };
 
 
   return (

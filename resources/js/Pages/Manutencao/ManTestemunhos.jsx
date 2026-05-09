@@ -29,8 +29,8 @@ import {
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 import { io } from 'socket.io-client';
-//const io = require('socket.io-client');
-  //const socket = io('http://jemosistemas-domain.com/inertia-react/salao');
+import { ButtonPreview } from '../../components/ButtonPreview';
+
   const ManTestemunhos = (props) =>{
 
   const { changetestemunho } = useStore();
@@ -44,7 +44,13 @@ import { io } from 'socket.io-client';
   const [listafiltro,setListafiltro] = useState([])
   const [estcard,setEstcard] = useState(false)
   const [est,setEst] = useState(false)
-  const [numnpagination,setNumpagination] = useState(false)
+  const [numnpagination,setNumpagination] = useState(null)
+  const [paginaatual,setPaginaatual] = useState(null)
+  const [ultimapagina,setUltimapagina] = useState(null)
+  const [registroini,setRegistroini] = useState(0)
+  const [registrofim,setRegistrofim] = useState(0)
+  const [qtderegistros,setQtderegistros] = useState(0)
+  const [qtderegistrospagina,setQtderegistrospagina] = useState(5)
   const [pesquisar,setPesquisar] = useState(null)
   const [saved,setSaved] = useState(false)
   const [toast, addToast] = useState()//toast
@@ -282,17 +288,27 @@ import { io } from 'socket.io-client';
             setListatestemunho(result.data.data.sec_testemunhos)
             setListafiltro(result.data.data.sec_testemunhos)
             let tam = result.data.data.sec_testemunhos.length
-            let pages = parseInt(tam) / 5;
-            let resto = parseInt(tam) % 5;
-            if( resto == 0 ){
-              setNumpagination(pages)
+            setQtderegistros(tam)
+            let res = tam / qtderegistrospagina
+            let resto = tam % qtderegistrospagina
+            if( resto > 0 ){
+                let resposta = res.toString().split('.');
+                if( parseInt(resposta[1]) === 0){
+                    setNumpagination(res)
+                } else {
+                    res = parseInt(resposta[0]) + 1
+                    let numpag = res.toFixed(0)
+                    setNumpagination(numpag)
+                }
             } else {
-              setNumpagination((pages+1))
+                setNumpagination(res)
             }
-            console.log('items:'+Math.floor(tam))
-            console.log('pages:'+Math.floor(pages))
-            console.log('resto:'+resto)
-            //setNumpagination
+            setUltimapagina(res)
+            setPaginaatual(1)
+            if( tam > 0){
+                setRegistroini(1)
+                setRegistrofim(5)
+            }
             result.data.data.sec_itens.map((item,index)=>{
                label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
                nlinhas = null
@@ -1103,33 +1119,76 @@ const  handleSave = (id,lista,valor) =>{
   }
 
   const clickPagination = (event,idx) =>{
-    //  0,5,5,10
+    setPaginaatual(idx)
     let ref = idx == 1 ? 0 : idx
-    let inicio = ref == 0 ? ref : (ref * 5) - 5
-    let fim = idx * 5
+    let inicio = ref == 0 ? ref : (ref * qtderegistrospagina) - qtderegistrospagina
+    let fim = idx * qtderegistrospagina
     let lista = null
     lista = listafiltro.slice(inicio,fim)
+    setRegistroini(inicio+1)
+    if(fim > qtderegistros){
+       setRegistrofim(qtderegistros)
+    } else {
+       setRegistrofim(fim)
+    }
     setListatestemunho(lista)
   }
 
-  const Pagination = (props) => {
-    let elemento = []
-
-    for(let i = 1; i <= props.pages; i++ ){
-      elemento.push(<CPaginationItem className='cpointer' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+  const PreviousPage =(event)=>{
+    let page = paginaatual
+    console.log('paginaatual:'+paginaatual)
+    console.log('ultimapagina:'+ultimapagina)
+    if(paginaatual < ultimapagina){
+       page = page + 1
+       console.log('ultimapagina-entrei')
+       clickPagination(event,page)
     }
+  }
 
-    return (
-        <CPagination aria-label="Page navigation example">
-        <CPaginationItem className='cpointer' aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-        </CPaginationItem>
-        { elemento }
-        <CPaginationItem className='cpointer' aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-        </CPaginationItem>
-        </CPagination>
-    )
+  const PriousPage =(event)=>{
+    let page = paginaatual
+    console.log('paginaatual:'+paginaatual)
+    console.log('ultimapagina:'+ultimapagina)
+    if(paginaatual > 1){
+       page = page - 1
+       console.log('ultimapagina-entrei')
+       clickPagination(event,page)
+    }
+  }
+
+  const Pagination = (props) => {
+      let elemento = []
+
+      for(let i = 1; i <= props.pages; i++ ){
+        if( i == paginaatual){
+           elemento.push(<CPaginationItem active={true} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+        } else {
+           elemento.push(<CPaginationItem active={false} className='cpointer cl_pagination' onClick={(e)=>clickPagination(e,i)}>{i}</CPaginationItem>)
+        }
+      }
+
+      return (
+          <CPagination aria-label="Page navigation example">
+              <CPaginationItem className='cpointer' aria-label="Previous" onClick={(e)=>PriousPage(e)}>
+                  <span aria-hidden="true">&laquo;</span>
+              </CPaginationItem>
+              { elemento }
+              <CPaginationItem className='cpointer' aria-label="Next" onClick={(e)=>PreviousPage(e)}>
+                  <span aria-hidden="true">&raquo;</span>
+              </CPaginationItem>
+          </CPagination>
+      )
+   }
+
+  //--> Exibe o componente de paginação
+  const PaginationExibe = (props) => {
+     return(
+        // <div style={{fontSize:'14px',paddingLeft:'3px',paddingRight:'3px',backgroundColor:'#722E56',color:'white',display:'flex',borderRadius:'5px 5px 5px 5px'}}>
+        <div className='exibepagination'>
+            <div>Pagina:&nbsp;{props.pagina}&nbsp;</div>
+            <div>Regitros:&nbsp;{registroini+'...'+registrofim+' num Total de '+qtderegistros}</div>
+       </div>
+     )
   }
 
   return(
@@ -1139,6 +1198,7 @@ const  handleSave = (id,lista,valor) =>{
              <CCardHeader className="clfooter">
                <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Testemonial</span>
              </CCardHeader>
+             <div className='mt-1 mb-1 d-flex justify-content-center align-items-center'><ButtonPreview link="salao#section-testemonial"/></div>
              <CCardBody>
                  <CRow>
                      <CCol md={12} xs={12} >
@@ -1178,8 +1238,13 @@ const  handleSave = (id,lista,valor) =>{
                                     <CorpoTabela lista={listatestemunho} estado={est}/>
                                 </CTableBody>
                             </CTable>
-                            <div style={{display:'flex',justifyContent:'flex-end'}}>
-                               <Pagination pages={numnpagination}/>
+                            <div>
+                                <div style={{display:'flex',justifyContent:'flex-start'}}>
+                                   <PaginationExibe pagina={paginaatual}/>
+                                </div>
+                                <div style={{display:'flex',justifyContent:'flex-end',top:'-5px'}}>
+                                   <Pagination pages={numnpagination}/>
+                                </div>
                             </div>
                         </CCard>
                         )}

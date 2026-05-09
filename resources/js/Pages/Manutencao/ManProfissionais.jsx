@@ -476,10 +476,10 @@ const ManProfissionais = (props) =>{
         setListaprofissional(result_profissional.data.data.slice(0,5))
         setListafiltro(result_profissional.data.data)
         let tam = result_profissional.data.data.length
-           setQtderegistros(tam)
-           let res = tam / qtderegistrospagina
-           let resto = tam % qtderegistrospagina
-           if( resto > 0 ){
+        setQtderegistros(tam)
+        let res = tam / qtderegistrospagina
+        let resto = tam % qtderegistrospagina
+        if( resto > 0 ){
                let resposta = res.toString().split('.');
                if( parseInt(resposta[1]) === 0){
                    setNumpagination(res)
@@ -488,15 +488,15 @@ const ManProfissionais = (props) =>{
                    let numpag = res.toFixed(0)
                    setNumpagination(numpag)
                }
-           } else {
+        } else {
                setNumpagination(res)
-           }
-           setUltimapagina(res)
-           setPaginaatual(1)
-           if( tam > 0){
+        }
+        setUltimapagina(res)
+        setPaginaatual(1)
+        if( tam > 0){
              setRegistroini(1)
              setRegistrofim(5)
-           }
+        }
         //let filtrotra =  result_profissional.data.data.sort((a,b)=>a.pac_id_pac - b.pac_id_pac)
 
         //tratamentos

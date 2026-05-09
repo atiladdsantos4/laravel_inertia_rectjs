@@ -67,6 +67,7 @@ const CriarPacote = (props) =>{
   const [toast, addToast] = useState()//toast
   const [validated, setValidated] = useState(false)
   const [openmodal, setOpenmodal] = useState(false)
+  const [exiberesumo, setExiberesumo] = useState(false)
 
   //campos de máscara//
   //const [desconto,setDesconto]  = useState(null)
@@ -82,6 +83,7 @@ const CriarPacote = (props) =>{
   const [estadovalor,setEstadovalor]  = useState(false)
   const [valorglobal,setValorglobal]  = useState(0)
   const [descontoglobal,setDescontoglobal]  = useState(0)
+  const [descontoperc,setDescontoperc]  = useState(1)
 
   const token = props.token
   const sei_display = 1
@@ -713,6 +715,7 @@ const CriarPacote = (props) =>{
               setLoadspin(false)
               setValidated(false) //--> set form validation to original state <--//
               addToast(CompToast('Dados gravados com sucesso !!!', 'success')) //--> usa toast
+              listaitens.length = 0;
               setTimeout(() => {
                   document.getElementById('idtoast').classList.remove('show')
                   document.getElementById('idtoast').remove()
@@ -733,6 +736,7 @@ const CriarPacote = (props) =>{
               setLoadspin(false) // hide spin
               setValidated(false) // set form validation to original state
               setPacid(null) // set update id flag to null
+              listaitens.length = 0;
               addToast(CompToast('Dados Atulizados com sucesso !!!', 'success')) //--> usa toast
               setTimeout(() => {
                   document.getElementById('idtoast').classList.remove('show')
@@ -855,13 +859,16 @@ const CriarPacote = (props) =>{
 
     let obj = null
     let arrayitens = []
+    let valor_desc = null
     listaitens.map((item,index)=>{
       //pai_id_pai,pai_id_pacpai_created_at,pai_updated_at,pai_deleted_at
+      let valor = (item.tra_valor_atual.tva_valor * descontoperc).toFixed(2)
        obj ={
          pai_display:item.tra_display,
          pai_id_tra:item.tra_id_tra,
          pai_qtde:item.tra_qtde,
          pai_valor:item.tra_valor_atual.tva_valor,
+         pai_valor_desc:valor,
          pai_desconto:item.tra_valor_atual.tva_max_desconto,
          pai_exclui:item.tra_exclui
        }
@@ -880,8 +887,11 @@ const CriarPacote = (props) =>{
 
   //--> Componente Input type text
   const InputSelectAdd = (props) =>{
+    let array =['badge1','badge2','badge3','badge4','badge5','badge6','badge7']
     console.log('//--> Componente Input type text')
     console.log(props)
+    let classe = ''
+    let idxclasse = -1
     return(
         <CInputGroup className="mb-3">
             <CInputGroupText style={props.estilo} className="clinputtext has-validation">{props.label}</CInputGroupText>
@@ -889,12 +899,18 @@ const CriarPacote = (props) =>{
                 <CDropdownToggle size="sm" style={{maxHeight:'38px',borderRadius:'0px 0px 0px 0px'}} color={'secondary'}>Escolher</CDropdownToggle>
                 <CDropdownMenu>
                 {
-                    //   <option value="">{''}</option>
                     listafiltrotra.map((item,index)=>{
+                        if( item.tra_servico.ser_titulo != classe){
+                             classe = item.tra_servico.ser_titulo
+                            idxclasse++
+                            if( idxclasse > 7){
+                                idxclasse=0
+                            }
+                         }
                         return(
                            <>
                            <CDropdownItem style={{fontSize:'13px'}} href="#" onClick={(e)=>AlteraEscolha(e,item.tra_id_tra,item.tra_titulo)}>
-                              <CBadge color="success">{item.tra_servico.ser_titulo}</CBadge>&nbsp;{item.tra_servico.ser_titulo+' - '+item.tra_titulo}
+                              <CBadge className={array[idxclasse]} color="success">{item.tra_servico.ser_titulo}</CBadge>&nbsp;{item.tra_servico.ser_titulo+' - '+item.tra_titulo}
                            </CDropdownItem>
                            </>
                             // <option value={item.tra_id_tra}>{item.tra_servico.ser_titulo+' - '+item.tra_titulo}</option>
@@ -1180,13 +1196,83 @@ const CriarPacote = (props) =>{
       )
   }
 
-const CorpoTabelaItens = (props) =>{
+  const CorpoTabelaItensXXX = (props) =>{
       console.log('inicio renderizou CorpoTabelaItens')
       console.log(props)
       console.log('fim renderizou CorpoTabelaItens')
       let classe = null
+      let tem_registro = false
+      let listafinal =  props.lista.filter((it) => it.tra_exclui === 'N')
+      let tam = listafinal.length - 1
+      console.log('tam:'+tam)
+      return(
+         listafinal.filter((it) => it.tra_exclui === 'N').map((item,index)=>{
+            tem_registro = true
+            console.log('index:'+index)
+            if(index < tam ) {
+                return(
+                    <CTableRow color={classe}>
+                        <CTableDataCell>{item.tra_id_tra}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'center',width:'40px'}}>
+                        {
+                            item.tra_display == 1 ?
+                            (<CFormCheck checked onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>) :
+                            (<CFormCheck onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>)
+                        }
+                        </CTableDataCell>
+                        <CTableDataCell>{item.tra_servico.ser_titulo}</CTableDataCell>
+                        <CTableDataCell>{item.tra_titulo}</CTableDataCell>
+                        <CTableDataCell>{item.tra_texto}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'center'}}>{item.tra_qtde}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_valor : '000.00'}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_max_desconto : '00.00'}</CTableDataCell>
+                        {/* <CTableDataCell>{item.tra_created_at}</CTableDataCell> */}
+                        <CTableDataCell style={{textAlign:'center'}}><ItensAcaoAdd id={item.tra_id_tra}/></CTableDataCell>
+                    </CTableRow>
+                )
+            } else {
+                return(
+                    <>
+                    <CTableRow color={classe}>
+                        <CTableDataCell>{item.tra_id_tra}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'center',width:'40px'}}>
+                        {
+                            item.tra_display == 1 ?
+                            (<CFormCheck checked onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>) :
+                            (<CFormCheck onChange={(e)=>atualizaListaItem(item.tra_id_tra,e)}/>)
+                        }
+                        </CTableDataCell>
+                        <CTableDataCell>{item.tra_servico.ser_titulo}</CTableDataCell>
+                        <CTableDataCell>{item.tra_titulo}</CTableDataCell>
+                        <CTableDataCell>{item.tra_texto}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'center'}}>{item.tra_qtde}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_valor : '000.00'}</CTableDataCell>
+                        <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_max_desconto : '00.00'}</CTableDataCell>
+                        {/* <CTableDataCell>{item.tra_created_at}</CTableDataCell> */}
+                        <CTableDataCell style={{textAlign:'center'}}><ItensAcaoAdd id={item.tra_id_tra}/></CTableDataCell>
+                    </CTableRow>
+                    <CTableRow color={classe}>
+                       <CTableDataCell colspan="7"></CTableDataCell>
+                       <CTableDataCell>valor</CTableDataCell>
+                       <CTableDataCell>valor</CTableDataCell>
+                    </CTableRow>
+                    </>
+                )
+            }
+
+        })
+      )
+  }
+
+
+  const CorpoTabelaItens = (props) =>{
+      setExiberesumo(false)
+      let classe = null
+      //let desconto = descontoglobal == 0 ? 1 : 1 - (descontoglobal/100)
+      let desconto = descontoperc
       return(
          props.lista.filter((it) => it.tra_exclui === 'N').map((item,index)=>{
+            setExiberesumo(true)
             return(
                 <CTableRow color={classe}>
                     <CTableDataCell>{item.tra_id_tra}</CTableDataCell>
@@ -1201,14 +1287,35 @@ const CorpoTabelaItens = (props) =>{
                     <CTableDataCell>{item.tra_titulo}</CTableDataCell>
                     <CTableDataCell>{item.tra_texto}</CTableDataCell>
                     <CTableDataCell style={{textAlign:'center'}}>{item.tra_qtde}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_valor : '000.00'}</CTableDataCell>
                     <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_max_desconto : '00.00'}</CTableDataCell>
-                    {/* <CTableDataCell>{item.tra_created_at}</CTableDataCell> */}
+                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_valor : '000.00'}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? (item.tra_valor_atual.tva_valor * desconto).toFixed(2) : '000.00'}</CTableDataCell>
                     <CTableDataCell style={{textAlign:'center'}}><ItensAcaoAdd id={item.tra_id_tra}/></CTableDataCell>
                </CTableRow>
-               )
+            )
         })
       )
+  }
+
+  const LinhaSoma = () =>{
+    //const total = listaitens.reduce((accumulator, current) => accumulator + (parseFloat(current.tra_valor_atual.tva_valor) * parseFloat(current.tra_qtde)), 0);
+    let desconto = descontoglobal == 0 ? 1 : 1 - (descontoglobal/100)
+    const total = listaitens
+                   .filter((item)=>item.tra_exclui == 'N')
+                   .reduce((accumulator, current) => accumulator + (parseFloat(current.tra_valor_atual.tva_valor) * parseFloat(current.tra_qtde)), 0);
+
+    const total_desc = listaitens
+                   .filter((item)=>item.tra_exclui == 'N')
+                   .reduce((accumulator, current) => accumulator + (parseFloat(current.tra_valor_atual.tva_valor) * parseFloat(current.tra_qtde) * desconto), 0);
+    let classe = null
+    return(
+       <CTableRow color={classe}>
+          <CTableDataCell colspan="6"></CTableDataCell>
+          <CTableDataCell><CBadge className='badgetotal'>  Totais</CBadge></CTableDataCell>
+          <CTableDataCell style={{textAlign:'right'}}><CBadge className='badgetotal'>{total.toFixed(2)}</CBadge></CTableDataCell>
+          <CTableDataCell style={{textAlign:'right'}}><CBadge className='badgetotal'>{total_desc.toFixed(2)}</CBadge></CTableDataCell>
+       </CTableRow>
+    )
   }
 
 
@@ -1297,7 +1404,7 @@ const CorpoTabelaItens = (props) =>{
   }
 
   const Existe = (index) =>{
-     let filtro  = listaitens.filter((item)=>item.tra_id_tra === index)
+     let filtro  = listaitens.filter((item)=>item.tra_id_tra === index && item.tra_exclui == 'N')
      let achou = false
      if( filtro.length > 0){
         achou = true
@@ -1378,9 +1485,12 @@ const CorpoTabelaItens = (props) =>{
 
      listacampos[4].valor = listapacote[idx].pac_desconto
      setDescontoglobal(listapacote[idx].pac_desconto)
+     let desc = 1 - (listapacote[idx].pac_desconto/100)
+     setDescontoperc(desc)
 
      listacampos[3].valor = listapacote[idx].pac_valor
      setValorglobal(listapacote[idx].pac_valor)
+
 
      listacampos[5].valor = listapacote[idx].pac_created_at
 
@@ -1418,6 +1528,7 @@ const CorpoTabelaItens = (props) =>{
      listaitens.length = 0
      setValorglobal(null)
      setDescontoglobal(null)
+     setDescontoperc(1)
      setPacid(null)
      setEst(!est)
      setValidated(false)
@@ -1531,6 +1642,8 @@ const CorpoTabelaItens = (props) =>{
     let index = getIndexSeq(listacampos,seq)
     listacampos[index].valor = valor
     if( seq == 5 ){
+       let desc = 1 - (valor/100)
+       setDescontoperc(desc)
        setDescontoglobal(valor)
        CalculaValorFinal()
     }
@@ -1734,13 +1847,15 @@ const CorpoTabelaItens = (props) =>{
                                             <CTableHeaderCell className='clthinterno' scope="col">Tratamento</CTableHeaderCell>
                                             <CTableHeaderCell className='clthinterno' scope="col">Descrição</CTableHeaderCell>
                                             <CTableHeaderCell className='clthinterno' scope="col">Qtde</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Preço</CTableHeaderCell>
-                                            <CTableHeaderCell className='clthinterno' scope="col">Desc(%)</CTableHeaderCell>
+                                            <CTableHeaderCell className='clthinterno' scope="col">Max.Desc(%)</CTableHeaderCell>
+                                            <CTableHeaderCell className='clthinterno' scope="col">Preço Real</CTableHeaderCell>
+                                            <CTableHeaderCell className='clthinterno' scope="col">Preço Desc</CTableHeaderCell>
                                             <CTableHeaderCell className='clthinterno' style={{textAlign:'center',borderRadius:'0px 5px 0px 0px'}} scope="col">Acão</CTableHeaderCell>
                                         </CTableRow>
                                     </CTableHead>
                                     <CTableBody>
                                         <CorpoTabelaItens lista={listaitens} estado={estitens}/>
+                                        { exiberesumo  ? (<LinhaSoma/>) : (<></>)}
                                     </CTableBody>
                                 </CTable>
                             </CCard>

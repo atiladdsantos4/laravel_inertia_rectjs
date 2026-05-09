@@ -46,6 +46,9 @@ import {
   CCollapse
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
+import { ButtonPreview } from '../../components/ButtonPreview';
+import { ModalPesquisaServico } from '../../components/ModalPesquisaServico';
+//import { set } from 'core-js/core/dist';
 
 const ManServices = (props) =>{
 
@@ -56,9 +59,12 @@ const ManServices = (props) =>{
   const [listatags,setListatags] = useState([])
   const [listatipos,setListatipos] = useState([])
   const [listacard,setListacard] = useState([])
+  const [listatratamento,setListatratamento] = useState([])
   const [estcard,setEstcard] = useState(false)
   const [saved,setSaved] = useState(false)
   const [toast, addToast] = useState()//toast
+  const [openmodal, setOpenmodal] = useState()//toast
+  const [itematual,setItematual]  = useState(null)//toast
   const token = props.token
   const sei_display = 1
   const empresa = props.dados_section.sec_id_emp
@@ -274,15 +280,33 @@ const ManServices = (props) =>{
     //setListacampos(lista)
     setListatipos(props.tipos)
     setListatags(props.tags)
-    axios
-        .get(`${endpoint}/section/${sei_id_sec}?section_man=S`,{
-        headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        Authorization: 'Bearer ' + token,//dentro do env//
-        },
-        })
-        .then((result) => {
+    const fetchData = async () => {
+       try {
+
+            const requests = [
+                axios.get(`${endpoint}/section/${sei_id_sec}?section_man=S`,{
+                    headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: 'Bearer ' + token,//dentro do env//
+                    },
+                }),
+                axios.get(`${endpoint}/tratamentos?listagem=S`,{
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
+                    },
+                })
+            ]
+
+            const responses = await Promise.all(requests);
+
+            let result = responses[0]
+            let result_tratamento = responses[1]
+            setListatratamento(result_tratamento.data.data.tratamentos)
+
+            //.then((result) => {
             let objlista = null
             let lista_inicial = []
             let label_campos = null
@@ -290,76 +314,156 @@ const ManServices = (props) =>{
             let link = null
             let string = null
             result.data.data.sec_itens.map((item,index)=>{
-               label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
-               nlinhas = null
-               if( item.sei_tag == 'textarea' ){
-                  string = JSON.parse(item.sei_json)
-                  nlinhas = string.meta[0].linhas
-               }
+                label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
+                nlinhas = null
+                if( item.sei_tag == 'textarea' ){
+                    string = JSON.parse(item.sei_json)
+                    nlinhas = string.meta[0].linhas
+                }
 
-               if( item.sei_tag == 'image' ){
-                  string = JSON.parse(item.sei_json)
-                  link = string.meta[0].path
-               }
+                if( item.sei_tag == 'image' ){
+                    string = JSON.parse(item.sei_json)
+                    link = string.meta[0].path
+                }
 
-               if( item.sei_tag == 'lista' ){
-                  string = JSON.parse(item.sei_json)
-                  string.meta.map((it,index)=>{
-                    it.imgsaved = true
-                    it.imgfile = []
-                  })
-                  setListacard(string.meta)
-                  //console.log(string)
+                if( item.sei_tag == 'lista' ){
+                    string = JSON.parse(item.sei_json)
+                    string.meta.map((it,index)=>{
+                        it.imgsaved = true
+                        it.imgfile = []
+                    })
+                    setListacard(string.meta)
+                    //console.log(string)
 
-               }
+                }
 
-               objlista = {
-                 idfield:item.sei_id_sei,
-                 id:item.sei_nome,
-                 nome:item.sei_nome,
-                 titulo:label_campos[0].label,
-                 placeholder:item.sei_placeholder,
-                 load:false,
-                 estilo:style,
-                 linhas:nlinhas,
-                 type:item.sei_tag,
-                 valor:item.sei_valor,
-                 tipo:item.sei_tipo,
-                 tipo_id:item.sei_id_tip,
-                 collapse:true
-               }
+                objlista = {
+                    idfield:item.sei_id_sei,
+                    id:item.sei_nome,
+                    nome:item.sei_nome,
+                    titulo:label_campos[0].label,
+                    placeholder:item.sei_placeholder,
+                    load:false,
+                    estilo:style,
+                    linhas:nlinhas,
+                    type:item.sei_tag,
+                    valor:item.sei_valor,
+                    tipo:item.sei_tipo,
+                    tipo_id:item.sei_id_tip,
+                    collapse:true
+                }
 
-               if( item.sei_tag == 'image' ){
-                  objlista.link = link
-                  objlista.imgsaved = true
-                  objlista.imgfile = []
-                  objlista.display = true
-               }
+                if( item.sei_tag == 'image' ){
+                    objlista.link = link
+                    objlista.imgsaved = true
+                    objlista.imgfile = []
+                    objlista.display = true
+                }
 
-               if( item.sei_tag == 'lista' ){
-                  //objlista.lista = string.meta[0]
-                  //objlista.imgsaved = true
-                  null
-                //   objlista.imgsaved = true
-                //   objlista.imgfile = []
-                //   objlista.display = true
-               }
-               lista_inicial.push(objlista)
-               //console.log(item)
+                if( item.sei_tag == 'lista' ){
+                    //objlista.lista = string.meta[0]
+                    //objlista.imgsaved = true
+                    null
+                    //   objlista.imgsaved = true
+                    //   objlista.imgfile = []
+                    //   objlista.display = true
+                }
+                lista_inicial.push(objlista)
+                //console.log(item)
             })
             let existe = null
             lista.map((item,index)=>{
-              existe = lista_inicial.filter((it)=> it.nome === item.nome)
-              if( existe.length == 0){
-                //console.log('existe')
-                //console.log(existe)
-                lista_inicial.push(item)
-              }
+            existe = lista_inicial.filter((it)=> it.nome === item.nome)
+                if( existe.length == 0){
+                        //console.log('existe')
+                        //console.log(existe)
+                        lista_inicial.push(item)
+                }
             })
             setListacampos(lista_inicial)
-            //setListacard()
             setLoadpage(false)
-        })
+
+        } catch (error) {
+            console.error("One of the requests failed", error);
+        }
+    }
+    fetchData()
+    return
+    // axios
+    //     .get(`${endpoint}/section/${sei_id_sec}?section_man=S`,{
+    //     headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'multipart/form-data',
+    //     Authorization: 'Bearer ' + token,//dentro do env//
+    //     },
+    //     })
+    //     .then((result) => {
+    //         let objlista = null
+    //         let lista_inicial = []
+    //         let label_campos = null
+    //         let nlinhas = null
+    //         let link = null
+    //         let string = null
+    //         result.data.data.sec_itens.map((item,index)=>{
+    //            label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
+    //            nlinhas = null
+    //            if( item.sei_tag == 'textarea' ){
+    //               string = JSON.parse(item.sei_json)
+    //               nlinhas = string.meta[0].linhas
+    //            }
+
+    //            if( item.sei_tag == 'image' ){
+    //               string = JSON.parse(item.sei_json)
+    //               link = string.meta[0].path
+    //            }
+
+    //            if( item.sei_tag == 'lista' ){
+    //               string = JSON.parse(item.sei_json)
+    //               string.meta.map((it,index)=>{
+    //                 it.imgsaved = true
+    //                 it.imgfile = []
+    //               })
+    //               setListacard(string.meta)
+    //            }
+
+    //            objlista = {
+    //              idfield:item.sei_id_sei,
+    //              id:item.sei_nome,
+    //              nome:item.sei_nome,
+    //              titulo:label_campos[0].label,
+    //              placeholder:item.sei_placeholder,
+    //              load:false,
+    //              estilo:style,
+    //              linhas:nlinhas,
+    //              type:item.sei_tag,
+    //              valor:item.sei_valor,
+    //              tipo:item.sei_tipo,
+    //              tipo_id:item.sei_id_tip,
+    //              collapse:true
+    //            }
+
+    //            if( item.sei_tag == 'image' ){
+    //               objlista.link = link
+    //               objlista.imgsaved = true
+    //               objlista.imgfile = []
+    //               objlista.display = true
+    //            }
+
+    //            if( item.sei_tag == 'lista' ){
+    //               null
+    //            }
+    //            lista_inicial.push(objlista)
+    //         })
+    //         let existe = null
+    //         lista.map((item,index)=>{
+    //           existe = lista_inicial.filter((it)=> it.nome === item.nome)
+    //           if( existe.length == 0){
+    //             lista_inicial.push(item)
+    //           }
+    //         })
+    //         setListacampos(lista_inicial)
+    //         setLoadpage(false)
+    //     })
 },[props,saved])
 
 const  handleSave = (id,lista,valor) =>{
@@ -686,9 +790,11 @@ const  handleSave = (id,lista,valor) =>{
     let idx = listacard.length
     let obj ={
        id:idx+1,
+       servico:'',
        preco:'',
        titulo:'',
        texto:'',
+       idtratamento:'',
        imagem:null,
        imgfile:[],
        path:'/services',
@@ -707,6 +813,9 @@ const  handleSave = (id,lista,valor) =>{
     let idx = getIndex(listacard,id)
     //console.log(listacard)
     switch(param){
+       case 'servico':
+          listacard[idx].servico = newValue
+        break
        case 'titulo':
           listacard[idx].titulo = newValue
         break
@@ -770,7 +879,7 @@ const  handleSave = (id,lista,valor) =>{
        </CInputGroup>
       </div>
       <div>
-         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/></div>
+         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/>&nbsp;<ButtonPreview link="salao#section-services"/></div>
          <CCollapse visible={props.collapse}>
             <CRow>
                 <ListaCardService estado={estcard}/>
@@ -844,6 +953,32 @@ const  handleSave = (id,lista,valor) =>{
     //let lista = listacard.filter((item)=>item.display === true)
   }
 
+  const abreModal = (event,idx) =>{
+     console.log(listacard)
+     setItematual(idx)
+     setOpenmodal(true)
+  }
+
+  const editaCard = (id,valor) =>{
+     console.log(id)
+     let idx = getIndex(listacard,id)
+     listacard[idx].servico = valor.tra_servico.ser_titulo
+     listacard[idx].titulo = valor.tra_titulo
+     listacard[idx].preco = valor.tra_valor_atual.tva_valor
+     listacard[idx].texto = valor.tra_texto
+     listacard[idx].textobotao = 'Obter'
+     listacard[idx].idtratamento = valor.tra_id_tra
+     console.log(listacard)
+     console.log(idx)
+     console.log(valor)
+  }
+
+  const ButtonAbrePesquisa = (props) =>{
+     return(
+       <CButton className="btexpandir" size="sm" onClick={(e)=>abreModal(e,props.idx)}>Pesquisar Serviço</CButton>
+     )
+  }
+
   const ListaCardService = () => {
      //console.log(listacard)
      let lista = listacard.filter((item)=>item.display === true)
@@ -853,6 +988,7 @@ const  handleSave = (id,lista,valor) =>{
             <CCol xs={4} className='mb-2'>
                 <CCard style={{border:'2px solid #360f61'}}>
                     <CCardHeader>
+                        <div style={{display:'flex',justifyContent:'flex-end'}}><ButtonAbrePesquisa idx={item.id}/></div>
                         <>
                           { item.naoexibir
                              ? (<div className='mb-2'><CFormCheck id="defaultCheck1" label="Não Exibir Card" checked onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} /></div>)
@@ -874,6 +1010,10 @@ const  handleSave = (id,lista,valor) =>{
                             </div>
                         </CInputGroup>
                         { item.imagem == null ? (<></>) : (<BadgeImg color="primary" fonte="11px" valor={item.imagem}/>) }
+                        <CInputGroup size="sm" className="mb-2 mt-1">
+                            <CInputGroupText style={styleinputcard} className="clinputtext">Serviço</CInputGroupText>
+                            <CFormInput onChange={(e)=>atualizaListaCard(item.id,'servico',e.target.value)} defaultValue={item.servico}/>
+                        </CInputGroup>
                         <CInputGroup size="sm" className="mb-2 mt-1">
                             <CInputGroupText style={styleinputcard} className="clinputtext">Preço</CInputGroupText>
                             <CFormInput onChange={(e)=>atualizaListaCard(item.id,'preco',e.target.value)} defaultValue={item.preco}/>
@@ -1029,6 +1169,13 @@ const  handleSave = (id,lista,valor) =>{
 
   return(
          <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
+           <ModalPesquisaServico
+               open={openmodal}
+               close={setOpenmodal}
+               listatra={listatratamento}
+               item={itematual}
+               edita={editaCard}
+           />
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
              <CCardHeader className="clfooter">

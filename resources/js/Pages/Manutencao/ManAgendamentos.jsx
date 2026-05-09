@@ -1207,7 +1207,7 @@ const ManAgendamentos = (props) =>{
             <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
             <CCard className="mb-4">
                 <CCardHeader className="clfooter">
-                    <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Realização de Agendamentos</span>
+                    <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Gerar Horários Agendamentos</span>
                 </CCardHeader>
                 <CCardBody>
                     <CForm

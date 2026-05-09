@@ -45,6 +45,7 @@ import {
   CCollapse
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
+import { ButtonPreview } from '../../components/ButtonPreview';
 
 
 
@@ -1009,6 +1010,7 @@ const  handleSave = (id,lista,valor) =>{
              <CCardHeader className="clfooter">
                <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section Offers</span>
              </CCardHeader>
+             <div className='mt-1 mb-1 d-flex justify-content-center align-items-center'><ButtonPreview link="salao#section-price"/></div>
              <CCardBody>
                  <CRow>
                      <CCol md={12} xs={12} >

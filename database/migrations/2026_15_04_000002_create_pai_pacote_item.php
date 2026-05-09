@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('pai_qtde');
             $table->decimal('pai_desconto',12,2);
             $table->decimal('pai_valor',12,2);
+            $table->decimal('pai_valor_desc',12,2);
             $table->timestamp('pai_created_at');
             $table->timestamp('pai_updated_at')->nullable();
             $table->timestamp('pai_deleted_at')->nullable();
@@ -36,3 +37,5 @@ return new class extends Migration
         Schema::dropIfExists('pai_pacote_item');
     }
 };
+
+

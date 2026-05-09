@@ -48,6 +48,7 @@ import {
   CCollapse
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
+import { ButtonPreview } from '../../components/ButtonPreview';
 
 const ManStaff = (props) =>{
 
@@ -736,7 +737,7 @@ const  handleSave = (id,lista,valor) =>{
        </CInputGroup>
       </div>
       <div>
-         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/></div>
+         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/>&nbsp;<ButtonPreview link="salao#section-staff"/></div>
          <CCollapse visible={props.collapse}>
             <CRow>
                 <ListaCardService estado={estcard}/>
