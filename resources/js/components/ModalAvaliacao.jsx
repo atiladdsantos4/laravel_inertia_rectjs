@@ -38,13 +38,17 @@ export const ModalAvaliacao = (props) =>{
 
    const handleSubmit = (event) => {
         const form = event.currentTarget
+        let ok = true
         if (form.checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
+            ok = false
         }
         event.preventDefault()
         setValidated(true)
-        setLoad(true)
+        if(ok){
+          setLoad(true)
+        }
         const formData = new FormData()
         formData.append('tes_nome', nome)
         formData.append('tes_profissao', profissao)

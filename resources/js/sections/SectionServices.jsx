@@ -9,6 +9,7 @@ import { CardServiceComp } from '../components/CardServiceComp';
 import { ButtonComp } from '../components/ButtonComp';
 import { faAnglesUp,faAnglesDown } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from '../store/useStore';
+import axios from 'axios';
 
 
 
@@ -49,14 +50,15 @@ export const SectionServices = (props) => {
                     case "cardsection":
                         string =  JSON.parse(item.sei_json)
                         console.log(string)
+                        let filtro = string.meta.sort((a,b)=>a.servico.localeCompare(b.servico))
                         if(string.meta.length > 3){
                             setVermais(true)
-                            let slice_array_card = string.meta.slice(0,3)
-                            let slice_array_mais = string.meta.slice(3,string.meta.length)
+                            let slice_array_card = filtro.slice(0,3)
+                            let slice_array_mais = filtro.slice(3,string.meta.length)
                             setListacard(slice_array_card)
                             setListacardmais(slice_array_mais)
                         } else {
-                            let slice_array_card = string.meta.slice(0,3)
+                            let slice_array_card = filtro.slice(0,3)
                             setListacard(slice_array_card)
                             //setListacard(string.meta)
                         }
@@ -88,14 +90,15 @@ export const SectionServices = (props) => {
                         case "cardsection":
                             string =  JSON.parse(item.sei_json)
                             console.log(string)
+                            let filtro = string.meta.sort((a,b)=>a.servico.localeCompare(b.servico))
                             if(string.meta.length > 3){
                                 setVermais(true)
-                                let slice_array_card = string.meta.slice(0,3)
-                                let slice_array_mais = string.meta.slice(3,string.meta.length)
+                                let slice_array_card = filtro.slice(0,3)
+                                let slice_array_mais = filtro.slice(3,string.meta.length)
                                 setListacard(slice_array_card)
                                 setListacardmais(slice_array_mais)
                             } else {
-                                let slice_array_card = string.meta.slice(0,3)
+                                let slice_array_card = filtro.slice(0,3)
                                 setListacard(slice_array_card)
                                 //setListacard(string.meta)
                             }
@@ -135,6 +138,7 @@ export const SectionServices = (props) => {
                      return(
                        <CCol key={index} md={4} xs={12} className="pb-4 px-5">
                             <CardServiceComp
+                                service={item.servico}
                                 price={item.preco}
                                 title={item.titulo}
                                 //subtitle="Includes the following services:"
@@ -196,6 +200,7 @@ export const SectionServices = (props) => {
                                 return(
                                 <CCol md={4} xs={12} className="pb-4 px-5">
                                         <CardServiceComp
+                                            service={item.servico}
                                             price={item.preco}
                                             title={item.titulo}
                                             //subtitle="Includes the following services:"

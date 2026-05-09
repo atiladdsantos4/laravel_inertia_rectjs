@@ -1,4 +1,4 @@
-import {CForm, CRow, CBadge, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalFooter,CModalBody, CInputGroup, CInputGroupText, CFormInput  } from '@coreui/react';
+import {CAlert, CForm, CRow, CBadge, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalFooter,CModalBody, CInputGroup, CInputGroupText, CFormInput  } from '@coreui/react';
 import { ButtonComp } from './ButtonComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
@@ -18,12 +18,14 @@ export const Modal = (props) =>{
    const [telefone,setTelefone] = useState(null)
    const [horario,setHorario] = useState(null)
    const [validated, setValidated] = useState(false)
+   const [showAlert,setShowAlert] = useState(false)
 
    useEffect(()=>{},[
       console.log(props)
    ])
 
    const handleSubmit = (event) => {
+
         const form = event.currentTarget
         if (form.checkValidity() === false) {
             event.preventDefault()
@@ -47,6 +49,7 @@ export const Modal = (props) =>{
             placeholder="Cnpj da Pessoa"
             className="input-text"
             //onAccept={handleAccept}
+            onBlur={(e)=>validaCPF(e.target.value)}
             feedbackInvalid="O CPF deve ser informado"
             onComplete={(completedValue) => setCpf(completedValue)}
             defaultValue={cpf}
@@ -83,6 +86,39 @@ export const Modal = (props) =>{
      console.log('entrei aqui')
   }
 
+  const validaCPF = (cpf) =>{
+        console.log('entrou:'+cpf)
+        let resp = true
+        cpf = cpf.replace(/[^\d]+/g, ''); // Remove pontuação
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) resp = false; // Verifica tamanho e números iguais
+
+        let t = 0;
+        let r;
+        let s = 0;
+
+        // Cálculo dos dígitos verificadores
+        for (let i = 1; i <= 9; i++) s = s + parseInt(cpf[i - 1]) * (11 - i);
+        r = (s * 10) % 11;
+        if (r === 10 || r === 11) r = 0;
+        if (r !== parseInt(cpf[9])) resp = false;
+
+        s = 0;
+        for (let i = 1; i <= 10; i++) s = s + parseInt(cpf[i - 1]) * (12 - i);
+        r = (s * 10) % 11;
+        if (r === 10 || r === 11) r = 0;
+        if (r !== parseInt(cpf[10])) resp = false;
+        console.log(resp)
+        if(resp == false){
+           setShowAlert(true)
+           setTimeout(()=>{
+              setShowAlert(false)
+           },2000)
+        }
+        return resp;
+  }
+
+
+
    return(
       <CModal
         visible={isOpen}
@@ -93,18 +129,22 @@ export const Modal = (props) =>{
         id="modal-combo"
         //style={{zIndex:'10000'}}
       >
+
         <CModalHeader className="cmodal_header">
-          <CModalTitle id="VerticallyCenteredExample">
+           <CModalTitle id="VerticallyCenteredExample">
              <FontAwesomeIcon size="1x" icon={faCalendar}/>&nbsp;
-             {dados.nome} Efetuar Agendamento
+             {dados.nome}&nbsp;Efetuar Agendamento
           </CModalTitle>
         </CModalHeader>
         <CForm
              className="row g-3 needs-validation" noValidate  id="form-id" onSubmit={handleSubmit} validated={validated}>
 
         <CModalBody className="pt-5">
+            <CAlert color="danger" visible={showAlert} variant="solid">
+              CPF Inválido!!!
+            </CAlert>
             <CRow>
-               <CCol md={6} xs={12}>
+               <CCol md={12} xs={12}>
                    <CInputGroup size="sm" className="mb-3 nowrap">
                       <CInputGroupText className="inputwidth" id="basic-addon1">Serviço</CInputGroupText>
                       <CFormInput className="input-text" disabled aria-label="Username" value={dados.nome}

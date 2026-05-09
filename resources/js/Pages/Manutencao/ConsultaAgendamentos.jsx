@@ -65,6 +65,7 @@ const ConsultaAgendamentos = (props) =>{
     const [listafiltrosprt,setListafiltrosprt] = useState([])
     const [listafiltrotra,setListafiltrotra] = useState([])
     const [listadatasagenda,setListadatasagenda] = useState([])
+    const [listagrid,setListagrid] = useState([])
     const [listaseg,setListaseg] = useState([])
     const [listater,setListater] = useState([])
     const [listaqua,setListaqua] = useState([])
@@ -91,7 +92,7 @@ const ConsultaAgendamentos = (props) =>{
     const [openmodal, setOpenmodal] = useState(false)
     const [textosubmit,setTextosubmit] = useState('Pesquisar')
     const [estbutton, setEstbutton] = useState(false)
-    const [intervalopesquisa,setIntervalopesquisa] = useState(1)
+    const [intervalopesquisa,setIntervalopesquisa] = useState()
 
     //campos de máscara//
     //const [desconto,setDesconto]  = useState(null)
@@ -526,7 +527,7 @@ const ConsultaAgendamentos = (props) =>{
                 //let filtro =  result_agendamento.data.data.sort((a,b)=>a.hoa_tratamento.profissional.pro_nome.localeCompare(b.hoa_tratamento.profissional.pro_nome))
                 let filtro =  result_agendamento.data.data.sort((a,b)=>a.hoa_profissional.localeCompare(b.hoa_profissional))
                 setListaagendamento(filtro)
-                setListafiltro(filtro)
+                //setListafiltro(filtro)
                 setListaprofissional(result_protratamento.data.data)
                 let tam = result_agendamento.data.data.length
                 setQtderegistros(tam)
@@ -828,12 +829,21 @@ const ConsultaAgendamentos = (props) =>{
        setFerid(null)
        setEst(!est)
        setValidated(false)
-       setTextosubmit('Salvar')
+       setTextosubmit('Pesquisar')
        setEstbutton(!estbutton)
    }
 
    const handleSubmit = (event) => {
-        //console.log('submit')
+        if(intervalopesquisa == null){
+           event.preventDefault()
+           event.stopPropagation()
+           addToast(CompToast('Intervalo de Pesquisa de ser Informado', 'danger')) //--> usa toast
+           setTimeout(() => {
+               document.getElementById('idtoast').classList.remove('show')
+               document.getElementById('idtoast').remove()
+           }, 2000)
+
+        }
         const form = event.currentTarget
         let erro = false
         if (form.checkValidity() === false) {
@@ -907,14 +917,14 @@ const ConsultaAgendamentos = (props) =>{
               vetor.push({item:i})
            }
            setListaref(vetor)
+           MontaQuery(vetseg,vetter,vetqua,vetqui,vetsex,vetsab,vetor,semana)
            setEst(!est)
         })
    }
 
-   const AlteraAtivo = (dia,id,valor) => {
-     //setLoadspin(true)
+   const AlteraAtivo = (dia,id,valor,index) => {
      let status = valor == 1 ? 'L' : 'B'
-     CarregaLoad(dia,id,true)
+     CarregaLoad(dia,id,true,index)
      const formData = new FormData()
      formData.append('listaload', 'S')
      formData.append('hoa_ativo', valor)
@@ -929,8 +939,8 @@ const ConsultaAgendamentos = (props) =>{
                 },
         })
         .then((result) => {
-                CarregaLoad(dia,id,false)
-                console.log(listaseg)
+                CarregaLoad(dia,id,false,index)
+                MudaStatus(dia,id,status,index)
                 let mensagem = 'Status Alterado com sucesso!!!'
                 addToast(CompToast(mensagem, 'success')) //--> usa toast
                 setTimeout(() => {
@@ -1081,17 +1091,28 @@ const ConsultaAgendamentos = (props) =>{
 
     const pesquisarGrid = (event) => {
      let valor =  event.target.value
+     console.log(valor)
+     console.log(listafiltro)
      if( valor.trim() != ''){
         let lista = listafiltro.filter(
-            (item)=>item.hoa_tratamento.profissional.pro_nome.toLowerCase().includes(valor.toLowerCase()) ||
-                    item.hoa_tratamento.tratamento.servico_api.ser_titulo.toLowerCase().includes(valor.toLowerCase()) ||
-                    item.hoa_tratamento.tratamento.tra_titulo.toLowerCase().includes(valor.toLowerCase())
+           (item)=>item.seg.hoa_status_atual.toLowerCase().includes(valor.toLowerCase()) ||
+                   item.ter.hoa_status_atual.toLowerCase().includes(valor.toLowerCase()) ||
+                   item.qua.hoa_status_atual.toLowerCase().includes(valor.toLowerCase()) ||
+                   item.qui.hoa_status_atual.toLowerCase().includes(valor.toLowerCase()) ||
+                   item.sex.hoa_status_atual.toLowerCase().includes(valor.toLowerCase()) ||
+                   item.sab.hoa_status_atual.toLowerCase().includes(valor.toLowerCase())
 
         )
-        //console.log(lista)
-        setListaagendamento(lista.slice(0,5))
+        // let lista = listafiltro.filter(
+        //     (item)=>item.hoa_tratamento.profissional.pro_nome.toLowerCase().includes(valor.toLowerCase()) ||
+        //             item.hoa_tratamento.tratamento.servico_api.ser_titulo.toLowerCase().includes(valor.toLowerCase()) ||
+        //             item.hoa_tratamento.tratamento.tra_titulo.toLowerCase().includes(valor.toLowerCase())
+
+        // )
+        console.log(lista)
+        setListagrid(lista)
      } else {
-        setListaagendamento(listafiltro.slice(0,5))
+        setListagrid(listafiltro)
      }
   }
 
@@ -1148,14 +1169,14 @@ const ConsultaAgendamentos = (props) =>{
           <CBadge className='badge4 badgecoldados'>{props.dia}</CBadge><br/>
           <CBadge className='badge4 badgecoldados'>{'Horário: '+props.hora}</CBadge><br/>
           <CBadge load={props.load} className={classe}>{status}</CBadge><br/>
-          <div style={{display:'flex',gap:'5px'}}><AtivoComp dia={props.diaext} hoa={props.hoa} ativo={props.ativo}/><Spinner load={props.load}/></div>
+          <div style={{display:'flex',gap:'5px'}}><AtivoComp idx={props.idx} dia={props.diaext} hoa={props.hoa} ativo={props.ativo}/><Spinner load={props.load}/></div>
           <div style={{display:'flex',justifyContent:'flex-end'}}><CBadge onClick={(e)=>Gerenciar(e,props.hoa,props.diaext,props.dadosagenda)} className="badgegerenciar badgecoldados">{'Gerenciar'}</CBadge></div>
        </div>
      )
   }
 
   const AtivoComp = (props) =>{
-     let ck = props.ativo == 1 ? <CFormCheck onChange={(e)=>MudaAtivo(e,props.hoa,props.dia)} checked label="Ativo"/> : <CFormCheck onChange={(e)=>MudaAtivo(e,props.hoa,props.dia)} label="Ativo"/>
+     let ck = props.ativo == 1 ? <CFormCheck onChange={(e)=>MudaAtivo(e,props.hoa,props.dia,props.idx)} checked label="Ativo"/> : <CFormCheck onChange={(e)=>MudaAtivo(e,props.hoa,props.dia,props.idx)} label="Ativo"/>
      return(ck)
   }
 
@@ -1172,7 +1193,44 @@ const ConsultaAgendamentos = (props) =>{
     return obj
   }
 
-  const MudaAtivo = (event,id,dia) =>{
+  const MudaAtivo = (event,id,dia,index) =>{
+    console.log(id)
+    console.log(listaref)
+    console.log(index)
+     let valor = event.target.checked == true ? 1 : 0
+     let status = event.target.checked == true ? 'L' : 'B'
+
+     if(dia === 'seg'){
+        listagrid[index].seg.hoa_ativo = valor
+        //listagrid[index].seg.hoa_load = valor == 0 ? true : false
+     }
+
+     if(dia === 'ter'){
+        listagrid[index].ter.hoa_ativo = valor
+     }
+
+     if(dia === 'qua'){
+         listagrid[index].qua.hoa_ativo = valor
+     }
+
+     if(dia === 'qui'){
+         listagrid[index].qui.hoa_ativo = valor
+     }
+
+     if(dia === 'sex'){
+         listagrid[index].sex.hoa_ativo = valor
+     }
+
+     if(dia === 'sab'){
+         listagrid[index].sab.hoa_ativo = valor
+     }
+    setEst(!est)
+    //MudaStatus(dia,id,status,index)
+    AlteraAtivo(dia,id,valor,index)
+    console.log(listagrid)
+  }
+
+  const MudaAtivoOfical = (event,id,dia) =>{
     console.log(id)
     console.log(listaref)
      let valor = event.target.checked == true ? 1 : 0
@@ -1232,7 +1290,33 @@ const ConsultaAgendamentos = (props) =>{
     console.log(listaseg)
   }
 
-  const CarregaLoad = (dia,id,valor) =>{
+  const CarregaLoad = (dia,id,valor,index) =>{
+     if(dia === 'seg'){
+        listagrid[index].seg.hoa_load = valor
+     }
+
+     if(dia === 'ter'){
+        listagrid[index].ter.hoa_load = valor
+     }
+
+     if(dia === 'qua'){
+         listagrid[index].qua.hoa_load = valor
+     }
+
+     if(dia === 'qui'){
+         listagrid[index].qui.hoa_load = valor
+     }
+
+     if(dia === 'sex'){
+         listagrid[index].sex.hoa_load = valor
+     }
+
+     if(dia === 'sab'){
+         listagrid[index].sab.hoa_load = valor
+     }
+  }
+
+  const CarregaLoadOficial = (dia,id,valor) =>{
 
      if(dia === 'seg'){
         setListaseg(prevItems =>
@@ -1283,7 +1367,33 @@ const ConsultaAgendamentos = (props) =>{
      }
   }
 
-  const MudaStatus = (dia,id,valor) =>{
+  const MudaStatus = (dia,id,valor,index) =>{
+     if(dia === 'seg'){
+        listagrid[index].seg.hoa_status_atual = valor
+     }
+
+     if(dia === 'ter'){
+        listagrid[index].ter.hoa_status_atual = valor
+     }
+
+     if(dia === 'qua'){
+         listagrid[index].qua.hoa_status_atual = valor
+     }
+
+     if(dia === 'qui'){
+         listagrid[index].qui.hoa_status_atual = valor
+     }
+
+     if(dia === 'sex'){
+         listagrid[index].sex.hoa_status_atual = valor
+     }
+
+     if(dia === 'sab'){
+         listagrid[index].sab.hoa_status_atual = valor
+     }
+  }
+
+  const MudaStatusOficial = (dia,id,valor) =>{
 
      if(dia === 'seg'){
         setListaseg(prevItems =>
@@ -1335,7 +1445,90 @@ const ConsultaAgendamentos = (props) =>{
      setEst(!est)
   }
 
+  const MontaQuery = (listaseg,listater,listaqua,listaqui,listasex,listasab,lista,semana) => {
+    let obj = null
+    let lista_semanas =  []
+    let seg = null
+    let ter = null
+    let qua = null
+    let qui = null
+    let sex = null
+    let sab = null
+    lista.map((item,index)=>{
+       seg = listaseg[index] && listaseg[index].hoa_agendas.dat_semana_mes == semana ? listaseg[index] : null
+       ter = listater[index] && listater[index].hoa_agendas.dat_semana_mes == semana ? listater[index] : null
+       qua = listaqua[index] && listaqua[index].hoa_agendas.dat_semana_mes == semana ? listaqua[index] : null
+       qui = listaqui[index] && listaqui[index].hoa_agendas.dat_semana_mes == semana ? listaqui[index] : null
+       sex = listasex[index] && listasex[index].hoa_agendas.dat_semana_mes == semana ? listasex[index] : null
+       sab = listasab[index] && listasab[index].hoa_agendas.dat_semana_mes == semana ? listasab[index] : null
+       obj =
+          {
+            seg:seg,
+            ter:ter,
+            qua:qua,
+            qui:qui,
+            sex:sex,
+            sab:sab,
+       }
+       lista_semanas.push(obj)
+    })
+    setListagrid(lista_semanas)
+    setListafiltro(lista_semanas)
+    console.log(lista_semanas)
+  }
+
+
   const CorpoTabela = (props) =>{
+    let classe = ''
+    return(
+        props.lista.map((item,index)=>{
+            return(
+                <CTableRow key={index} color={classe}>
+                    <CTableDataCell>{index+1}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'right'}}>
+                        {item.seg ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.seg ? <ItemTabela idx={index} dadosagenda={item.seg} ativo={item.seg.hoa_ativo} hoa={item.seg.hoa_id_hoa} diaext="seg" load={item.seg.hoa_load} agenda={item.seg.hoa_status_atual} dia={item.seg.hoa_agendas.dat_dia} hora={item.seg.hoa_agendas.dat_horainicial+'-'+item.seg.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.ter ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.ter ? <ItemTabela idx={index} dadosagenda={item.ter} ativo={item.ter.hoa_ativo} hoa={item.ter.hoa_id_hoa} diaext="ter" load={item.ter.hoa_load} agenda={item.ter.hoa_status_atual} dia={item.ter.hoa_agendas.dat_dia} hora={item.ter.hoa_agendas.dat_horainicial+'-'+item.ter.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.qua ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.qua ? <ItemTabela idx={index} dadosagenda={item.qua} ativo={item.qua.hoa_ativo} hoa={item.qua.hoa_id_hoa} diaext="qua" load={item.qua.hoa_load} agenda={item.qua.hoa_status_atual} dia={item.qua.hoa_agendas.dat_dia} hora={item.qua.hoa_agendas.dat_horainicial+'-'+item.qua.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.qui ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.qui ? <ItemTabela idx={index} dadosagenda={item.qui} ativo={item.qui.hoa_ativo} hoa={item.qui.hoa_id_hoa} diaext="qui" load={item.qui.hoa_load} agenda={item.qui.hoa_status_atual} dia={item.qui.hoa_agendas.dat_dia} hora={item.qui.hoa_agendas.dat_horainicial+'-'+item.qui.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.sex ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.sex ? <ItemTabela idx={index} dadosagenda={item.sex} ativo={item.sex.hoa_ativo} hoa={item.sex.hoa_id_hoa} diaext="sex" load={item.sex.hoa_load} agenda={item.sex.hoa_status_atual} dia={item.sex.hoa_agendas.dat_dia} hora={item.sex.hoa_agendas.dat_horainicial+'-'+item.sex.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.sab ? <ItemLabels/>: null}
+                    </CTableDataCell>
+                    <CTableDataCell>
+                        {item.sab ? <ItemTabela idx={index} dadosagenda={item.sab} ativo={item.sab.hoa_ativo} hoa={item.sab.hoa_id_hoa} diaext="sab" load={item.sab.hoa_load} agenda={item.sab.hoa_status_atual} dia={item.sab.hoa_agendas.dat_dia} hora={item.sab.hoa_agendas.dat_horainicial+'-'+item.sab.hoa_agendas.dat_horafinal}/> : null}
+                    </CTableDataCell>
+                    <CTableDataCell style={{textAlign:'center'}}></CTableDataCell>
+                </CTableRow>
+            )
+        })
+    )
+  }
+
+  const CorpoTabelaOficial = (props) =>{
     let classe = ''
     let semana = valorSeq(13)
     let seg = null
@@ -1398,33 +1591,33 @@ const ConsultaAgendamentos = (props) =>{
     )
   }
 
-  const CorpoTabela1 = (props) =>{
-        let classe = null
-        let cont = 0
-        return(
-        props.lista.map((item,index)=>{
-            cont++
-            classe = index % 2 == 0 ? 'primary' : 'danger'
-            if(cont > 5){
-                return
-            } else {
-                return(
-                <CTableRow color={classe}>
-                    <CTableDataCell>
-                        {item.hoa_load ? (<CSpinner size="sm" color="primary"/>) : (item.hoa_id_prt)}
-                    </CTableDataCell>
-                    <CTableDataCell>{item.hoa_tratamento.profissional.pro_nome}</CTableDataCell>
-                    <CTableDataCell>{item.hoa_tratamento.tratamento.servico_api.ser_titulo}</CTableDataCell>
-                    <CTableDataCell>{item.hoa_tratamento.tratamento.tra_titulo}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center'}}>{item.hoa_dataini}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center'}}>{item.hoa_datafim}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center'}}><ItensAcao pro={item.hoa_tratamento.profissional.pro_id_pro} id={item.hoa_id_prt}/></CTableDataCell>
-                    </CTableRow>
-                )
-            }
-        })
-        )
-   }
+//   const CorpoTabela1 = (props) =>{
+//         let classe = null
+//         let cont = 0
+//         return(
+//         props.lista.map((item,index)=>{
+//             cont++
+//             classe = index % 2 == 0 ? 'primary' : 'danger'
+//             if(cont > 5){
+//                 return
+//             } else {
+//                 return(
+//                 <CTableRow color={classe}>
+//                     <CTableDataCell>
+//                         {item.hoa_load ? (<CSpinner size="sm" color="primary"/>) : (item.hoa_id_prt)}
+//                     </CTableDataCell>
+//                     <CTableDataCell>{item.hoa_tratamento.profissional.pro_nome}</CTableDataCell>
+//                     <CTableDataCell>{item.hoa_tratamento.tratamento.servico_api.ser_titulo}</CTableDataCell>
+//                     <CTableDataCell>{item.hoa_tratamento.tratamento.tra_titulo}</CTableDataCell>
+//                     <CTableDataCell style={{textAlign:'center'}}>{item.hoa_dataini}</CTableDataCell>
+//                     <CTableDataCell style={{textAlign:'center'}}>{item.hoa_datafim}</CTableDataCell>
+//                     <CTableDataCell style={{textAlign:'center'}}><ItensAcao pro={item.hoa_tratamento.profissional.pro_id_pro} id={item.hoa_id_prt}/></CTableDataCell>
+//                     </CTableRow>
+//                 )
+//             }
+//         })
+//         )
+//   }
 
    const ExcluiAgendamento = (item) =>{
          setLoadspin(true)
@@ -1734,7 +1927,7 @@ const ConsultaAgendamentos = (props) =>{
             <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
             <CCard className="mb-4">
                 <CCardHeader className="clfooter">
-                    <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Consulta de Agendamentos</span>
+                    <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Consultar Horários Agendamentos</span>
                 </CCardHeader>
                 <CCardBody>
                     <CForm
@@ -1856,12 +2049,12 @@ const ConsultaAgendamentos = (props) =>{
                             {loadpage ? (<div style={style_placeholder}><CPlaceholder className='grad38full' xs={12} size="lg"/></div>) :
                             (
                             <CCard style={{padding:'3px'}}>
-                                <div style={{display:'flex',justifyContent:'flex-end'}}>
+                                {/* <div style={{display:'flex',justifyContent:'flex-end'}}>
                                     <CInputGroup style={{maxWidth:'400px'}} className="mb-2 mt-2">
                                         <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
                                         <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>
                                     </CInputGroup>
-                                </div>
+                                </div> */}
                                 <CTable responsive>
                                     <CTableHead style={{fontSize:'12px !important'}}>
                                         <CTableRow>
@@ -1876,7 +2069,7 @@ const ConsultaAgendamentos = (props) =>{
                                         </CTableRow>
                                     </CTableHead>
                                     <CTableBody>
-                                        <CorpoTabela lista={listaref} estado={est}/>
+                                        <CorpoTabela lista={listagrid} estado={est}/>
                                     </CTableBody>
                                 </CTable>
                                 <div>

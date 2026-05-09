@@ -62,8 +62,8 @@ const Admin = (props) => {
                {call:'Profissionais',name:'Cadastrar Profissionais',href:'#'},
            ],
            agenda:[
-               {call:'Agendamento',name:'Realizar Agendamentos',href:'#'},
-               {call:'ConsultaAgenda',name:'Consultar Agendamentos',href:'#'},
+               {call:'Agendamento',name:'Gerar Horários Agendamentos',href:'#'},
+               {call:'ConsultaAgenda',name:'Consultar Horários Agendamentos',href:'#'},
            ]
   }]
 

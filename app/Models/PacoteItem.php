@@ -25,7 +25,7 @@ class PacoteItem extends Model
     protected $primaryKey = 'pai_id_pai';
     //protected $appends = ['esp_especialidades'];
     protected $fillable = [
-      'pai_id_pac','pai_display','pai_id_tra','pai_qtde','pai_desconto','pai_valor','pai_created_at','pai_updated_at','pai_deleted_at'
+      'pai_id_pac','pai_display','pai_id_tra','pai_qtde','pai_desconto','pai_valor','pai_valor_desc','pai_created_at','pai_updated_at','pai_deleted_at'
     ];
     protected $dates = ['pai_deleted_at'];//campo obrigatório pra o SoftDeletes
 

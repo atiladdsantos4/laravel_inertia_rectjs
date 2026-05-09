@@ -43,6 +43,8 @@ import {
   CDropdownItem
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
+import { ButtonPreview } from '../../components/ButtonPreview';
+
 
 
 const ManAbout = (props) =>{
@@ -805,6 +807,7 @@ const ManAbout = (props) =>{
           <span style={{color:'white'}}><FontAwesomeIcon icon={icone} />&nbsp;Manutenção Section About</span>
           {/* <DocsLink text="preview" href={preview} /> */}
         </CCardHeader>
+        <div className='mt-1 mb-1 d-flex justify-content-center align-items-center'><ButtonPreview link="salao#section-about"/></div>
         <CCardBody>
             <CRow>
                 <CCol md={12} xs={12} >

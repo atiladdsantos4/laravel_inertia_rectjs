@@ -333,6 +333,7 @@ const ManValores = (props) =>{
            setListatratamento(result.data.data.tratamentos.slice(0,qtderegistrospagina))
            let tam = result.data.data.tratamentos.length
            setQtderegistros(tam)
+           /*
            let res = tam / qtderegistrospagina
            console.log('divisao:'+res)
            if( res % 2 === 0){
@@ -344,7 +345,21 @@ const ManValores = (props) =>{
               setNumpagination(numpag)
               console.log('num_reg_pagina:'+numpag)
            }
-
+           */
+          let res = tam / qtderegistrospagina
+          let resto = tam % qtderegistrospagina
+          if( resto > 0 ){
+                let resposta = res.toString().split('.');
+                if( parseInt(resposta[1]) === 0){
+                    setNumpagination(res)
+                } else {
+                    res = parseInt(resposta[0]) + 1
+                    let numpag = res.toFixed(0)
+                    setNumpagination(numpag)
+                }
+           } else {
+                setNumpagination(res)
+           }
            setUltimapagina(res)
            let array_service = result.data.data.servicos
            array_service.unshift({ser_id_ser:'99',ser_titulo:'Todos Serviços'})

@@ -450,6 +450,12 @@
     font-style: SemiBold;
   }
 
+  .header_card {
+    font-family: 'Poppins';
+    font-weight: 700 !important;
+    font-style: SemiBold;
+  }
+
   h6{
     font-family: 'Poppins';
     font-size: 14px;
@@ -1248,6 +1254,12 @@
   color:white;
   cursor: pointer;
 }
+
+.badgetotal{
+   background-color:#502149 !important;
+   font-size: 11px;
+}
+
 
 
 .badgecol{

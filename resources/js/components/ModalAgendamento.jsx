@@ -63,14 +63,14 @@ export const ModalAgendamento = (props) => {
 
   const WorkFlow = (props) =>{
       return(
-       <CButtonGroup size="sm" role="group" aria-label="Large button group" style={{border:'1px solid white important'}}>
-           <CButton color="primary" className="badgeliberado" variant="outline">Liberado&nbsp;{props.hoa_status_atual === 'L' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
-           <CButton color="primary" className="badgeagendado" variant="outline">Agendado&nbsp;{props.hoa_agendado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
-           <CButton color="primary" className="badgeconfirmado" variant="outline">Confirmado&nbsp;{props.hoa_confirmado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
-           <CButton color="primary" className="badgefinalizado" variant="outline">Finalizado&nbsp;{props.hoa_finalizado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
-           <CButton color="primary" className="badgepago" variant="outline">Pago&nbsp;{props.hoa_pago === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
-           <CButton color="primary" className="badgecancelado" variant="outline">Cancelado&nbsp;{props.hoa_cancelado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
-       </CButtonGroup>
+        <CButtonGroup size="sm" role="group" aria-label="Large button group" style={{border:'1px solid white important'}}>
+            <CButton color="primary" className="badgeliberado" variant="outline">Liberado&nbsp;{props.hoa_status_atual === 'L' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
+            <CButton color="primary" className="badgeagendado" variant="outline">Agendado&nbsp;{props.hoa_agendado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
+            <CButton color="primary" className="badgeconfirmado" variant="outline">Confirmado&nbsp;{props.hoa_confirmado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
+            <CButton color="primary" className="badgefinalizado" variant="outline">Finalizado&nbsp;{props.hoa_finalizado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
+            <CButton color="primary" className="badgepago" variant="outline">Pago&nbsp;{props.hoa_pago === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
+            <CButton color="primary" className="badgecancelado" variant="outline">Cancelado&nbsp;{props.hoa_cancelado === 'S' ? <FontAwesomeIcon icon={faCheck}/>:<></>}</CButton>
+        </CButtonGroup>
       )
   }
 

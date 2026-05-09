@@ -2,7 +2,7 @@ import { React,useEffect, useState, Suspense, useRef } from 'react';
 import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { SpinnerComp } from '../../components/SpinnerComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
+import { faTrash,faFileCode, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CButton,
@@ -48,6 +48,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { decrement, increment } from '../../features/counter/counterSlice';
 import { useStore } from '../../store/useStore';
+import { ButtonPreview } from '../../components/ButtonPreview';
 
 const ManCarrosel = (props) =>{
 
@@ -669,7 +670,7 @@ const  handleSave = (id,lista,valor) =>{
        </CInputGroup>
       </div>
       <div>
-         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/></div>
+         <div className='mb-1 d-flex justify-content-center align-items-center'><BtExpandir expande={props.collapse}/>&nbsp;<ButtonPreview link="salao"/></div>
          <CCollapse visible={props.collapse}>
             <CRow>
                 <ListaCardService estado={estcard}/>
