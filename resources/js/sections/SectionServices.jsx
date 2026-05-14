@@ -50,7 +50,7 @@ export const SectionServices = (props) => {
                     case "cardsection":
                         string =  JSON.parse(item.sei_json)
                         console.log(string)
-                        let filtro = string.meta.sort((a,b)=>a.servico.localeCompare(b.servico))
+                        let filtro = string.meta.filter((item)=>item.naoexibir == false).sort((a,b)=>a.servico.localeCompare(b.servico))
                         if(string.meta.length > 3){
                             setVermais(true)
                             let slice_array_card = filtro.slice(0,3)
@@ -90,7 +90,7 @@ export const SectionServices = (props) => {
                         case "cardsection":
                             string =  JSON.parse(item.sei_json)
                             console.log(string)
-                            let filtro = string.meta.sort((a,b)=>a.servico.localeCompare(b.servico))
+                            let filtro = string.meta.filter((item)=>item.naoexibir == false).sort((a,b)=>a.servico.localeCompare(b.servico))
                             if(string.meta.length > 3){
                                 setVermais(true)
                                 let slice_array_card = filtro.slice(0,3)
@@ -118,8 +118,9 @@ export const SectionServices = (props) => {
      setIcone(icon)
    }
 
-   const changeCard = (event,nome,valor,texto,detalhe,tela) =>{
-      setModal(nome, valor, texto, detalhe,tela)
+   const changeCard = (event,tratamento,nome,valor,texto,detalhe,tela) =>{
+      console.log('tratamento:'+tratamento)
+      setModal(tratamento, nome, valor, texto, detalhe,tela)
    }
 
 
@@ -135,7 +136,7 @@ export const SectionServices = (props) => {
             <CRow>
                 {
                    listacard.map((item,index)=>{
-                     return(
+                    return(
                        <CCol key={index} md={4} xs={12} className="pb-4 px-5">
                             <CardServiceComp
                                 service={item.servico}
@@ -146,7 +147,8 @@ export const SectionServices = (props) => {
                                 buttonlabel={item.textobotao}
                                 openModal={openModal}
                                 imagem={imgpath + item.path + '/' + item.imagem}
-                                setModal={ (e) => changeCard(e,item.titulo,item.preco,null,null,'services')}
+                                idspinner={'idspinner'+item.idtratamento}
+                                setModal={ (e) => changeCard(e,item.idtratamento,item.titulo,item.preco,null,null,'services')}
                             />
                        </CCol>
                      )

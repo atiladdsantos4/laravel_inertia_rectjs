@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 
 class ProTratamento extends Model
 {
@@ -43,6 +44,29 @@ class ProTratamento extends Model
     {
         return $this->hasOne(Profissional::class, 'pro_id_pro', 'prt_id_pro')
         ->select('pro_id_pro','pro_nome','pro_apelido','pro_tipo','pro_cpf_cnpj','pro_path_image','pro_ativo','pro_created_at');
+    }
+
+    public function horarios()
+    {
+        return $this->hasMany(HorarioAgenda::class, 'hoa_id_prt', 'prt_id_prt')
+        ->select('hoa_id_hoa','hoa_id_dat','hoa_status_atual','dat_data','dat_horainicial','dat_horafinal')
+        ->join('dat_data_agenda','hoa_id_dat','dat_id_dat');
+        //->select('pro_id_pro','pro_nome','pro_apelido','pro_tipo','pro_cpf_cnpj','pro_path_image','pro_ativo','pro_created_at');
+    }
+
+    public function horarios_modal()
+    {
+        $dat_ini = Carbon::now()->addDays(1)->format('d/m/Y').' 08:00:00';
+        //date('Y-m-d H:i:s');
+        //$dat_fim = Carbon::now()->addDays(7)->format('d/m/Y H:i:s');
+        $dat_fim = Carbon::now()->addDays(8)->format('d/m/Y').' 23:59:00';
+        return $this->hasMany(HorarioAgenda::class, 'hoa_id_prt', 'prt_id_prt')
+        ->selectRaw("hoa_id_hoa,hoa_id_dat,hoa_status_atual,dat_data,TO_CHAR(dat_data, 'DD/MM/YYYY') as dat_format,dat_horainicial,dat_horafinal")
+        //('hoa_id_hoa','hoa_id_dat','hoa_status_atual','dat_data','dat_horainicial','dat_horafinal')
+        ->join('dat_data_agenda','hoa_id_dat','dat_id_dat')
+        ->whereRaw("dat_data between '$dat_ini' and '$dat_fim'")
+        ->orderBy('dat_data');
+        //->select('pro_id_pro','pro_nome','pro_apelido','pro_tipo','pro_cpf_cnpj','pro_path_image','pro_ativo','pro_created_at');
     }
 
     public function tratamento_filtro()

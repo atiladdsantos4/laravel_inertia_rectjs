@@ -900,6 +900,7 @@ const  handleSave = (id,lista,valor) =>{
 
   //adiciona nova opcao na lista do body do card
   const AddListaOpcao = (idlistapai,lista) =>{
+    //abreModal(e,props.idx)
     //pega "idxpai" index da lista principal
     let idxpai = getIndex(listacard,idlistapai)
     let valor = listacard[idxpai].estado

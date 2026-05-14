@@ -3,6 +3,7 @@ import { CContainer, CRow, CCol, CImage, CPlaceholder} from '@coreui/react';
 import "@fontsource/poppins";
 import { CardComp } from '../components/CardComp';
 import { useStore } from '../store/useStore';
+import axios from 'axios';
 
 
 export const SectionOffers = (props) => {
@@ -40,7 +41,8 @@ export const SectionOffers = (props) => {
                 case "cardsection":
                     string =  JSON.parse(item.sei_json)
                     console.log(string)
-                    setListacard(string.meta)
+                    let filtro = string.meta.filter((item)=>item.naoexibir === false)
+                    setListacard(filtro)
                     //let img1 = imgpath + string.meta[0].path + item.sei_valor
                     //setImgabout1(img1)
                     break
@@ -70,8 +72,8 @@ export const SectionOffers = (props) => {
                           break
                         case "cardsection":
                             string =  JSON.parse(item.sei_json)
-                            console.log(string)
-                            setListacard(string.meta)
+                            let filtro = string.meta.filter((item)=>item.naoexibir === false)
+                            setListacard(filtro)
                           break
                     }
                 })

@@ -1,5 +1,5 @@
 import { React,useEffect, useState} from 'react';
-import { CContainer, CCard, CCardBody, CCardSubtitle, CCardText, CCardTitle,CCardImage, CBadge } from '@coreui/react';
+import { CContainer, CCard, CCardBody, CCardSubtitle, CCardText, CCardTitle,CCardImage, CBadge,CSpinner } from '@coreui/react';
 import imgCheck from '../images/checkbox.png'
 import imgSelo from '../images/selo_preco.png'
 import { ButtonPillsComp } from './ButtonPillsComp';
@@ -23,6 +23,7 @@ export const CardServiceComp = (props) => {
    const [promocard,setPromocard]= useState(false )
    const [cardStyle,setcardStyle]= useState(null)
    const [textcardStyle,settextcardStyle] = useState(null)
+   const [idspinner,setIdspinner] = useState(null)
 
 
    useEffect(() => {
@@ -34,6 +35,7 @@ export const CardServiceComp = (props) => {
       setImagem(props.imagem)
       setButtonlabel(props.buttonlabel)
       setParagraph(props.paragraph)
+      setIdspinner(props.idspinner)
       setcardStyle('clcard-service')
       let btclass = 'btclass rounded-pill' // Access using props.propName
       setButtonclass(btclass)
@@ -71,6 +73,7 @@ return(
                     <CCardText></CCardText>
                     <CCardText style={{textAlign:'center'}}>
                         <ButtonPillsComp label={buttonlabel} color="secondary" classe={buttonclass} icon={faShoppingCart} click={open}/>
+                        &nbsp;<CSpinner id={idspinner} size="sm" style={{visibility:'hidden'}}></CSpinner>
                     </CCardText>
                 </CCardBody>
             </CCard>
