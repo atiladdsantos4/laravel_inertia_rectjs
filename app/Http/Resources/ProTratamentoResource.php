@@ -33,6 +33,15 @@ class ProTratamentoResource extends JsonResource
                 'prt_id_pro' => $this->prt_id_pro,
                 'prt_profissional' => $this->profissional->pro_nome
           ];
+         } else if($request->has('filtro_modal')){
+          $data =  [
+                'prt_id_prt' => $this->prt_id_prt,
+                'prt_id_tra' => $this->prt_id_tra,
+                'prt_id_pro' => $this->prt_id_pro,
+                'prt_profissional' => $this->profissional->pro_nome,
+                'prt_tratamento' => $this->tratamento,
+                'prt_horarios'=> $this->horarios_modal->makeHidden(['dataini', 'datafim'])
+          ];
          } else {
             $data =  [
                 'prt_id_prt' => $this->prt_id_prt,

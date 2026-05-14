@@ -4,10 +4,10 @@ import { CTable, CTableHead, CTableRow, CTableHeaderCell, CTableBody, CTableData
   CModalHeader, CModalTitle, CRow, CCol, CInputGroup, CPaginationItem, CFormSelect,
   CFormCheck, CPagination, CInputGroupText, CFormInput, CBadge } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBrazilianRealSign, faRightToBracket, faSave, faEdit, faTrash,faEraser, faCancel, faCheck,faScissors,faCircleArrowDown,faCircleArrowUp,faSearch  } from '@fortawesome/free-solid-svg-icons';
+import { faBrazilianRealSign, faRightToBracket, faSave, faEdit, faTrash, faBox, faCancel, faCheck,faScissors,faCircleArrowDown,faCircleArrowUp,faSearch  } from '@fortawesome/free-solid-svg-icons';
 
-export const ModalPesquisaServico = (props) => {
-  const {open, close, listatra, item, itempai, edita} = props
+export const ModalPesquisaPacote = (props) => {
+  const {open, close, listapac, item, itempai, edita} = props
   const styleinput = {width:'100px'}
   const [nome,setNome] = useState(null)
   const [numeroagenda,setNumeroagenda] = useState(null)
@@ -25,7 +25,7 @@ export const ModalPesquisaServico = (props) => {
   const [finalizado,setFinalizado] = useState(null)
   const [pago,setPago] = useState(null)
   const [profissional,setProfissional] = useState(null)
-  const [trat,setTrat] = useState(null)
+  const [pac,setPac] = useState(null)
   const [maxdesconto,setMaxdesconto] = useState(null)
   const [valor,setValor] = useState(null)
   const [est,setEst] = useState(false)
@@ -51,10 +51,10 @@ export const ModalPesquisaServico = (props) => {
   useEffect(()=>{
         console.log('item:'+item)
         setListafiltro(lista)
-        setLista(listatra)
+        setLista(listapac)
         console.log('lista tra')
-        console.log(listatra)
-        let tam = listatra.length
+        console.log(listapac)
+        let tam = listapac.length
         setQtderegistros(tam)
         let res = tam / qtderegistrospagina
         let resto = tam % qtderegistrospagina
@@ -77,25 +77,25 @@ export const ModalPesquisaServico = (props) => {
              setRegistrofim(5)
         }
 
-        let vservico = []
-        let objeto = null
-        let existe = null
-        listatra.map((item,index)=>{
-            objeto ={
-                valor:item.tra_servico.ser_id_ser,
-                texto:item.tra_servico.ser_titulo
-            }
-            if(vservico.length == 0){
-                vservico.push({valor:'',texto:'Selecione o Serviço'})
-                vservico.push(objeto)
-            } else {
-                existe = vservico.filter((it)=>it.valor === item.tra_servico.ser_id_ser)
-                if(existe.length == 0){
-                    vservico.push(objeto)
-                }
-            }
-        })
-        setListaservices(vservico)
+        // let vservico = []
+        // let objeto = null
+        // let existe = null
+        // listapac.map((item,index)=>{
+        //     objeto ={
+        //         valor:item.tra_servico.ser_id_ser,
+        //         texto:item.tra_servico.ser_titulo
+        //     }
+        //     if(vservico.length == 0){
+        //         vservico.push({valor:'',texto:'Selecione o Serviço'})
+        //         vservico.push(objeto)
+        //     } else {
+        //         existe = vservico.filter((it)=>it.valor === item.tra_servico.ser_id_ser)
+        //         if(existe.length == 0){
+        //             vservico.push(objeto)
+        //         }
+        //     }
+        // })
+        // setListaservices(vservico)
 
     //  if(agenda != null) {
     //     console.log('agenda:'+agenda.hoa_id_hoa)
@@ -141,22 +141,21 @@ export const ModalPesquisaServico = (props) => {
                return(
                 <CTableRow color={classe}>
                     <CTableDataCell>
-                        {item.tra_load ? (<CSpinner size="sm" color="primary"/>) : (item.tra_id_tra)}
+                        {item.pac_load ? (<CSpinner size="sm" color="primary"/>) : (item.pac_id_pac)}
                     </CTableDataCell>
                     <CTableDataCell style={{textAlign:'center',width:'40px'}}>
                             {
-                            item.tra_display == 1 ?
-                            (<CFormCheck checked onChange={(e)=>atualizaLista(item.tra_id_tra,e)}/>) :
-                            (<CFormCheck onChange={(e)=>atualizaLista(item.tra_id_tra,e)}/>)
+                            item.pac_display == 1 ?
+                            (<CFormCheck checked onChange={(e)=>atualizaLista(item.pac_id_pac,e)}/>) :
+                            (<CFormCheck onChange={(e)=>atualizaLista(item.pac_id_pac,e)}/>)
                             }
                     </CTableDataCell>
-                    <CTableDataCell>{item.tra_servico.ser_titulo}</CTableDataCell>
-                    <CTableDataCell>{item.tra_titulo}</CTableDataCell>
-                    <CTableDataCell>{item.tra_texto}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_valor : '000.00'}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'right'}}>{item.tra_valor_atual ? item.tra_valor_atual.tva_max_desconto : '00.00'}</CTableDataCell>
-                    <CTableDataCell>{item.tra_created_at}</CTableDataCell>
-                    <CTableDataCell style={{textAlign:'center'}}><ItensAcao id={item.tra_id_tra} dados={item}/></CTableDataCell>
+                    <CTableDataCell>{item.pac_nome}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'right'}}>{item.pac_desconto}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'right'}}>{item.pac_valor}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'right'}}>{item.pac_valor_final}</CTableDataCell>
+                    <CTableDataCell>{item.pac_created_at}</CTableDataCell>
+                    <CTableDataCell style={{textAlign:'center'}}><ItensAcao id={item.pac_id_pac} dados={item}/></CTableDataCell>
                     </CTableRow>
                )
             }
@@ -164,21 +163,15 @@ export const ModalPesquisaServico = (props) => {
       )
   }
 
-  const EditaService = (idpai,id,valor)=>{
-      console.log('idpai:'+idpai)
-      console.log('id:'+id)
-      if(itempai in props){
-         edita(idpai,id,valor)
-      } else {
-         edita(id,valor)
-      }
-      close(false)
+  const EditaService = (idpai,valor)=>{
+     edita(idpai,valor)
+     close(false)
   }
 
   const ItensAcao = (props) => {
      return(
       <>
-         <FontAwesomeIcon onClick={(e)=>EditaService(itempai,item,props.dados)} style={{color:'blue',cursor:'pointer'}} icon={faRightToBracket}/>
+         <FontAwesomeIcon onClick={(e)=>EditaService(itempai,props.dados)} style={{color:'blue',cursor:'pointer'}} icon={faRightToBracket}/>
       </>
      )
   }
@@ -330,7 +323,7 @@ export const ModalPesquisaServico = (props) => {
       >
         <CModalHeader className="cmodal_header">
           <CModalTitle id="LiveDemoExampleLabel">
-            <FontAwesomeIcon size="1x" icon={faScissors} style={{cursor:'pointer',color:'white'}}/>&nbsp;Pesquisar Serviços
+            <FontAwesomeIcon size="1x" icon={faBox} style={{cursor:'pointer',color:'white'}}/>&nbsp;Pesquisar Pacotes
            </CModalTitle>
         </CModalHeader>
         <CModalBody>
@@ -338,7 +331,7 @@ export const ModalPesquisaServico = (props) => {
               <CCol xs={12} sm={12}>
                  <CCard style={{padding:'3px'}}>
                     <div style={{display:'flex',gap:'10px'}}>
-                        <InputSelectSimples/>
+                        {/* <InputSelectSimples/> */}
                         <CInputGroup style={{maxWidth:'400px'}} className="mb-3">
                             <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
                             <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>
@@ -349,11 +342,10 @@ export const ModalPesquisaServico = (props) => {
                             <CTableRow>
                                 <CTableHeaderCell className='clthinputtext'style={{borderRadius:'5px 0px 0px 0px',fontSize:'11px !important'}} scope="col">#</CTableHeaderCell>
                                 <CTableHeaderCell className='clthinterno' scope="col">Exibir</CTableHeaderCell>
-                                <CTableHeaderCell className='clthinterno' scope="col">Serviço</CTableHeaderCell>
-                                <CTableHeaderCell className='clthinterno' scope="col">Tratamento</CTableHeaderCell>
-                                <CTableHeaderCell className='clthinterno' scope="col">Texto</CTableHeaderCell>
-                                <CTableHeaderCell className='clthinterno' scope="col">Preço</CTableHeaderCell>
-                                <CTableHeaderCell className='clthinterno' scope="col">Desc(%)</CTableHeaderCell>
+                                <CTableHeaderCell className='clthinterno' scope="col">Nome do Pacote</CTableHeaderCell>
+                                <CTableHeaderCell className='clthinterno' scope="col">Desconto(%)</CTableHeaderCell>
+                                <CTableHeaderCell className='clthinterno' scope="col">Valor Bruto</CTableHeaderCell>
+                                <CTableHeaderCell className='clthinterno' scope="col">Valor Final</CTableHeaderCell>
                                 <CTableHeaderCell className='clthinterno' scope="col">Criação</CTableHeaderCell>
                                 <CTableHeaderCell className='clthinterno' style={{textAlign:'center',borderRadius:'0px 5px 0px 0px'}} scope="col">Acão</CTableHeaderCell>
                             </CTableRow>
@@ -499,7 +491,7 @@ export const ModalPesquisaServico = (props) => {
                                     className="input-text"
                                     aria-label="Username"
                                     //onChange={(e) => setNome(e.target.value)}
-                                    value={trat}
+                                    value={pac}
                                     feedbackInvalid="O Nome deve ser informado."
                                     aria-describedby="basic-addon1"
                                     required

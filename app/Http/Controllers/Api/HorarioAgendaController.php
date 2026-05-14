@@ -193,6 +193,7 @@ class HorarioAgendaController extends Controller
                 "hoa_confirmado" => $input["hoa_confirmado"],
                 "hoa_cancelado" => $input["hoa_cancelado"],
                 "hoa_finalizado" => $input["hoa_finalizado"],
+                "hoa_status_atual" => $input["hoa_status_atual"],
                 "hoa_pago" => $input["hoa_pago"],
                 "hoa_created_at" => $input["hoa_created_at"]
            ]);

@@ -2,7 +2,7 @@ import { React,useEffect, useState, Suspense, useRef } from 'react';
 import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { SpinnerComp } from '../../components/SpinnerComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faCancel, faSearch, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CButton,
@@ -42,10 +42,13 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CDropdownItem,
-  CCollapse
+  CCollapse,
+  CTooltip
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 import { ButtonPreview } from '../../components/ButtonPreview';
+//import { ModalPesquisaServico } from '../../components/ModalPesquisaServico';
+import { ModalPesquisaPacote } from '../../components/ModalPesquisaPacote';
 
 
 
@@ -58,10 +61,15 @@ const ManOffers = (props) =>{
   const [listatags,setListatags] = useState([])
   const [listatipos,setListatipos] = useState([])
   const [listacard,setListacard] = useState([])
+  const [listatratamento,setListatratamento] = useState([])
+  const [listapacote,setListapacote] = useState([])
   const [estcard,setEstcard] = useState(false)
   const [saved,setSaved] = useState(false)
   const [view,setView] = useState(false)
   const [toast, addToast] = useState()//toast
+  const [openmodal, setOpenmodal] = useState() //modal
+  const [itematual, setItematual]  = useState(null) // index card atual
+  const [itempaiatual, setItempaiatual]  = useState(null) // index card atual
   const token = props.token
   const sei_display = 1
   const empresa = props.dados_section.sec_id_emp
@@ -70,7 +78,7 @@ const ManOffers = (props) =>{
   const sei_id_sec = props.dados_section.sec_id_sec
   const toaster = useRef(null)
   const style = {width:'130px'}
-  const stylebtsave = {width:'92px'}
+  const stylebtsave = {width:'110px'}
   const styleinputcard = {width:'92px'}
   const styleimg = {width:'20%',marginRight:'auto'}
   const style_dropdown = {borderRadius:'0px 0px 0px 0px',width:'118px',backgroundColor:'#200D35',color:'white'}
@@ -186,7 +194,7 @@ const ManOffers = (props) =>{
 
   const getIndex = (lista,id) => {
     for(let i=0; i < lista.length; i++){
-        if( lista[i].id === id){
+        if( lista[i].id == id){
           return i
         }
     }
@@ -323,6 +331,118 @@ const ManOffers = (props) =>{
     //setListacampos(lista)
     setListatipos(props.tipos)
     setListatags(props.tags)
+    const fetchData = async () => {
+       try {
+            const requests = [
+                axios.get(`${endpoint}/section/${sei_id_sec}?section_man=S`,{
+                    headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: 'Bearer ' + token,//dentro do env//
+                    },
+                }),
+                axios.get(`${endpoint}/tratamentos?listagem=S`,{
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
+                    },
+                }),
+                axios.get(`${endpoint}/pacote?listagem=S`,{
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: 'Bearer ' + token, //--> Dentro do Env <--//
+                        },
+                })
+            ]
+
+            const responses = await Promise.all(requests);
+
+            let result = responses[0]
+            let result_tratamento = responses[1]
+            let result_pacote = responses[2]
+            setListatratamento(result_tratamento.data.data.tratamentos)
+            setListapacote(result_pacote.data.data)
+
+            let objlista = null
+            let lista_inicial = []
+            let label_campos = null
+            let nlinhas = null
+            let link = null
+            let string = null
+            result.data.data.sec_itens.map((item,index)=>{
+               label_campos = array_campos.filter((it)=> it.nome === item.sei_nome)
+               nlinhas = null
+               if( item.sei_tag == 'textarea' ){
+                  string = JSON.parse(item.sei_json)
+                  nlinhas = string.meta[0].linhas
+               }
+
+               if( item.sei_tag == 'image' ){
+                  string = JSON.parse(item.sei_json)
+                  link = string.meta[0].path
+               }
+
+               if( item.sei_tag == 'lista' ){
+                  string = JSON.parse(item.sei_json)
+                  setListacard(string.meta)
+                  //console.log(string)
+
+               }
+
+               objlista = {
+                 idfield:item.sei_id_sei,
+                 id:item.sei_nome,
+                 nome:item.sei_nome,
+                 titulo:label_campos[0].label,
+                 placeholder:item.sei_placeholder,
+                 load:false,
+                 estilo:style,
+                 linhas:nlinhas,
+                 type:item.sei_tag,
+                 valor:item.sei_valor,
+                 tipo:item.sei_tipo,
+                 tipo_id:item.sei_id_tip,
+                 collapse:true
+               }
+
+               if( item.sei_tag == 'image' ){
+                  objlista.link = link
+                  objlista.imgsaved = true
+                  objlista.imgfile = []
+                  objlista.display = true
+               }
+
+               if( item.sei_tag == 'lista' ){
+                  //objlista.lista = string.meta[0]
+                  null
+                //   objlista.imgsaved = true
+                //   objlista.imgfile = []
+                //   objlista.display = true
+               }
+               lista_inicial.push(objlista)
+               //console.log(item)
+            })
+            let existe = null
+            lista.map((item,index)=>{
+              existe = lista_inicial.filter((it)=> it.nome === item.nome)
+              if( existe.length == 0){
+                //console.log('existe')
+                //console.log(existe)
+                lista_inicial.push(item)
+              }
+            })
+            setListacampos(lista_inicial)
+            //setListacard()
+            setLoadpage(false)
+       }
+       catch (error) {
+            console.error("One of the requests failed", error);
+       }
+    }
+    fetchData()
+    return
     axios
         .get(`${endpoint}/section/${sei_id_sec}?section_man=S`,{
         headers: {
@@ -768,17 +888,19 @@ const  handleSave = (id,lista,valor) =>{
  };
 
   //adiciona nova opcao na lista do body do card
-  const AddListaOpcao = (idlistapai,lista) =>{
+  const AddListaOpcao = (event,idlistapai,lista) =>{
     //pega "idxpai" index da lista principal
     let idxpai = getIndex(listacard,idlistapai)
     let valor = listacard[idxpai].estado
     let idx = lista.length
     let obj ={
        id:idx,
+       idtratamento:0,
        texto:'',
        display: true
     }
     lista.push(obj)
+    //abreModal(event,idxpai,idx)
     listacard[idxpai].estado = !valor //altera o estado da
     setEstcard(!estcard) //força re-render da lista pai//
   }
@@ -808,12 +930,19 @@ const  handleSave = (id,lista,valor) =>{
     return(
         listagem.map((item,index)=>{
           return(
-            <CRow>
-                <CCol xs={10} className='mt-2'>
+            <CRow className='g-2'>
+                <CCol xs={11} className='mt-2'>
                    <CFormInput size="sm"  style={{border:'1px solid #6b38a2'}} onChange={(e)=>atualizaListaOpcao(item.id,listagem,'texto',e.target.value)} defaultValue={item.texto}/>
                 </CCol>
-                <CCol xs={2} className='mt-2'>
-                   <div className="circleimg"><FontAwesomeIcon style={{cursor:'pointer',color:'#6b38a2'}} icon={faTrash} onClick={(e)=>atualizaListaOpcao(item.id,props.lista,'display',false)}/></div>
+                {/* <CCol xs={1} className='mt-2'>
+                   <CTooltip content="Pesquisar Tratamento" placement="top">
+                      <div className="circleimg"><FontAwesomeIcon style={{cursor:'pointer',color:'#6b38a2'}} icon={faSearch} onClick={(e)=>abreModal(e,props.idpai,item.id)}/></div>
+                   </CTooltip>
+                </CCol> */}
+                <CCol xs={1} className='mt-2'>
+                    <CTooltip content="Excluir Linha" placement="top">
+                       <div className="circleimg"><FontAwesomeIcon style={{cursor:'pointer',color:'#6b38a2'}} icon={faTrash} onClick={(e)=>atualizaListaOpcao(item.id,props.lista,'display',false)}/></div>
+                    </CTooltip>
                 </CCol>
              </CRow>
           )
@@ -831,6 +960,7 @@ const  handleSave = (id,lista,valor) =>{
             <CCol xs={4} className='mb-2'>
                 <CCard style={{border:'2px solid #360f61'}}>
                     <CCardHeader>
+                        <div style={{display:'flex',justifyContent:'flex-end'}}><ButtonAbrePesquisa idx={item.id}/></div>
                         <>
                           { item.naoexibir
                              ? (<CFormCheck style={{accentColor:'red'}} id="defaultCheck1" label="Não Exibir Card" checked onChange={(e)=>atualizaListaCard(item.id,'naoexibir',e.target.checked)} />)
@@ -862,11 +992,13 @@ const  handleSave = (id,lista,valor) =>{
                     </CCardHeader>
                     <CCardBody>
                         <div className='mb-1'>
-                          <CButton color="primary" size="sm" onClick={(e)=>AddListaOpcao(item.id,item.listaopcao)}>Nova Opção
-                              &nbsp;<FontAwesomeIcon style={{cursor:'pointer',color:'white'}} icon={faCircleArrowDown}/>
-                          </CButton>
+                          <CTooltip content="Adicionar Nova Opção" placement="right">
+                            <CButton color="primary" size="sm" onClick={(e)=>AddListaOpcao(e,item.id,item.listaopcao)}>Nova Opção
+                                &nbsp;<FontAwesomeIcon style={{cursor:'pointer',color:'white'}} icon={faCircleArrowDown}/>
+                            </CButton>
+                          </CTooltip>
                         </div>
-                        <ListaCardOpcao lista={item.listaopcao} est={item.estado}/>
+                        <ListaCardOpcao idpai={item.id} lista={item.listaopcao} est={item.estado}/>
                     </CCardBody>
                     <CCardFooter>
                         <div className="text-start" style={{display:'flex',gap:'5px',paddingBottom:'5px'}}>
@@ -1003,8 +1135,61 @@ const  handleSave = (id,lista,valor) =>{
     return JSON.stringify(objfinal)
   }
 
+  const ButtonAbrePesquisa = (props) =>{
+     return(
+       <CButton className="btexpandir" size="sm" onClick={(e)=>abreModal(e,props.idx)}>Pesquisar Pacote</CButton>
+     )
+  }
+
+  const abreModal = (event,idxpai,idx) =>{
+    console.log('idxpai:'+idxpai)
+    console.log('idxlistaopcao:'+idx)
+    console.log(listacard)
+     setItempaiatual(idxpai)
+     setItematual(idx)
+     setOpenmodal(true)
+  }
+
+  const editaCard = (idpai,valor) =>{
+     let idx = getIndex(listacard,idpai)
+     listacard[idx].servico = valor.pac_nome
+     listacard[idx].titulo = ''
+     listacard[idx].preco = 'R$ '+valor.pac_valor_final
+    // listacard[idx].texto = valor.tra_texto
+     listacard[idx].textobotao = 'Obter'
+     listacard[idx].listaopcao.length = 0
+     let vet = valor.pac_itens
+     let obj = null
+     let ix = 0
+     vet.map((item,index)=>{
+        ix++
+        obj ={
+            id:ix,
+            idtratamento:item.tratamento.tra_id_tra,
+            texto:item.tratamento.tra_titulo,
+            display: true
+        }
+        listacard[idx].listaopcao.push(obj)
+     })
+     //listaopcao
+     console.log('vetor')
+     console.log(vet)
+    // listacard[idx].idtratamento = valor.tra_id_tra
+     console.log(listacard)
+     console.log(idx)
+     console.log(valor)
+  }
+
   return(
          <div className="aos-animate" data-aos="fade-up" data-aos-delay="200">
+            <ModalPesquisaPacote
+               open={openmodal}
+               close={setOpenmodal}
+               listapac={listapacote}
+               item={itematual}
+               itempai={itempaiatual}
+               edita={editaCard}
+           />
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">
              <CCardHeader className="clfooter">

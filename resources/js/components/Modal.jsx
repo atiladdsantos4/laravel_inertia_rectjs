@@ -1,4 +1,4 @@
-import {CAlert, CForm, CRow, CBadge, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalFooter,CModalBody, CInputGroup, CInputGroupText, CFormInput  } from '@coreui/react';
+import {CAlert, CForm, CRow, CBadge, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalFooter,CModalBody, CInputGroup, CInputGroupText, CFormInput, CFormSelect  } from '@coreui/react';
 import { ButtonComp } from './ButtonComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
@@ -13,26 +13,55 @@ import { BadgeComp } from './BadgeComp';
 export const Modal = (props) =>{
 
    const { isOpen, close, dados, tela } = props
+   const [tratamento,setTratamento] = useState(null)
+   const [idhoa,setHoa] = useState(null)
    const [nome,setNome] = useState(null)
    const [cpf,setCpf] = useState(null)
    const [telefone,setTelefone] = useState(null)
    const [horario,setHorario] = useState(null)
+   const [profissional,setProfissional] = useState(null)
+   const [prof,setProf] = useState(null)
+   const [listadatas,setListadatas] = useState([])
+   const [est,setEst] = useState(false)
    const [validated, setValidated] = useState(false)
    const [showAlert,setShowAlert] = useState(false)
+   const largura = {width:'85px'}
 
-   useEffect(()=>{},[
-      console.log(props)
-   ])
+   useEffect(()=>{
+      setTratamento(dados.tratamento)
+      let vet = []
+      let vetdados = []
+      let obj = null
+      if(dados.agenda != null){
+        dados.agenda.map((item,index)=>{
+            obj = {
+              id:item.prt_id_pro,
+              prof:item.prt_profissional
+            }
+            vet.push(obj)
+        })
+        setProfissional(vet)
+        setProf('')
+        setListadatas([])
+      }
+
+   },[props])
 
    const handleSubmit = (event) => {
-
+        let semerro = true
         const form = event.currentTarget
         if (form.checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
+            semerro =  false
         }
 
         setValidated(true)
+        event.preventDefault()
+        event.stopPropagation()
+        if(semerro){
+          console.log('hoa:'+idhoa)
+        }
    }
 
    const handleClose = () =>{
@@ -118,6 +147,45 @@ export const Modal = (props) =>{
   }
 
 
+   const ListaProfisional = (props) =>{
+     return(
+        props.lista.map((item,index)=>{
+            return(<option value={item.id}>{item.prof}</option>)
+        })
+     )
+   }
+
+   const exibeCalendar = (valor) =>{
+      setProf(valor)
+      let vetdatas = []
+      let vetor = dados.agenda.filter((item)=>item.prt_id_pro == valor)
+      let vachou = null
+      let vhorarios = null
+      let obj = null
+      let objtimes = null
+      vetor[0].prt_horarios.map((it,index)=>{
+         vachou = vetdatas.filter((item)=>item.date === it.dat_format)
+         if(vachou.length == 0){
+            obj ={
+              date:it.dat_format,
+              times:[]
+            }
+            vhorarios = vetor[0].prt_horarios.filter((item)=>item.dat_format === it.dat_format)
+            vhorarios.map((itt,index)=>{
+              objtimes = {
+                hoa_id_hoa:itt.hoa_id_hoa,
+                hora:itt.dat_horainicial
+              }
+              obj.times.push(objtimes)
+            })
+            vetdatas.push(obj)
+         }
+      })
+      setListadatas(vetdatas)
+    //   console.log(vetor)
+    //   console.log(vetdatas)
+    //   console.log(vhorarios)
+   }
 
    return(
       <CModal
@@ -146,14 +214,14 @@ export const Modal = (props) =>{
             <CRow>
                <CCol md={12} xs={12}>
                    <CInputGroup size="sm" className="mb-3 nowrap">
-                      <CInputGroupText className="inputwidth" id="basic-addon1">Serviço</CInputGroupText>
+                      <CInputGroupText className="inputwidth" style={largura} id="basic-addon1">Serviço</CInputGroupText>
                       <CFormInput className="input-text" disabled aria-label="Username" value={dados.nome}
                         aria-describedby="basic-addon1"/>
                    </CInputGroup>
                </CCol>
                <CCol md={6} xs={12}>
                   <CInputGroup size="sm" className="mb-3">
-                     <CInputGroupText className="inputwidth" id="basic-addon1">Preço</CInputGroupText>
+                     <CInputGroupText className="inputwidth" style={largura} id="basic-addon1">Preço</CInputGroupText>
                      <CFormInput className="input-text" disabled readonly aria-label="Username" value={dados.price}
                        aria-describedby="basic-addon1"/>
                   </CInputGroup>
@@ -180,7 +248,7 @@ export const Modal = (props) =>{
             <CRow>
                <CCol md={12} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
-                        <CInputGroupText className="inputwidth has-validation" id="basic-addon1">Nome</CInputGroupText>
+                        <CInputGroupText className="inputwidth has-validation" style={largura} id="basic-addon1">Nome</CInputGroupText>
                         <CFormInput
                             placeholder="Digite seu nome"
                             className="input-text"
@@ -195,14 +263,23 @@ export const Modal = (props) =>{
                 </CCol>
                 <CCol md={12} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
-                        <CInputGroupText className="inputwidth" id="basic-addon1">Telefone</CInputGroupText>
+                        <CInputGroupText className="inputwidth" style={largura} id="basic-addon1">Telefone</CInputGroupText>
                         <InputMaskTelefone/>
                     </CInputGroup>
                 </CCol>
                 <CCol md={12} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
-                        <CInputGroupText className="inputwidth" id="basic-addon1">CPF</CInputGroupText>
+                        <CInputGroupText className="inputwidth" style={largura} id="basic-addon1">CPF</CInputGroupText>
                         <InputMaskCPF />
+                    </CInputGroup>
+                </CCol>
+                <CCol md={12} xs={12}>
+                    <CInputGroup size="sm" className="mb-3">
+                        <CInputGroupText className="inputwidth" style={largura} id="basic-addon1">Profissional</CInputGroupText>
+                        <CFormSelect onChange={(e)=>exibeCalendar(e.target.value)} value={prof} feedbackInvalid="O Profissional deve ser informado." required>
+                            <option value=''>{'Selecione o Profissional'}</option>
+                            <ListaProfisional lista={profissional} est={est}/>
+                        </CFormSelect>
                     </CInputGroup>
                 </CCol>
             </CRow>
@@ -213,7 +290,7 @@ export const Modal = (props) =>{
             </CRow>
             <CRow>
                <CCol md={12} xs={12}>
-                  <Calendario definehorario={setHora}/>
+                  <Calendario lista={listadatas} definehoa={setHoa} definehorario={setHora}/>
                </CCol>
             </CRow>
             <CRow>

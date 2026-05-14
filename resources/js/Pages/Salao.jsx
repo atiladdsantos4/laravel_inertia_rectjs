@@ -68,10 +68,13 @@ const Home = ({ appName }) => {
   const [openAvaliacao,setOpenAvaliacao] = useState(false)
 
   const [dadosModal,setdadosModal] = useState({
-     nome: "atila",
+     tratamento:null,
+     nome: null,
      price: "10,00",
      texto: "texto",
-     detalhe:"texto"
+     detalhe:"texto",
+     screen:null,
+     agenda:null
   })
 
   let arrayNavbar =[{
@@ -162,9 +165,30 @@ const Home = ({ appName }) => {
      return estadogeral
   }
 
+//   const openModal= () =>{
+//     console.log('abre_modal')
+//     setOpen(true)
+//   }
 
   const openModal= () =>{
-     setOpen(true)
+     let idele = 'idspinner'+dadosModal.tratamento
+     let ele = document.getElementById(idele)
+     ele.style.visibility='visible'
+     let id = dadosModal.tratamento
+     axios
+        .get(`${endpoint}/protratamento?filtro_modal=S&tra_id_tra=${id}`, {
+            headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Bearer ' + _token,//dentro do env//
+            },
+     })
+    .then((result) => {
+        ele.style.visibility='hidden'
+        dadosModal.agenda = result.data.data
+        console.log(result)
+        setOpen(true)
+    })
   }
 
   const closeModal= () =>{
@@ -180,15 +204,13 @@ const Home = ({ appName }) => {
   }
 
 
-  const setModalTexto= (nome, valor, texto, detalhe, tela) =>{
-     let dados = {
-        nome:nome,
-        price:valor,
-        texto:texto,
-        detalhe:detalhe,
-        screen:tela
-     }
-     setdadosModal(dados)
+  const setModalTexto= (trat, nome, valor, texto, detalhe, tela) =>{
+    dadosModal.tratamento = trat
+    dadosModal.nome = nome
+    dadosModal.price = valor
+    dadosModal.texto = texto
+    dadosModal.detalhe = detalhe
+    dadosModal.screen = tela
   }
 
   const scrollToId = (id) => {
@@ -199,6 +221,22 @@ const Home = ({ appName }) => {
      }
   };
 
+//   const carregaDatasFiltro = (valor) =>{
+//     //protratamento?filtro_modal=S&tra_id_tra=1
+//     let id = dadosModal.id
+//     axios
+//       .get(`${endpoint}/protratamento?filtro_modal=S&tra_id_tra=${valor}`, {
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'multipart/form-data',
+//           Authorization: 'Bearer ' + _token,//dentro do env//
+//         },
+//     })
+//     .then((result) => {
+//        console.log(result)
+
+//     })
+//   }
 
   return (
       <Suspense fallback={<SpinnerComp />}>
