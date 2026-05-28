@@ -876,7 +876,7 @@ const ConsultaAgendamentos = (props) =>{
      let mes = valorSeq(12)
      let semana = valorSeq(13)
      axios
-        .get(`${endpoint}/horarioagenda?consultaagendadia=S&hoa_id_prt=${hoa_id_prt}&ano=${ano}&mes=${mes}&&semana=${semana}`, {
+        .get(`${endpoint}/horarioagenda?consultaagendadia=S&hoa_id_prt=${hoa_id_prt}&ano=${ano}&mes=${mes}&semana=${semana}`, {
                 headers: {
                    Accept: 'application/json',
                    'Content-Type': 'multipart/form-data',

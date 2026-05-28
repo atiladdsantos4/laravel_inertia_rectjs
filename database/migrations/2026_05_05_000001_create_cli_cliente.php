@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('cli_cpf',14);
             $table->string('cli_email',14);
             $table->integer('cli_tipo_telefone');
-            $table->string('cli_telefone',14);
+            $table->string('cli_telefone',20);
             $table->char('cli_ativo',1);
             $table->timestamp('cli_created_at');
             $table->timestamp('cli_updated_at')->nullable();

@@ -31,6 +31,7 @@ class DataAgenda extends Model
         'dat_created_at' => 'datetime:Y-m-d H:i:s',
         'dat_updated_at' => 'datetime:Y-m-d H:i:s',
         'dat_deleted_at' => 'datetime:Y-m-d H:i:s',
+        'dat_data' => 'datetime:d/m/Y H:i:s',
     ];
 
     /*

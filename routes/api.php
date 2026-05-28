@@ -13,7 +13,11 @@ use App\Http\Controllers\Api\FeriadosController;
 use App\Http\Controllers\Api\ProfissionalController;
 use App\Http\Controllers\Api\ProTratamentoController;
 use App\Http\Controllers\Api\HorarioAgendaController;
-
+use App\Http\Controllers\Api\PagamentosController;
+use App\Http\Controllers\Api\PixController;
+use App\Http\Controllers\Api\BancosController;
+use App\Http\Controllers\Api\ClienteController;
+use App\Http\Controllers\Api\ClienteAgendadoController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -31,3 +35,8 @@ Route::apiResource('feriado',FeriadosController::class)->middleware('auth:sanctu
 Route::apiResource('profissional',ProfissionalController::class)->middleware('auth:sanctum');
 Route::apiResource('protratamento',ProTratamentoController::class)->middleware('auth:sanctum');
 Route::apiResource('horarioagenda',HorarioAgendaController::class)->middleware('auth:sanctum');
+Route::apiResource('pagamentos',PagamentosController::class)->middleware('auth:sanctum');
+Route::apiResource('pix',PixController::class)->middleware('auth:sanctum');
+Route::apiResource('bancos',BancosController::class)->middleware('auth:sanctum');
+Route::apiResource('cliente',ClienteController::class)->middleware('auth:sanctum');
+Route::apiResource('clienteagendado',ClienteAgendadoController::class)->middleware('auth:sanctum');

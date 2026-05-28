@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import img01 from '../../images/foto01.jpeg'
 import img02 from '../../images/foto02.png'
 import { ModalTratamentoValor } from '../../components/ModalTratamentoValor';
-import { faBrazilianRealSign,faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
+import { faBrazilianRealSign,faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faFilePdf, faCircleArrowDown, faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CTable, CTableRow,CTableHeaderCell,CTableBody,CTableDataCell,CTableHead,
@@ -1053,6 +1053,11 @@ const ManTratamentos = (props) =>{
                         (
                         <CCard style={{padding:'3px'}}>
                             <div style={{display:'flex',justifyContent:'flex-end'}}>
+                            <div className='mt-3'>
+                                 <CTooltip content="Relatório Lista de Tratamentos" placement="top">
+                                    <a href={'relatorio/cliente?relatorio=listatratamentos'} target="_blank"><FontAwesomeIcon className="pdfreport" icon={faFilePdf} size="xl"/></a>
+                                 </CTooltip>
+                            </div>&nbsp;
                             <CInputGroup style={{maxWidth:'400px'}} className="mb-2 mt-2">
                                 <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
                                 <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>

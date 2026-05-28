@@ -47,6 +47,13 @@ class HorarioAgenda extends Model
        return $this->hasOne(DataAgenda::class, 'dat_id_dat', 'hoa_id_dat');
     }
 
+    public function clienteagenda()
+    {
+       return $this->belongsTo(ClienteAgendado::class, 'hoa_id_hoa', 'cla_id_hoa') //--> combinação invertida
+       ->join('cli_cliente','cla_id_cli','cli_id_cli')
+       ->select('cla_id_cla','cla_id_cli','cla_tipo_agenda','cli_name','cli_cpf','cli_email','cli_telefone');
+    }
+
     public function dataagendafiltro($valor)
     {
        return $this->hasOne(DataAgenda::class, 'dat_id_dat', 'hoa_id_dat')
@@ -56,8 +63,9 @@ class HorarioAgenda extends Model
     public function dataagendaconsulta()
     {
        return $this->hasOne(DataAgenda::class, 'dat_id_dat', 'hoa_id_dat')
-       //->select('dat_id_dat','dat_data','dat_dia','dat_diasemana','dat_diaextenso','dat_horainicial','dat_horafinal','dat_semana_mes');
-       ->selectRaw("dat_id_dat,TO_CHAR(dat_data, 'DD/MM/YYYY HH24:MI:SS') as dat_data,dat_dia,dat_diasemana,dat_diaextenso,dat_horainicial,dat_horafinal,dat_semana_mes,DATE_PART('year',dat_data) as ano,DATE_PART('month',dat_data) as mes");
+       ->select('dat_id_dat','dat_data','dat_dia','dat_mes','dat_ano','dat_diasemana','dat_diaextenso','dat_horainicial','dat_horafinal','dat_semana_mes');
+       //--> funciona sem model cast <--//
+       //->selectRaw("dat_id_dat,TO_CHAR(dat_data, 'DD/MM/YYYY HH24:MI:SS') as dat_data,dat_dia,dat_diasemana,dat_diaextenso,dat_horainicial,dat_horafinal,dat_semana_mes,DATE_PART('year',dat_data) as ano,DATE_PART('month',dat_data) as mes");
     }
 
     public function setValorIni($valor)
@@ -72,13 +80,13 @@ class HorarioAgenda extends Model
 
     public function getDatainiAttribute($valor){ //--> qtde_escopos
         $data =  DataAgenda::select('dat_data')->where('dat_id_dat',$this->mindata)->first();
-        return Carbon::parse($data->dat_data)->format('d/m/Y H:i:s');
+        return $data !=null ? Carbon::parse($data->dat_data)->format('d/m/Y H:i:s') : null;
 
     }
 
     public function getDatafimAttribute($valor){ //--> qtde_escopos
         $data =  DataAgenda::select('dat_data')->where('dat_id_dat',$this->maxdata)->first();
-        return Carbon::parse($data->dat_data)->format('d/m/Y H:i:s');
+        return $data !=null ?Carbon::parse($data->dat_data)->format('d/m/Y H:i:s') :null;
     }
 
     /*

@@ -1275,6 +1275,10 @@
    background-color:#D97445 !important;
 }
 
+.pdfreport{
+   color:#dd1818 !important;
+   cursor:'pointer';
+}
 
 .tooltip {
   --cui-tooltip-bg: #722E56; /* Change background color */
@@ -1305,6 +1309,13 @@
         {backgroundColor:'#DAC644'},
         {backgroundColor:'#1E6213'}, */
 /* teste */
+/* reports */
+.headereport{
+   background-color:#502149 !important;
+   border-radius: 8px 8px 8px 8px;
+   font-size: 16px;
+   color: #bdc1cc;
+}
 
 
 

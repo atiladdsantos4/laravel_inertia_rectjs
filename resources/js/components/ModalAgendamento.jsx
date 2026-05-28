@@ -22,6 +22,11 @@ export const ModalAgendamento = (props) => {
   const [finalizado,setFinalizado] = useState(null)
   const [pago,setPago] = useState(null)
   const [profissional,setProfissional] = useState(null)
+  const [tipoagenda,setTipoagenda] = useState(null)
+  const [nomecliente,setNomecliente] = useState(null)
+  const [clientecpf,setClientecpf] = useState(null)
+  const [clienteemail,setClienteemail] = useState(null)
+  const [clientetelefone,setCllientetelefone] = useState(null)
   const [trat,setTrat] = useState(null)
   const [maxdesconto,setMaxdesconto] = useState(null)
   const [valor,setValor] = useState(null)
@@ -36,8 +41,8 @@ export const ModalAgendamento = (props) => {
         setNumeroagenda(agenda.hoa_id_hoa)
         setDia(agenda.hoa_agendas.dat_dia)
         setDiaext(agenda.hoa_agendas.dat_diaextenso)
-        setAno(agenda.hoa_agendas.ano)
-        setMes(agenda.hoa_agendas.mes)
+        setAno(agenda.hoa_agendas.dat_ano)
+        setMes(agenda.hoa_agendas.dat_mes)
         setHoraini(agenda.hoa_agendas.dat_horainicial)
         setHorafim(agenda.hoa_agendas.dat_horafinal)
         setStatus(agenda.hoa_status_atual)
@@ -50,6 +55,11 @@ export const ModalAgendamento = (props) => {
         setTrat(tratamento)
         setMaxdesconto(agenda.hoa_tratamento_desconto)
         setValor(agenda.hoa_tratamento_valor)
+        //dados cliente//
+        setNomecliente(agenda.hoa_clienteagenda ? agenda.hoa_clienteagenda.cli_name : null)
+        setClientecpf(agenda.hoa_clienteagenda ? agenda.hoa_clienteagenda.cli_cpf : null)
+        setClienteemail(agenda.hoa_clienteagenda ? agenda.hoa_clienteagenda.cli_email : null)
+        setCllientetelefone(agenda.hoa_clienteagenda ? agenda.hoa_clienteagenda.cli_telefone : null)
         /*
          "hoa_agendado": "N",
          "hoa_confirmado": "N",
@@ -270,6 +280,73 @@ export const ModalAgendamento = (props) => {
                         </CInputGroup>
                    </CCol>
                 </CRow>
+                {
+                  nomecliente !=null ?
+                  (
+                   <CRow>
+                      <CCol md={8} xs={12}>
+                            <CInputGroup size="sm" className="mb-3">
+                                <CInputGroupText style={styleinput} className="inputwidth has-validation" id="basic-addon1">Cliente</CInputGroupText>
+                                    <CFormInput
+                                        placeholder="Digite seu nome"
+                                        className="input-text"
+                                        aria-label="Username"
+                                        //onChange={(e) => setNome(e.target.value)}
+                                        value={nomecliente}
+                                        feedbackInvalid="O Nome deve ser informado."
+                                        aria-describedby="basic-addon1"
+                                        required
+                                    />
+                          </CInputGroup>
+                      </CCol>
+                      <CCol md={4} xs={12}>
+                            <CInputGroup size="sm" className="mb-3">
+                                <CInputGroupText style={styleinput} className="inputwidth has-validation" id="basic-addon1">CPF</CInputGroupText>
+                                    <CFormInput
+                                        placeholder="Digite seu nome"
+                                        className="input-text"
+                                        aria-label="Username"
+                                        //onChange={(e) => setNome(e.target.value)}
+                                        value={clientecpf}
+                                        feedbackInvalid="O Nome deve ser informado."
+                                        aria-describedby="basic-addon1"
+                                        required
+                                    />
+                          </CInputGroup>
+                      </CCol>
+                      <CCol md={8} xs={12}>
+                            <CInputGroup size="sm" className="mb-3">
+                                <CInputGroupText style={styleinput} className="inputwidth has-validation" id="basic-addon1">Email</CInputGroupText>
+                                    <CFormInput
+                                        placeholder="Digite seu nome"
+                                        className="input-text"
+                                        aria-label="Username"
+                                        //onChange={(e) => setNome(e.target.value)}
+                                        value={clienteemail}
+                                        feedbackInvalid="O Nome deve ser informado."
+                                        aria-describedby="basic-addon1"
+                                        required
+                                    />
+                          </CInputGroup>
+                      </CCol>
+                      <CCol md={4} xs={12}>
+                            <CInputGroup size="sm" className="mb-3">
+                                <CInputGroupText style={styleinput} className="inputwidth has-validation" id="basic-addon1">Telefone</CInputGroupText>
+                                    <CFormInput
+                                        placeholder="Digite seu nome"
+                                        className="input-text"
+                                        aria-label="Username"
+                                        //onChange={(e) => setNome(e.target.value)}
+                                        value={clientetelefone}
+                                        feedbackInvalid="O Nome deve ser informado."
+                                        aria-describedby="basic-addon1"
+                                        required
+                                    />
+                          </CInputGroup>
+                      </CCol>
+                   </CRow>
+                  ) : (<></>)
+                }
                 <CRow>
                    <CCol md={12} xs={12}>
                       <WorkFlow {...agenda}/>
