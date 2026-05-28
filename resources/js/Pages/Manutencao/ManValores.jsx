@@ -501,6 +501,10 @@ const ManValores = (props) =>{
     }
  }
 
+ const saveValor = () =>{
+    setSaved(!saved)
+ }
+
   //--> Salva ou Atualiza os dados no banco de dados //
   const saveService = () => {
 
@@ -596,7 +600,7 @@ const ManValores = (props) =>{
             //   <option value="">{''}</option>
               listaservices.map((item,index)=>{
                   return(
-                    <option value={item.ser_id_ser}>{item.ser_titulo}</option>
+                    <option key={index} value={item.ser_id_ser}>{item.ser_titulo}</option>
                   )
               })
             }
@@ -1034,7 +1038,7 @@ const ManValores = (props) =>{
                close={closeModal}
                token={token}
                showhistorico={true}
-               saved={setSaved}
+               savedados={saveValor}
            />
            <CToaster className="p-3" placement="middle-end" push={toast} ref={toaster} />
            <CCard className="mb-4">

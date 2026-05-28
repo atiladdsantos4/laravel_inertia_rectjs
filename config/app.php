@@ -3,6 +3,30 @@
 return [
 
     /*
+    -------------------------------------------------------------
+    | mail vars
+    -------------------------------------------------------------
+    |
+        MAIL_MAILER=smtp
+        MAIL_HOST=email-ssl.com.br
+        MAIL_PORT=465
+        # MAIL_FROM_ADDRESS=captacao@addssistemas.com.br
+        # MAIL_USERNAME=captacao@addssistemas.com.br
+        MAIL_FROM_ADDRESS=salao@jemosistemas.com.br
+        MAIL_USERNAME=salao@jemosistemas.com.br
+        MAIL_PASSWORD=@Hairsalao5@
+        MAIL_FROM_NAME="Suporte Salao"
+        MAIL_ENCRYPTION=ssl
+    */
+    'host_mail' => [
+        "mail_host" => env('MAIL_HOST'),
+        "mail_port" => env('MAIL_PORT'),
+        "mail_from_address" => env('MAIL_FROM_ADDRESS'),
+        "mail_username" => env('MAIL_USERNAME'),
+        "mail_password" => env('MAIL_PASSWORD'),
+        "mail_from_name" => env('MAIL_FROM_NAME'),
+    ],
+    /*
     |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------

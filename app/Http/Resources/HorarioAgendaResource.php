@@ -36,7 +36,7 @@ class HorarioAgendaResource extends JsonResource
                 'dat_mes_extenso' => $this->meses[$this->dat_mes],
                 'dat_semana_mes' => $this->dat_semana_mes,
              ];
-        } else if( $request->has('consultaagendadia') ){
+        } else if( $request->has('consultaagendadia') || $request->has('consultaagendadiafiltro') ){
             $data =  [
                 'hoa_id_hoa'  => $this->hoa_id_hoa,
                 'hoa_id_prt' => $this->hoa_id_prt,
@@ -51,6 +51,7 @@ class HorarioAgendaResource extends JsonResource
                 'hoa_tratamento' => $this->protratamento->tratamento_filtro,
                 'hoa_tratamento_desconto' => $this->protratamento->tratamento_filtro->valor_atual->tva_max_desconto,
                 'hoa_tratamento_valor' => $this->protratamento->tratamento_filtro->valor_atual->tva_valor,
+                'hoa_clienteagenda' => $this->clienteagenda,
                 'hoa_load' => false,
                 //'hoa_tratamento' => $this->protratamento,
                 'hoa_agendas'=> $this->dataagendaconsulta

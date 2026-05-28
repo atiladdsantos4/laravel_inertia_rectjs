@@ -1,4 +1,4 @@
-import {CAlert, CForm, CRow, CBadge, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalFooter,CModalBody, CInputGroup, CInputGroupText, CFormInput, CFormSelect  } from '@coreui/react';
+import {CAlert, CSpinner,CForm, CRow, CBadge, CCol, CButton, CModal, CModalHeader, CModalTitle, CModalFooter,CModalBody, CInputGroup, CInputGroupText, CFormInput, CFormSelect  } from '@coreui/react';
 import { ButtonComp } from './ButtonComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
@@ -7,16 +7,23 @@ import { IMaskInput, IMaskMixin } from 'react-imask'
 import { Calendario } from './Calendario';
 import { ButtonOutlineComp } from './ButtonOutlineComp';
 import { BadgeComp } from './BadgeComp';
+import axios from 'axios';
 //<FontAwesomeIcon size="2x" style={{ color: '#229741' }} icon={faHeartbeat} />
 
 
 export const Modal = (props) =>{
 
-   const { isOpen, close, dados, tela } = props
+   const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
+   const _token = import.meta.env.VITE_APP_TOKEN
+   const { isOpen, close, dados, openQrcode, geravalorcode, geracopiacola, gervalorcode, geraservico, geracodeagenda, tela } = props
    const [tratamento,setTratamento] = useState(null)
    const [idhoa,setHoa] = useState(null)
    const [nome,setNome] = useState(null)
+   const [valor,setValor] = useState(null)
+   const [servico,setServico] = useState(null)
+   const [agendamento,setAgendamento] = useState(null)
    const [cpf,setCpf] = useState(null)
+   const [email,setEmail] = useState(null)
    const [telefone,setTelefone] = useState(null)
    const [horario,setHorario] = useState(null)
    const [profissional,setProfissional] = useState(null)
@@ -25,9 +32,15 @@ export const Modal = (props) =>{
    const [est,setEst] = useState(false)
    const [validated, setValidated] = useState(false)
    const [showAlert,setShowAlert] = useState(false)
+   const [colorAlert,setColorAlert] = useState(false)
+   const [textAlert,setTextAlert] = useState(false)
+   const [loapspin,setLoapspin] = useState(false)
+   const [loapspinsave,setLoapspinsave] = useState(false)
    const largura = {width:'85px'}
 
    useEffect(()=>{
+      setValor(dados.price)
+      setServico(dados.nome)
       setTratamento(dados.tratamento)
       let vet = []
       let vetdados = []
@@ -58,9 +71,9 @@ export const Modal = (props) =>{
 
         setValidated(true)
         event.preventDefault()
-        event.stopPropagation()
         if(semerro){
-          console.log('hoa:'+idhoa)
+          salvarAgenda(event)
+          //console.log('hoa:'+idhoa)
         }
    }
 
@@ -138,6 +151,8 @@ export const Modal = (props) =>{
         if (r !== parseInt(cpf[10])) resp = false;
         console.log(resp)
         if(resp == false){
+           setColorAlert('danger')
+           setTextAlert('CPF Inválido!!!')
            setShowAlert(true)
            setTimeout(()=>{
               setShowAlert(false)
@@ -153,6 +168,66 @@ export const Modal = (props) =>{
             return(<option value={item.id}>{item.prof}</option>)
         })
      )
+   }
+
+   const Pagar = (event,agenda) =>{
+       setLoapspin(true)
+       axios
+          .get(`${endpoint}/pagamentos?pagamento=S&valor=${valor}&servico=${servico}&cap_id_cla=${agenda}`, {
+              headers: {
+              Accept: 'application/json',
+              'Content-Type': 'multipart/form-data',
+              Authorization: 'Bearer ' + _token,//dentro do env//
+           },
+       })
+       .then((result) => {
+            setLoapspin(false)
+            geravalorcode(result.data.qrcode)
+            geracopiacola(result.data.copiacola)
+            gervalorcode(valor)
+            geraservico(servico)
+            geracodeagenda(agenda)
+            console.log(result)
+            openQrcode(true)
+       })
+       //openQrcode(true)
+   }
+
+   const salvarAgenda = (event) =>{
+       console.log('savaAgenda')
+       setLoapspinsave(true)
+       const formData = new FormData()
+       formData.append('cli_name', nome)
+       formData.append('cli_cpf', cpf)
+       formData.append('cli_email', email)
+       formData.append('cli_tipo_telefone', 1)
+       formData.append('cli_telefone', telefone)
+       formData.append('cli_ativo', '1')
+       formData.append('cla_tipo_agenda', 'S')
+       formData.append('cla_id_hoa', idhoa)
+       formData.append('valor', valor)
+       axios
+          .post(`${endpoint}/cliente`,formData,{
+              headers: {
+              Accept: 'application/json',
+              'Content-Type': 'multipart/form-data',
+              Authorization: 'Bearer ' + _token,//dentro do env//
+           },
+       })
+       .then((result) => {
+            setLoapspinsave(false)
+            //geracodeagenda(result.data.agendamento)
+            setAgendamento(result.data.agendamento)
+            setColorAlert('success')
+            setTextAlert('Agendamento Gravado com Sucesso!!!')
+            setShowAlert(true)
+            setTimeout(()=>{
+               setShowAlert(false)
+               Pagar(event,result.data.agendamento)
+            },3000)
+
+       })
+       //openQrcode(true)
    }
 
    const exibeCalendar = (valor) =>{
@@ -208,8 +283,8 @@ export const Modal = (props) =>{
              className="row g-3 needs-validation" noValidate  id="form-id" onSubmit={handleSubmit} validated={validated}>
 
         <CModalBody className="pt-5">
-            <CAlert color="danger" visible={showAlert} variant="solid">
-              CPF Inválido!!!
+            <CAlert color={colorAlert} visible={showAlert} variant="solid">
+              {textAlert}
             </CAlert>
             <CRow>
                <CCol md={12} xs={12}>
@@ -275,6 +350,21 @@ export const Modal = (props) =>{
                 </CCol>
                 <CCol md={12} xs={12}>
                     <CInputGroup size="sm" className="mb-3">
+                        <CInputGroupText className="inputwidth has-validation" style={largura} id="basic-addon1">Email</CInputGroupText>
+                        <CFormInput
+                            placeholder="Digite seu email"
+                            className="input-text"
+                            aria-label="Username"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            feedbackInvalid="O Email deve ser informado."
+                            aria-describedby="basic-addon1"
+                            required
+                        />
+                    </CInputGroup>
+                </CCol>
+                <CCol md={12} xs={12}>
+                    <CInputGroup size="sm" className="mb-3">
                         <CInputGroupText className="inputwidth" style={largura} id="basic-addon1">Profissional</CInputGroupText>
                         <CFormSelect onChange={(e)=>exibeCalendar(e.target.value)} value={prof} feedbackInvalid="O Profissional deve ser informado." required>
                             <option value=''>{'Selecione o Profissional'}</option>
@@ -316,7 +406,12 @@ export const Modal = (props) =>{
           <CButton color="secondary" onClick={() => handleClose()}>
               Close
           </CButton>
-          <CButton type="submit" color="primary">Save changes</CButton>
+          <CButton color="info" onClick={(e) => Pagar(e)}>
+              Pagar(Pix)&nbsp;{loapspin ? (<CSpinner size="sm"/>) : <></>}
+          </CButton>
+          <CButton type="submit" color="primary">
+              Salvar&nbsp;{loapspinsave ? (<CSpinner size="sm"/>) : <></>}
+          </CButton>
         </CModalFooter>
         </CForm>
       </CModal>

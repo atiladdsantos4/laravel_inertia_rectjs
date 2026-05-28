@@ -4,11 +4,18 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
    return view('welcome');
    //return Inertia::render('Main');
 });
+
+Route::get('/info', function () {
+   return view('info');
+   //return Inertia::render('Main');
+});
+
 
 /*routes forn end*/
 Route::get('/admin', function () {
@@ -34,4 +41,10 @@ Route::prefix('empresa')->group(function () {
    Route::get('index', [EmpresaController::class, 'index'])->name('empresa.index');
 });
 
+
+Route::prefix('relatorio')->group(function () {
+   //Route::post('storeapi', [EmpresaController::class, 'storeApi'])->name('empresa.storeApi');
+   //Route::post('store', [EmpresaController::class, 'store'])->name('empresa.store');
+   Route::get('cliente', [ReportController::class, 'index'])->name('report.index');
+});
 

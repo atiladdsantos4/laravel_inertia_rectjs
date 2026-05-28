@@ -12,7 +12,7 @@ class PacoteResource extends JsonResource
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
-     * ////pac_id_pac,pac_ativo,pac_display,pac_desconto,pac_valor,pac_created_at,pac_updated_at,pac_deleted_at
+     * 
      */
     public function toArray(Request $request): array
     {

@@ -93,6 +93,27 @@ class HorarioAgendaController extends Controller
             return response()->json($response, 200);
         }
 
+        if( isset($all["consultaagendadiafiltro"]) ){ //para renderizar as interfaces convencionais
+              $hoa = $all["hoa_id_hoa"];
+        //    $ano = $all["ano"];
+        //    $mes = $all["mes"];
+        //    $semana = $all["semana"];
+           $horarioagenda = HorarioAgenda::where("hoa_id_hoa",$hoa)
+           //->whereRaw("exists (select 1 from dat_data_agenda where hoa_id_dat = dat_id_dat and dat_ano=$ano and dat_mes=$mes and dat_semana_mes=$semana)")
+           ->get();
+           //orderBy('tes_created_at');
+           $result_horarioagenda = HorarioAgendaResource::collection($horarioagenda); //only works for colection
+
+           $response = [
+                'status' => true,
+                'message' => 'Dados Section',
+                'registros'=> count($horarioagenda),
+                'data'    => $result_horarioagenda
+            ];
+
+            return response()->json($response, 200);
+        }
+
         if( isset($all["anos"]) ){ //para renderizar as interfaces convencionais
           $horarioagenda = DataAgenda::select('dat_ano','dat_mes')
           ->groupBy('dat_ano','dat_mes')

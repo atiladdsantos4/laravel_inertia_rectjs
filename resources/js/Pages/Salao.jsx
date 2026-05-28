@@ -27,6 +27,7 @@ import { faHeartbeat,faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { CardComp } from '../components/CardComp';
 import { Modal } from '../components/Modal';
 import { ModalAvaliacao } from '../components/ModalAvaliacao';
+import { ModalQrCode } from '../components/ModalQrCode';
 import Aos from 'aos';
 import axios from 'axios';
 import { useStore } from '../store/useStore';
@@ -65,8 +66,14 @@ const Home = ({ appName }) => {
   const [listatestemunho,setListaTestemunho] = useState([]);
   const [open,setOpen] = useState(false);
   const [listaNavbar,setlistaNavbar] = useState([])
+  const [openQrcode,setOpenQrcode] = useState(false)
   const [openAvaliacao,setOpenAvaliacao] = useState(false)
-
+  const [qrcode,setQrcode] = useState(false)
+  const [copiacola,setCopiaCola] = useState(false)
+  const [valorcode,setValorcode] = useState(false)
+  const [servicocode,setServicocode] = useState(false)
+  const [codagendamento,setCodagendamento] = useState(false)
+  //geraservico
   const [dadosModal,setdadosModal] = useState({
      tratamento:null,
      nome: null,
@@ -195,6 +202,10 @@ const Home = ({ appName }) => {
      setOpen(false)
   }
 
+  const closeModalQRcode= () =>{
+     setOpenQrcode(false)
+  }
+
   const closeModalAvaliacao = () =>{
      setOpenAvaliacao(false)
   }
@@ -244,6 +255,23 @@ const Home = ({ appName }) => {
                isOpen={open}
                close={closeModal}
                dados={dadosModal}
+               openQrcode={setOpenQrcode}
+               geravalorcode={setQrcode}
+               geracopiacola={setCopiaCola}
+               gervalorcode={setValorcode}
+               geraservico={setServicocode}
+               geracodeagenda={setCodagendamento}
+            />
+
+            <ModalQrCode
+               isOpen={openQrcode}
+               close={closeModalQRcode}
+               imagem={qrcode}
+               copia={copiacola}
+               valor={valorcode}
+               servico={servicocode}
+               agenda={codagendamento}
+               //dados={dadosModal}
             />
 
             <ModalAvaliacao

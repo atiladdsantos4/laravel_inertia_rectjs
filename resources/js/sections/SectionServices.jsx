@@ -154,43 +154,6 @@ export const SectionServices = (props) => {
                      )
                    })
                 }
-                {/* <CCol md={4} xs={12} className="pb-4 px-5">
-                    <CardServiceComp
-                        price="$30"
-                        title="Hauis Basic"
-                        subtitle="Includes the following services:"
-                        paragraph=" is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.."
-                        buttonlabel="Book Basic"
-                        openModal={openModal}
-                        imagem={img01}
-                        setModal={ (e) => changeCard(e,'Hauis Basic','$100','Includes all the services for the 3 previous tiers +','Book VIP','services')}
-                        />
-                </CCol>
-                <CCol md={4} xs={12} className="pb-4 px-5">
-                    <CardServiceComp
-                        price="$40"
-                        title="Hauis Insider"
-                        subtitle="Includes all the services for the previous tier +"
-                        paragraph=" is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.."
-                        buttonlabel="Book Insider"
-                        openModal={openModal}
-                        imagem={img02}
-                        setModal={ (e) => changeCard(e,'Hauis Insider','$100','Includes all the services for the 3 previous tiers +','Book VIP','services')}
-                        />
-                </CCol>
-                <CCol md={4} xs={12} className="pb-4 px-5">
-                    <CardServiceComp
-                        price="$70"
-                        title="Hauis Influencer"
-                        subtitle="Includes all the services for the 2 previous tiers +"
-                        paragraph=" is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.."
-                        buttonlabel="Book Influencer"
-                        imagem={img03}
-                        openModal={openModal}
-                        promocard={true}
-                        setModal={ (e) => changeCard(e,'Hauis Influencer','$100','Includes all the services for the 3 previous tiers +','Book VIP','services')}
-                        />
-                </CCol> */}
             </CRow>
             </CContainer>
             { vermais ? (<>
@@ -210,7 +173,8 @@ export const SectionServices = (props) => {
                                             buttonlabel={item.textobotao}
                                             openModal={openModal}
                                             imagem={imgpath + item.path + '/' + item.imagem}
-                                            setModal={ (e) => changeCard(e,item.titulo,item.preco,null,null,'services')}
+                                            idspinner={'idspinner'+item.idtratamento}
+                                            setModal={ (e) => changeCard(e,item.idtratamento,item.titulo,item.preco,null,null,'services')}
                                         />
                                 </CCol>
                                 )

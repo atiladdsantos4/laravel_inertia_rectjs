@@ -23,6 +23,8 @@ import ManFeriados from './Manutencao/ManFeriados';
 import ManAgendamentos from './Manutencao/ManAgendamentos';
 import ManProfissionais from './Manutencao/ManProfissionais';
 import ConsultaAgendamentos from './Manutencao/ConsultaAgendamentos';
+import ManPix from './Manutencao/ManPix';
+import ManClientes from './Manutencao/ManClientes';
 import axios from 'axios'
 import Aos from 'aos';
 const Admin = (props) => {
@@ -64,6 +66,9 @@ const Admin = (props) => {
            agenda:[
                {call:'Agendamento',name:'Gerar Horários Agendamentos',href:'#'},
                {call:'ConsultaAgenda',name:'Consultar Horários Agendamentos',href:'#'},
+               {call:'DefinirPix',name:'Gerenciar Chave Pix',href:'#'},
+               {call:'Clientes',name:'Consutar Clientes',href:'#'},
+               //@Hairsalao5@
            ]
   }]
 
@@ -199,6 +204,20 @@ const Admin = (props) => {
         //const ConsultaAgendamentos = lazy(() => import('./Manutencao/ConsultaAgendamentos'))
         return(<ConsultaAgendamentos abretela={setTelaatual} idpesquisa={idpesquisapro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
        break
+
+      case "DefinirPix":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        //const ConsultaAgendamentos = lazy(() => import('./Manutencao/ConsultaAgendamentos'))
+        return(<ManPix abretela={setTelaatual} idpesquisa={idpesquisapro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+      case "Clientes":
+        array = listasections.filter((item)=> item.sec_nome === 'SectionTestemunho')
+        //const ConsultaAgendamentos = lazy(() => import('./Manutencao/ConsultaAgendamentos'))
+        return(<ManClientes abretela={setTelaatual} idpesquisa={idpesquisapro} end={endpointapi} tipos={listatipos} tags={listatags} dados_section={array[0]} token={_token} icon={faGear} title="Kings Hair" subtitle = "Sobre Nós"/>)
+       break
+
+
     }
 
     //const ConsultaAgendamentos = React.lazy(() => import('./Manutencao/ConsultaAgendamentos'))

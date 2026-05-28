@@ -4,7 +4,7 @@ import { SpinnerComp } from '../../components/SpinnerComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import img01 from '../../images/foto01.jpeg'
 import img02 from '../../images/foto02.png'
-import { faSave, faEdit, faTrash,faEraser, faCancel, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEdit, faTrash,faEraser, faCancel, faFilePdf, faCircleXmark, faCircleArrowDown,faCircleArrowUp  } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import {
   CTable, CTableRow,CTableHeaderCell,CTableBody,CTableDataCell,CTableHead,
@@ -25,7 +25,7 @@ import {
   CDropdown,CDropdownToggle,CDropdownMenu,CDropdownItem,
   CImage,
   CCollapse,
-  CPagination, CPaginationItem
+  CPagination, CPaginationItem,CTooltip
 } from '@coreui/react'
 import { useStore } from '../../store/useStore';
 import { io } from 'socket.io-client';
@@ -924,6 +924,10 @@ const ManServicos = (props) =>{
                         (
                         <CCard style={{padding:'3px'}}>
                             <div style={{display:'flex',justifyContent:'flex-end'}}>
+                            <div className='mt-3'><CTooltip content="Relatório Lista de Serviços" placement="top">
+                                     <a href={'relatorio/cliente?relatorio=listaservicos'} target="_blank"><FontAwesomeIcon icon={faFilePdf} style={{color:'#722E56',cursor:'pointer'}} size="xl"/></a>
+                                  </CTooltip>
+                            </div>&nbsp;&nbsp;
                             <CInputGroup style={{maxWidth:'400px'}} className="mb-2 mt-2">
                                 <CInputGroupText style={props.estilo} className="clinputtext">Pesquisar</CInputGroupText>
                                 <CFormInput placeholder={'Digite um valor'} value={pesquisar} onChange={(e)=>pesquisarGrid(e)}/>

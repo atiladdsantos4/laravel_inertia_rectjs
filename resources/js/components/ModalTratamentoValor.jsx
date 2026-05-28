@@ -22,7 +22,7 @@ import { IMaskInput,IMaskMixin } from 'react-imask';
 export const ModalTratamentoValor = (props) =>{
 
    const endpoint = import.meta.env.VITE_APP_ENDPOINT_API
-   const { isOpen, close, section, icone, token, dados, saved, showhistorico } = props
+   const { isOpen, close, section, icone, token, dados, savedados, showhistorico } = props
    const [titulo,setTitulo] = useState(null)
    const [servico,setServico] = useState(null)
    const [desconto,setDesconto]  = useState(dados.tra_valor)
@@ -192,7 +192,7 @@ export const ModalTratamentoValor = (props) =>{
             .then((result) => {
                 setLoad(false)
                 setShow(true)
-                saved()
+                savedados()
                 setTimeout(()=>{
                    setShow(false)
                    handleClose()
@@ -300,7 +300,7 @@ export const ModalTratamentoValor = (props) =>{
         <CForm
              className="row g-3 needs-validation" noValidate  id="form-id" onSubmit={handleSubmit} validated={validated}>
         <CModalBody className="pt-5">
-            <CAlert dismissible visible={show} color="success" onClose={() => setShow(false)}>Testemunho Enviado Comsucesso</CAlert>
+            <CAlert dismissible visible={show} color="success" onClose={() => setShow(false)}>Dados Gravados Com Sucesso</CAlert>
             <CRow>
 
                     <CCol md={12} xs={12}>
